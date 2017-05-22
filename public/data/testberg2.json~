@@ -1,0 +1,20 @@
+{
+    "icebergID" : "joey",
+    "pointindex" : 1,      
+    "pcd" : [1,2,3]
+}
+{
+    "icebergID" : "joey",
+    "pointindex" : 2,      
+    "pcd" : [4,5,6]
+}
+{
+    "icebergID" : "joey",
+    "pointindex" : 3,      
+    "pcd" : [7,8,9]
+}
+{
+    "icebergID" : "joey",
+    "pointindex" : 4,      
+    "pcd" : [10,11,12]
+}

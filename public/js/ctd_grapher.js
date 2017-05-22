@@ -1,9 +1,9 @@
 //Parameters
-time_max=100;
+time_max=20;
 time_min=0;
 t=0;
 time_increment=1;
-table_limit=100
+table_limit=time_max
 
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
@@ -132,7 +132,13 @@ setInterval(function(){
     new_cond=[t,0.5+Math.random()*0.1];
     new_temp=[t,10+Math.random()*2];
     new_depth=[t,6+Math.random()*2];
-    
+
+    if ( cond_data.getNumberOfRows() >= table_limit ){
+        //This condition assumes all tables are of equal length
+        cond_data.removeRow(0);
+        temp_data.removeRow(0);
+        depth_data.removeRow(0);    
+    }
     if ( t > time_max ){
         time_max = time_max + time_increment;
         time_min = time_min + time_increment;
@@ -142,11 +148,9 @@ setInterval(function(){
         temp_options.hAxis.viewWindow.min = time_min;
         depth_options.hAxis.viewWindow.max = time_max;
         depth_options.hAxis.viewWindow.min = time_min;
-        
-        cond_data.row(0).remove();
-        temp_data.row(0).remove();
-        depth_data.row(0).remove();    
     }
+
+
     cond_data.addRow(new_cond);
     temp_data.addRow(new_temp);
     depth_data.addRow(new_depth);

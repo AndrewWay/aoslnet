@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    h1= title
+    p Welcome to our test
+
+    // Wrapper
+    #wrapper
+        //BERG INFO
+        #bergInfo
+            h2 Berg Info
+            p
+                strong bergID:
+                |  <span id='bergID'></span>
+                br
+                strong bergX:
+                |  <span id='bergX'></span>
+                br
+                strong bergY:
+                |  <span id='bergY'></span>
+                br
+                strong bergZ:
+                |  <span id='bergZ'></span>
+        // /USER INFO
+        
+        // BERG LIST
+        h2 Berg List
+        #bergList
+            table
+                thead
+                    th bergID
+                    th X
+                    th Y
+                    th Z
+                tbody
+        // /BERG LIST
+
+    // /WRAPPER
