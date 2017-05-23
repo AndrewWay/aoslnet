@@ -1,6 +1,7 @@
 extends layout
-
 block content
+    script(src="https://cdn.plot.ly/plotly-latest.min.js")
+    script(type="text/javascript" src="js/modernizr-1.5.min.js")
     h1= title
     p Welcome to our test
 
@@ -34,5 +35,6 @@ block content
                     th Z
                 tbody
         // /BERG LIST
-
+    div#iceberg_plot
+        p put the iceberg here
     // /WRAPPER

@@ -53,6 +53,53 @@ console.log('In show berg info function');
 
     // Get our berg Object
     var thisBergObject = bergData[arrayPosition];
+    var xarr = thisBergObject.x;
+    var yarr = thisBergObject.y;
+    var zarr = thisBergObject.z;
+    var elements;
+    if (xarr.length >= yarr.length && xarr.length >= zarr.length) {
+        elements=xarr.length;
+    } else if (yarr.length >= xarr.length && yarr.length >= zarr.length) {
+        elements=yarr.length;    
+    } else if (zarr.length >= yarr.length && zarr.length >= xarr.length) {
+        elements=zarr.length;
+    }
+    else {
+        console.log("Error with lengths of PCD arrays");
+        elements=0;
+    }
+    console.log("Elements in PCD array "+elements);
+
+/*a=[]; b=[]; c=[];
+
+for(i=0;i<50;i++){
+    var a_ = xarr[i];//Math.random(); 
+    a.push(a_);
+  
+    var b_ = yarr[i];Math.random(); 
+    b.push(b_);
+  
+    var c_ = zarr[i];//Math.random(); 
+    c.push(c_);
+    console.log("HOLDERS" + a_ + " " + b_ + " " + c_);
+    console.log("ARRAY VALUES" + xarr[i] + " " + yarr[i] + " " + zarr[i]);
+
+  }
+*/
+// Plotting the mesh
+var data=[
+  {
+    alphahull:5,
+    opacity:0.8,
+    color:'rgb(200,100,300)',
+    type: 'mesh3d',
+    x: xarr,
+    y: yarr,
+    z: zarr,
+  }
+];
+
+Plotly.newPlot('iceberg_plot', data);
 
     //Populate Info Box
     $('#bergID').text(thisBergObject.icebergID);
