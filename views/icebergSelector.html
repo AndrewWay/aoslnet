@@ -10,14 +10,13 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="plotly-latest.min.js"></script>
   <!-- modernizr enables HTML5 elements and feature detects -->
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
 
 <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <!-- Load CTD data grapher -->   
-    <script src="js/ctd_grapher.js"></script>
+    <!--script src="js/ctd_grapher.js"></script-->
 
 
 </head>
@@ -46,15 +45,9 @@
     <div id="IcebergSelector"> 
     Select the year of the iceberg to see :
     <select id="selectYear" onchange="changeYear()">
-          <option value="2016">2016
-          <option value="2017">2017
-          <option value="2018">2018
     </select>
     Select the ID/name of the iceberg to display
-      <select id="selectIcebergs" onchange="selectIceberg()">
-        <option value="1">1 (joey)
-        <option value="2">2 (Island)
-        <option value="3">3 (Inquisitor)
+      <select id="selectIceberg" onchange="changeIceberg()">
       </select>
         <!--<a id="yearSelected"> yearSelected : </a>
         <a> || </a>
@@ -179,7 +172,6 @@
     <script type="text/javascript" src="js/icebergSelector.js"></script>
     
     <!-- Load PCD data plotter -->   
-    <script src="js/meshberg.js"></script>
 <script>
 function mapReady() {
        setMapData(); 

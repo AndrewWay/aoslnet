@@ -14,48 +14,73 @@ var mapInitialized=false;
 
 
 $(document).ready(function() { 
-    
-  var x = document.getElementById("selectYear");
-    while (x.firstChild) {
-        x.removeChild(x.firstChild);
-    }
-    for (var i = 0, len = 3; i < len; i++) {
-    var option = document.createElement("option");
-    option.text = 2015+i;
-    option.value=2015+i;
-    x.add(option);
-    }
-    
-    changeYear();
+    console.log('document ready');
+    var yearList = getList('/bergs/icebergyearlist');
+    updateOptions('selectYear',yearList);
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    updateOptions('selectIceberg',bergList);
 });
-
-
-function changeYear(){
-    yearSelected = document.getElementById("selectYear").value;
-    filepathIcebergsData = "../DataReceived/" + yearSelected + "/Icebergs_" + yearSelected +".json"; 
-    //document.getElementById("yearSelected").text = filepathIcebergsData ;
-    
-
+function getList(url){
+    console.log('requesting list from '+url);
     var request = new XMLHttpRequest();
-    request.open("GET", filepathIcebergsData, false);
+    request.open("GET",url,false);
     request.send(null);
-    var jsonIcberg = JSON.parse(request.responseText);
-    //alert (jsonIcberg.IcebergsList[0]);
+    var response = JSON.parse(request.responseText);
+    console.log('database returned: '+request.responseText);
+    console.log('function completing. Returning list');
 
-    var x = document.getElementById("selectIcebergs");
-    while (x.firstChild) {
-        x.removeChild(x.firstChild);
-    }
-    
-    for (var i = 0; i < jsonIcberg.IcebergsList.length; i++) {
-        var option = document.createElement("option");
-        option.text = jsonIcberg.IcebergsList[i];
-        option.value=option.text;
-        x.add(option);
-    }
-    selectIceberg();   
+    return response;
 }
 
+function updateOptions(optionID,options){
+    var optList = document.getElementById(optionID); 
+    //Remove existing options from option list    
+    while (optList.firstChild) {
+        optList.removeChild(optList.firstChild);
+    }
+    //Append new options to option list
+    for (var i = 0; i < options.length; i++) {
+        var option = document.createElement("option");
+        option.text = options[i];
+        option.value= options[i];
+        optList.add(option);
+    }
+}
+
+function changeYear(){
+    console.log('changeYear() starting');
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    updateOptions('selectIceberg',bergList);  
+    console.log('changeYear() finished');
+}
+function changeIceberg(){
+    console.log('changeIceberg() starting');
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergSelected = document.getElementById("selectIceberg").value;
+    var bergdata = getPCD(yearSelected,bergSelected);
+    var xdata=bergdata[0].x;
+    var ydata=bergdata[0].y;
+    var zdata=bergdata[0].z;
+
+    updateMesh(xdata,ydata,zdata);
+    console.log('changeIceberg() finished');
+}
+
+function getPCD(year,name){
+    console.log('getPCD() starting');
+    var url='/bergs/icebergpcd/'+year+'/'+name;
+    console.log('requesting PCD from:' + url);
+    var request = new XMLHttpRequest();
+    request.open("GET",url,false);
+    request.send(null);
+    var response = JSON.parse(request.responseText);
+    console.log('database returned: '+request.responseText);
+    console.log('getPCD() finished');
+
+    return response;
+}
 /*var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -64,17 +89,39 @@ function initMap() {
   });
 }*/
 
-function selectIceberg() {
-    icebergSelected =document.getElementById("selectIcebergs").value;
-    filePathIcebergSelected = "../DataReceived/" + yearSelected + "/" +icebergSelected + "/" + yearSelected +"_"+icebergSelected +".json";
+function updateMesh(xarr,yarr,zarr){
+console.log('updateMesh() starting');
+// Plotting the mesh
+console.log('xdata: '+xarr);
+console.log('ydata: '+yarr);
+console.log('zdata: '+zarr);
+
+var data=[
+  {
+    alphahull:5,
+    opacity:0.8,
+    color:'rgb(200,100,300)',
+    type: 'mesh3d',
+    x: xarr,
+    y: yarr,
+    z: zarr,
+  }
+];
+
+Plotly.newPlot('iceberg_plot', data);
+console.log('updateMesh() ending');
+}
+function changeIceberg2() {
+    console.log('selectIceberg()');
+    icebergSelected = document.getElementById("selectIcebergs").value;
     if(yearSelected != ""){
         //document.getElementById("icebergSelected").text = filePathIcebergSelected;
         var request = new XMLHttpRequest();
-        request.open("GET", filePathIcebergSelected, false);
+        request.open("GET", "/bergs/icebergyearlist/"+yearSelected, false);
         request.send(null);
         jsonIcberg = JSON.parse(request.responseText);
         document.getElementById("json_data").innerHTML=JSON.stringify(jsonIcberg, null, 4);
-
+        console.log(jsonIcberg);
 
         var x = document.getElementById("selectModel");
         while (x.firstChild) {

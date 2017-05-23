@@ -1,7 +1,10 @@
 #!/bin/bash
 
-output="peter.json"
-pcdsize=50
+name=$1
+pcdsize=$2
+year=$3
+
+output="$1.json"
 xdat='"x" : ['
 ydat='"y" : ['
 zdat='"z" : ['
@@ -23,7 +26,8 @@ ydat=$ydat$newy
 zdat=$zdat$newz
 
 echo "{" > $output
-echo '    "icebergID" : "peter",' >> $output
+echo '    "icebergID" : "'$name'",' >> $output
+echo '    "year" : "'$year'",' >> $output
 
 for i in `seq 1 $((pcdsize-1))`
 do
