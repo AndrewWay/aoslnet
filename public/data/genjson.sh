@@ -2,6 +2,11 @@
 
 name="R11I01"
 year=1980
+long=-52.732711
+lat=47.571306
+height=101
+width=143
+volume=10832
 
 input="R11I01.txt"
 length=`cat $input | wc -l`
@@ -14,7 +19,11 @@ zdat='"z" : ['
 echo "{" > $output
 echo '    "icebergID" : "'$name'",' >> $output
 echo '    "year" : "'$year'",' >> $output
-
+echo '    "longitude" : "'$long'",' >> $output
+echo '    "latitude" : "'$lat'",' >> $output
+echo '    "height" : "'$height'",' >> $output
+echo '    "width" : "'$width'",' >> $output
+echo '    "volume" : "'$volume'",' >> $output
 for i in `seq 2 $length`
 do
 

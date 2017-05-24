@@ -21,6 +21,7 @@ $(document).ready(function() {
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
+    updateMap(0,0);
 });
 function getList(url){
     console.log('requesting list from '+url);
@@ -60,28 +61,69 @@ function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
-    var bergdata = getPCD(yearSelected,bergSelected);
+    var bergdata = getIJSON(yearSelected,bergSelected);
+    
     var xdata=bergdata[0].x;
     var ydata=bergdata[0].y;
     var zdata=bergdata[0].z;
-    updateMesh(xdata,ydata,zdata);
-    console.log('changeIceberg() finished');
-    if(bergSelected.equals("R11I01")==true){
-      document.getElementById("iceberg_images").innerHTML="<img src="images/R11I01.jpg" style="width:200px;height:120px;"></img>"; 
+    var height=bergdata[0].height;
+    var width=bergdata[0].width;
+    var volume=bergdata[0].volume;
+    var longitude=bergdata[0].longitude;
+    var latitude=bergdata[0].latitude;
+    console.log("height: "+height);
+    console.log("width: "+width);
+    console.log("volume: "+volume);
+    console.log("longitude: "+longitude);
+    console.log("latitude: "+latitude);
+    console.log(typeof longitude);    
+    if(typeof longitude === 'number'){
+      if(!(longitude>=-180 && longitude <= 180)){
+        console.log("longitude invalid: out of range.");
+        longitude=0;
+      }
     }
     else{
-      document.getElementById("iceberg_images").innerHTML="";
+      console.log("longitude invalid: not of type 'number'")
+      longitude=0;    
     }
+    if(typeof latitude ==='number'){
+      if(!(latitude>=-90 && latitude <= 90)){
+        console.log("latitude invalid: out of range.");
+        latitude=0;
+      }
+    }
+    else{
+      console.log("latitude invalid: not of type 'number'")
+      latitude=0;    
+    }
+    
+
+    updateMesh(xdata,ydata,zdata);
+    updateDim(height,width,volume);
+    updateMap(latitude,longitude);
+    console.log('changeIceberg() finished');
+}
+
+function updateDim(h,w,v){
+  console.log("updateDim() running");
+  console.log("h: "+h+"w: "+w+"v: "+v);
+  var hTd = document.getElementById("icebergHeight");
+  var wTd = document.getElementById("icebergWidth");
+  var vTd = document.getElementById("icebergVolume");
+  hTd.value=h;
+  wTd.value=w;
+  vTd.value=v;
+  console.log("updateDim() done");
 }
 
 function updateGallery(){
   console.log('updateGallery() starting');
   var yearSelected = document.getElementById("selectYear").value;
   var bergSelected = document.getElementById("selectIceberg").value;
-  
 }
 
-function getPCD(year,name){
+function getIJSON(year,name){
     console.log('getPCD() starting');
     var url='/bergs/icebergpcd/'+year+'/'+name;
     console.log('requesting PCD from:' + url);
@@ -104,11 +146,6 @@ function initMap() {
 
 function updateMesh(xarr,yarr,zarr){
 console.log('updateMesh() starting');
-// Plotting the mesh
-console.log('xdata: '+xarr);
-console.log('ydata: '+yarr);
-console.log('zdata: '+zarr);
-
 var data=[
   {
     alphahull:5,
@@ -120,7 +157,7 @@ var data=[
     z: zarr
   }
 ];
-
+// Plotting the mesh
 Plotly.newPlot('iceberg_plot', data);
 console.log('updateMesh() ending');
 }
@@ -146,11 +183,11 @@ function displayWind(jsonDataReceived){
 
 //Google map
 
-function initMap(plat,plong) {
+function updateMap(Ilat,Ilong) {
         mapInitialized=true;
-        var uluru = {lat: jsonIcberg.Location.Latitude, lng: jsonIcberg.Location.Longitude};
+        var uluru = {lat: Ilat, lng: Ilong};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
+          zoom: 8,
           center: uluru
         });
         var marker = new google.maps.Marker({

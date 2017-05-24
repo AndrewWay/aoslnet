@@ -1,13 +1,28 @@
 #!/bin/bash
 
-name=$1
-pcdsize=$2
-year=$3
+name="joey"
+year=1980
+long=-52.732711
+lat=47.571306
+height=101
+width=143
+volume=10832
+pcdsize=50
 
-output="$1.json"
+output="$name.json"
 xdat='"x" : ['
 ydat='"y" : ['
 zdat='"z" : ['
+
+echo "{" > $output
+echo '    "icebergID" : "'$name'",' >> $output
+echo '    "year" : "'$year'",' >> $output
+echo '    "longitude" : '$long',' >> $output
+echo '    "latitude" : '$lat',' >> $output
+echo '    "height" : "'$height'",' >> $output
+echo '    "width" : "'$width'",' >> $output
+echo '    "volume" : "'$volume'",' >> $output
+
 newx=`echo "$RANDOM / 31767" | bc -l`
 newy=`echo "$RANDOM / 31767" | bc -l`
 newz=`echo "$RANDOM / 31767" | bc -l`
@@ -24,11 +39,6 @@ fi
 xdat=$xdat$newx
 ydat=$ydat$newy
 zdat=$zdat$newz
-
-echo "{" > $output
-echo '    "icebergID" : "'$name'",' >> $output
-echo '    "year" : "'$year'",' >> $output
-
 for i in `seq 1 $((pcdsize-1))`
 do
     newx=`echo "$RANDOM / 31767" | bc -l`
