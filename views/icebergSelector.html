@@ -3,182 +3,143 @@
 
 <head>
   <title>AOSL Data Delivery Website</title>
-  <meta name="description" content="This website displqys data received by our vehicle in real Time." />
+  <meta name="description" content="This website displays data received by our vehicle in real Time." />
   <meta name="keywords" content="AOSL, SeaDragon, Icebergs, MUN" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
   <link rel="stylesheet" type="text/css" href="css/style.css" />
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <!-- modernizr enables HTML5 elements and feature detects -->
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
-
-<!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<!-- Load CTD data grapher -->   
-    <!--script src="js/ctd_grapher.js"></script-->
-
-
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="js/ctd_grapher.js"></script>
 </head>
 
 <body>
   <div id="main">		
-
-    <header>
-	  <div id="strapline">
+  <header>
+    <div id="strapline">
 	    <div id="welcome_slogan">
 	      <h3>Welcome To the AOSL delivery data website <span>Beta</span></h3>
-	    </div><!--close welcome_slogan-->
-      </div><!--close strapline-->	  
+	    </div>
+    </div>
 	  <nav>
 	    <div id="menubar">
-          <ul id="nav">
-            <li ><a href="/">Home</a></li>
-            <li><a href="/icebergMap">Iceberg Map</a></li>
-            <li class="current"><a href="/icebergSelector">Icebergs</a></li>
-            <li><a href="http://www.aosl.ca">About Us</a></li>
-          </ul>
-        </div><!--close menubar-->	
-      </nav>
-    </header>
-    
-    <div id="IcebergSelector"> 
-    Select the year of the iceberg to see :
-    <select id="selectYear" onchange="changeYear()">
-    </select>
-    Select the ID/name of the iceberg to display
-      <select id="selectIceberg" onchange="changeIceberg()">
-      </select>
-        <!--<a id="yearSelected"> yearSelected : </a>
-        <a> || </a>
-        <a id="icebergSelected"> icebergSelected : </a>
-        <a> || </a>
-        <a id="modelSelected"> modelSelected : </a>-->
-    </div>
+        <ul id="nav">
+          <li ><a href="/">Home</a></li>
+          <li><a href="/icebergMap">Iceberg Map</a></li>
+          <li class="current"><a href="/icebergSelector">Icebergs</a></li>
+          <li><a href="http://www.aosl.ca">About Us</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div id="IcebergSelector"> 
+    Select the year of iceberg data:
+    <select id="selectYear" onchange="changeYear()"></select>
+    Select the ID/name of the iceberg:
+    <select id="selectIceberg"></select>
+    <button type="button" onclick="changeIceberg()">Render</button>
+  </div>
 	
 	<div id="site_content">		
-	  
-      
-
-     <div class="left_sidebar_container">       
-		<div class="sidebar">
-            <div class="data_plot" id="curve_chart1"></div>
-            <div class="data_plot" id="curve_chart2"></div>
-            <div class="data_plot" id="curve_chart3"></div>
-        </div><!--close sidebar-->     		
-       </div><!--close sidebar_container-->	
-
-   <div class="right_sidebar_container">       
-		<div class="sidebar">
-          <div class="sidebar_item">
-            <h2 align='center'>Iceberg Data</h2>
-                <a>Dimensions : </a>
-              <div>
-                <table align="center" style="width:100%">
-                  <tr>
-                    <td>Height (m) : </td>
-                    <td  id="icebergHeight">?</td>
-                  </tr>
-                  <tr>
-                    <td>Width (m) : </td>
-                    <td  id="icebergWidth">?</td>
-                  </tr>
-                  <tr>
-                    <td>Volume (cubic m) : </td>
-                    <td   id="icebergVolume">?</td>
-                  </tr>
-                </table>
-              </div>
-                <a>True Wind Data : </a>
-
-              <div>
-                  <table align="center" style="width:100%">
-                  <tr>
-                    <th></th>
-                    <th>Wind Speed (m/s)</th> 
-                    <th>Wind Direction (deg)</th>
-                  </tr>
-                  <tr>
-                    <td>Min</td>
-                    <td  id="minSpeedWind">?</td>
-                    <td  id="minDirWind">?</td>
-                  </tr>
-                  <tr>
-                    <td>Average</td>
-                    <td  id="aveSpeedWind">?</td>
-                    <td  id="aveDirWind">?</td>
-                  </tr>
-                  <tr>
-                    <td>Max</td>
-                    <td   id="maxSpeedWind">?</td>
-                    <td   id="maxDirWind">?</td>
-                  </tr>
-                </table>
-              </div>
-              <a>Iceberg Location and Vehicle Path: </a>
-              <div id="map" style="width:100%;height:200px;" >
-              </div>
-              <a>ADCP Water Current Profile</a>
-              
-<div class="output_html rendered_html output_subarea output_execute_result">
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/471.embed" height="300px" width="100%"></iframe>
-</div>
-            <!--div>
-                  <img src="images/water_current_profile.jpeg" height="200px" width="300px">
-              </div-->
-
-          </div><!--close right_sidebar_item--> 
-        </div><!--close sidebar-->     		
-       </div><!--close sidebar_container-->	
-
+    <div class="left_sidebar_container">       
+	    <div class="sidebar">
+        <div class="data_plot" id="curve_chart1"></div>
+        <div class="data_plot" id="curve_chart2"></div>
+        <div class="data_plot" id="curve_chart3"></div>
+      </div>
+    </div>	
+    <div class="right_sidebar_container">       
+  		<div class="sidebar">
+        <div class="sidebar_item">
+          <h2 align='center'>Iceberg Data</h2>
+          <a>Dimensions : </a>
+          <div>
+            <table align="center" style="width:100%">
+              <tr>
+                <td>Height (m) : </td>
+                <td  id="icebergHeight">?</td>
+              </tr>
+              <tr>
+                <td>Width (m) : </td>
+                <td  id="icebergWidth">?</td>
+              </tr>
+              <tr>
+                <td>Volume (cubic m) : </td>
+                <td   id="icebergVolume">?</td>
+              </tr>
+            </table>
+          </div>
+          <a>True Wind Data : </a>
+          <div>
+            <table align="center" style="width:100%">
+              <tr>
+                <th></th>
+                <th>Wind Speed (m/s)</th> 
+                <th>Wind Direction (deg)</th>
+              </tr>
+              <tr>
+                <td>Min</td>
+                <td  id="minSpeedWind">?</td>
+                <td  id="minDirWind">?</td>
+              </tr>
+              <tr>
+                <td>Average</td>
+                <td  id="aveSpeedWind">?</td>
+                <td  id="aveDirWind">?</td>
+              </tr>
+              <tr>
+                <td>Max</td>
+                <td   id="maxSpeedWind">?</td>
+                <td   id="maxDirWind">?</td>
+              </tr>
+            </table>
+          </div>
+          <a>Iceberg Location and Vehicle Path: </a>
+          <div id="map" style="width:100%;height:200px;" >
+          
+          </div>
+          <a>ADCP Water Current Profile</a>
+          <div class="output_html rendered_html output_subarea output_execute_result">
+            <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~PythonPlotBot/471.embed" height="300px" width="100%"></iframe>
+          </div>
+        </div><!--close right_sidebar_item--> 
+      </div><!--close sidebar-->     		
+    </div><!--close sidebar_container-->	
 	  <div id="content">
-        <div id="iceberg_plot" class="content_item">
-		  <!--h2 align='center' id="icebergModelTitle">Iceberg 3D Model : 
-                  <select align='center' id="selectModel" onchange="selectModel()">
-                    <option value="1">High resolution
-                    <option value="2">Medium resolution
-                    <option value="3">Low resolution
-                  </select></h2>
-		  <div id="PCDviewer" name="PCDviewer">    
-        
-            </div>
-            <ul id="imagesIceberg" class="images">
-                <li>Pictures of the iceberg will be displayed here</li>
-                <li></li>
-                <li></li>
-            </ul-->
-		
-		</div><!--close content_item-->
-      </div><!--close content-->   
-
-	</div><!--close site_content-->  	
+    <div id="iceberg_holder">
+      <div id="iceberg_plot" class="content_item"></div>
+      <div id="iceberg_gallery">
+        <h4 align="center">Gallery</h4>
+        <div id="iceberg_images">
+        </div>
+      </div><!--TODO: Load in images dynamically from server-->
+    </div>
+    </div>   
+  </div><!--close site_content-->  	
+</div><!--close main-->
 
 
-	 
-  </div><!--close main-->
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady"
-        async defer></script>
-    <script src="js/three.js"></script>
-    <script src="js/loaders/PCDLoader.js"></script>
-    <script src="js/controls/TrackballControls.js"></script>
-    <script src="js/Detector.js"></script>
-    <script src="js/libs/stats.min.js"></script>
-    <!--<script src="js/PCDSceneCreator.js"></script>-->
-        
-    <script type="text/javascript" src="js/icebergSelector.js"></script>
-    
-    <!-- Load PCD data plotter -->   
-<script>
-function mapReady() {
-       setMapData(); 
-}
-</script>
-
-
-
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
+  <!--script src="js/three.js"></script>
+  <--script src="js/loaders/PCDLoader.js"></script>
+  <script src="js/controls/TrackballControls.js"></script>
+  <script src="js/Detector.js"></script>
+  <script src="js/libs/stats.min.js"></script>
+  <!--<script src="js/PCDSceneCreator.js"></script>-->
+  <script type="text/javascript" src="js/icebergSelector.js"></script>    
+  <!-- Load PCD data plotter -->   
+  <script>
+  function mapReady() {
+    setMapData(); 
+  }
+  </script>
 </body>
 </html>

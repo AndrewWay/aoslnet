@@ -222,18 +222,29 @@ ul img {
 
 #iceberg_plot
 {
-    height: 670px;
+    padding: 1px 1px 1px 1px;
+    height: 540px;
+    width: 990px;
+}
+#iceberg_holder
+{
+     border: 1px solid black;   
+    height: 550px;
     width: 1000px;
 }
 .plot-container.plotly
 {
-    height: 670px;
-    width: 1000px;
+    height: 550px;
+    width: 990px;
 }
 .svg-container
 {
-    height: 670;
-    width: 1000px;
+    height: 550px;
+    width: 990px;
+}
+.main-svg{
+  height: 550px  
+  width: 990px;
 }
 .left_sidebar_container
 { float: left;
@@ -263,7 +274,7 @@ ul img {
   height: 30px;}  
 
 #content
-{ 
+{  
     width: 1000px;
     height: 670px;
     margin-left: auto;

@@ -1,52 +1,42 @@
 #!/bin/bash
 
-name=$1
-pcdsize=$2
-year=$3
+name="R11I01"
+year=1980
 
-output="$1.json"
+input="R11I01.txt"
+length=`cat $input | wc -l`
+
+output="$name.json"
 xdat='"x" : ['
 ydat='"y" : ['
 zdat='"z" : ['
-newx=`echo "$RANDOM / 31767" | bc -l`
-newy=`echo "$RANDOM / 31767" | bc -l`
-newz=`echo "$RANDOM / 31767" | bc -l`
-if [[ $newx =~ ^\. ]]; then
-    newx=0$newx
-fi
-if [[ $newy =~ ^\. ]]; then
-    newy=0$newy
-fi
-if [[ $newz =~ ^\. ]]; then
-    newz=0$newz
-fi
-
-xdat=$xdat$newx
-ydat=$ydat$newy
-zdat=$zdat$newz
 
 echo "{" > $output
 echo '    "icebergID" : "'$name'",' >> $output
 echo '    "year" : "'$year'",' >> $output
 
-for i in `seq 1 $((pcdsize-1))`
+for i in `seq 2 $length`
 do
-    newx=`echo "$RANDOM / 31767" | bc -l`
-    newy=`echo "$RANDOM / 31767" | bc -l`
-    newz=`echo "$RANDOM / 31767" | bc -l`
-    if [[ $newx =~ ^\. ]]; then
-        newx=0$newx
-    fi
-    if [[ $newy =~ ^\. ]]; then
-        newy=0$newy
-    fi
-    if [[ $newz =~ ^\. ]]; then
-        newz=0$newz
-    fi
-    xdat="$xdat,$newx"
-    ydat="$ydat,$newy"
-    zdat="$zdat,$newz"
+
+line=`cat $input | head -n $i | tail -n 1`
+
+newx=`echo $line | awk '{print $3}'`
+newy=`echo $line | awk '{print $4}'`
+newz=`echo $line | awk '{print $5}'`
+
+xdat=$xdat$newx
+ydat=$ydat$newy
+if [ $i -eq 2 ];then
+zdat=$zdat$newz
+else 
+zdat=$zdat,$newz
+fi
+
 done
+xdat=${xdat::-1}
+ydat=${ydat::-1}
+
+
 xdat="$xdat],"
 ydat="$ydat],"
 zdat="$zdat]"

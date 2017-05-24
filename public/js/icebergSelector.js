@@ -7,11 +7,11 @@ var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
 
-    if ( ! Detector.webgl ) 
+    /*if ( ! Detector.webgl ) 
         Detector.addGetWebGLMessage();
     var container, stats;
     var camera, controls, scene, renderer;
-
+*/
 
 $(document).ready(function() { 
     console.log('document ready');
@@ -20,6 +20,7 @@ $(document).ready(function() {
     var yearSelected = document.getElementById("selectYear").value;
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
+    updateMesh([],[],[]);//Render 3DMesh with no data
 });
 function getList(url){
     console.log('requesting list from '+url);
@@ -63,9 +64,15 @@ function changeIceberg(){
     var xdata=bergdata[0].x;
     var ydata=bergdata[0].y;
     var zdata=bergdata[0].z;
-
     updateMesh(xdata,ydata,zdata);
     console.log('changeIceberg() finished');
+}
+
+function updateGallery(){
+  console.log('updateGallery() starting');
+  var yearSelected = document.getElementById("selectYear").value;
+  var bergSelected = document.getElementById("selectIceberg").value;
+  
 }
 
 function getPCD(year,name){
@@ -99,70 +106,18 @@ console.log('zdata: '+zarr);
 var data=[
   {
     alphahull:5,
-    opacity:0.8,
-    color:'rgb(200,100,300)',
+    opacity:1,
+    color:'rgb(230, 255, 255)',
     type: 'mesh3d',
     x: xarr,
     y: yarr,
-    z: zarr,
+    z: zarr
   }
 ];
 
 Plotly.newPlot('iceberg_plot', data);
 console.log('updateMesh() ending');
 }
-function changeIceberg2() {
-    console.log('selectIceberg()');
-    icebergSelected = document.getElementById("selectIcebergs").value;
-    if(yearSelected != ""){
-        //document.getElementById("icebergSelected").text = filePathIcebergSelected;
-        var request = new XMLHttpRequest();
-        request.open("GET", "/bergs/icebergyearlist/"+yearSelected, false);
-        request.send(null);
-        jsonIcberg = JSON.parse(request.responseText);
-        document.getElementById("json_data").innerHTML=JSON.stringify(jsonIcberg, null, 4);
-        console.log(jsonIcberg);
-
-        var x = document.getElementById("selectModel");
-        while (x.firstChild) {
-            x.removeChild(x.firstChild);
-        }
-        for (var i = 0; i < jsonIcberg.Models.length; i++) {
-            var option = document.createElement("option");
-            option.text = jsonIcberg.Models[i];
-            option.value=option.text;
-            x.add(option);
-        }
-        
-        x = document.getElementById("imagesIceberg");
-        while (x.firstChild) {
-            x.removeChild(x.firstChild);
-        }
-        for (var i = 0; i < jsonIcberg.Pictures.length; i++) {
-            var node = document.createElement("LI");
-            var imgNode = document.createElement("IMG");
-            imgNode.src = "../DataReceived/" + yearSelected + "/" +icebergSelected + "/" +jsonIcberg.Pictures[i] ;
-            imgNode.height = 250;
-            imgNode.width =250;
-            node.appendChild(imgNode);
-            x.appendChild(node);  
-        }
-        displayDimensions(jsonIcberg);
-        displayWind(jsonIcberg);
-        document.getElementById("ADCP_Img").src = "../DataReceived/" + yearSelected + "/" +icebergSelected + "/" +jsonIcberg.ADCP.Img;
-        document.getElementById("CTD_Img").src = "../DataReceived/" + yearSelected + "/" +icebergSelected + "/" +jsonIcberg.CTD.Img;
-        
-        clearPCD();
-        selectModel();
-        if(mapInitialized){
-            try {
-                setMapData();
-            }catch(err){
-                alert("An error occured while loading the map\nCheck your internet connection\n (Error msg: " +err.message+")");
-            }
-        }
-    }
-}      
 
 function displayDimensions(jsonDataReceived){
 
@@ -183,13 +138,6 @@ function displayWind(jsonDataReceived){
     document.getElementById("maxDirWind").innerHTML = jsonDataReceived.Winds.True.Heading.Max;
 }
 
-function selectModel() {
-    IcebergModelName =document.getElementById("selectModel").value;
-   filepathIcebergModel  ="../DataReceived/" + yearSelected + "/" +icebergSelected + "/" +IcebergModelName;
-   init();
-   animate();
-
-}
 //Google map
 
 function initMap(plat,plong) {
@@ -204,102 +152,6 @@ function initMap(plat,plong) {
           map: map
         });
       }
-
-
-//PCD functions 
-function init() {
-    var parentToPCDViewer = document.getElementById("PCDviewer");
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 0.01, 1000 );
-     camera.position.x = 0.1;
-    camera.position.z = 10;
-   camera.up.set(0,0,1);
-
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setClearColor( 0x002159 );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(700,500 );
-    parentToPCDViewer.appendChild( renderer.domElement );
-
-    controls = new THREE.TrackballControls( camera ,renderer.domElement);
-    controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = 2.5;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
-    //controls.minDistance = 0.3;
-    //controls.maxDistance = 0.3 * 100;
-    scene.add( camera );
-    var axisHelper = new THREE.AxisHelper( 0.1 );
-    scene.add( axisHelper );
-    
-    var loader = new THREE.PCDLoader();
-    loader.load( filepathIcebergModel, function ( mesh ) {
-        scene.add( mesh );
-        mesh.material.size=0.3;
-        mesh.material.color.setHex(0xFFFFFF);
-        var center = mesh.geometry.boundingSphere.center;
-        controls.target.set( center.x, center.y, center.z);
-        controls.update();
-    } );
-    container = document.createElement( 'div' );
-    parentToPCDViewer.appendChild( container );
-    container.appendChild( renderer.domElement );
-    //parentToPCDViewer.appendChild( renderer.domElement );//VSO
-    //stats = new Stats();
-    //container.appendChild( stats.dom );
-    window.addEventListener( 'resize', onWindowResize, false );
-    window.addEventListener('keydown', keyboard);
-}
-function onWindowResize() {
-    camera.aspect = document.getElementById("PCDviewer").innerWidth / document.getElementById("PCDviewer").innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( document.getElementById("PCDviewer").innerWidth, document.getElementById("PCDviewer").innerHeight );
-    controls.handleResize();
-}
-function keyboard ( ev ) {
-    var ZaghettoMesh = scene.getObjectByName( IcebergModelName );
-    switch ( ev.key ) {
-        case '+':
-            ZaghettoMesh.material.size*=1.2;
-            ZaghettoMesh.material.needsUpdate = true;
-            break;
-        case '-':
-            ZaghettoMesh.material.size/=1.2;
-            ZaghettoMesh.material.needsUpdate = true;
-            break;
-        case 'c':
-            ZaghettoMesh.material.color.setHex(Math.random()*0xffffff);
-            ZaghettoMesh.material.needsUpdate = true;
-            break;
-        case 'b':
-            renderer.setClearColor(Math.random()*0xffffff);
-            break;
-        case'i':
-                clearPCD();
-                init();  
-            break;
-        case's':     
-            init();
-            break;
-    }
-}
-
-function clearPCD(){
-    while (document.getElementById("PCDviewer").firstChild) {
-          document.getElementById("PCDviewer").removeChild(document.getElementById("PCDviewer").firstChild);
-    }       
-    
-}
-function animate() {
-    requestAnimationFrame( animate );
-    controls.update();
-    renderer.render( scene, camera );
-    //stats.update();
-}
-
 
 // Google Maps functions
 function setMapData() {
