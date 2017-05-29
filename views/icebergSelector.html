@@ -15,6 +15,7 @@
   <!--Load the AJAX API-->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="js/ctd_grapher.js"></script>
+  <script src="js/dlfile.js"></script>
 </head>
 
 <body>
@@ -43,6 +44,8 @@
     Select the ID/name of the iceberg:
     <select id="selectIceberg"></select>
     <button type="button" onclick="changeIceberg()">Render</button>
+	Download data:
+	<button type="button" onclick="download()">Download</button>
   </div>
 	
 	<div id="site_content">		
