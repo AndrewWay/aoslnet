@@ -111,9 +111,9 @@ function updateDim(h,w,v){
   var hTd = document.getElementById("icebergHeight");
   var wTd = document.getElementById("icebergWidth");
   var vTd = document.getElementById("icebergVolume");
-  hTd.value=h;
-  wTd.value=w;
-  vTd.value=v;
+  hTd.innerHTML=h;
+  wTd.innerHTML=w;
+  vTd.innerHTML=v;
   console.log("updateDim() done");
 }
 
@@ -194,7 +194,8 @@ function updateMap(Ilat,Ilong) {
           position: uluru,
           map: map
         });
-      }
+    setMapData();      
+}
 
 // Google Maps functions
 function setMapData() {

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-name="James"
-year=1980
-long=-52.732711
-lat=47.571306
+name="Robert"
+year=1981
+long=-60.732711
+lat=34.571306
 height=101
 width=143
 volume=10832
