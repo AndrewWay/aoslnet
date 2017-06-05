@@ -31,7 +31,7 @@ router.get('/icebergpcd/:year/:bname',function(req,res){
    }));
 });
 
-router.get('icebergpic/:year/:name'function(req,res) {
+/*router.get('icebergpic/:year/:name'function(req,res) {
   
-});
+});*/
 module.exports = router;
