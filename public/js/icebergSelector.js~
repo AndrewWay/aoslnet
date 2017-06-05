@@ -182,7 +182,6 @@ function displayWind(jsonDataReceived){
 }
 
 //Google map
-
 function updateMap(Ilat,Ilong) {
         mapInitialized=true;
         var uluru = {lat: Ilat, lng: Ilong};
@@ -210,7 +209,7 @@ function setMapData() {
         }
     centerLat/=jsonIcberg.vehiclePath.length;
     centerLng/=jsonIcberg.vehiclePath.length;
-
+    
     
     //Init Map
   var map = new google.maps.Map(document.getElementById('map'), {

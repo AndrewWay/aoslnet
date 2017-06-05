@@ -143,7 +143,7 @@ function initMap() {
     zoom: 8
   });
 }*/
-
+//test
 function updateMesh(xarr,yarr,zarr){
 console.log('updateMesh() starting');
 var data=[
