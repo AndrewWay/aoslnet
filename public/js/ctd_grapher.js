@@ -1,10 +1,7 @@
 //Parameters
-time_max=20;
-time_min=0;
-t=0;
-time_increment=1;
-table_limit=time_max
-
+time_range=100;
+table_limit=time_range;//Change this (must be guaranteed to be integer)
+vMargin=0.1;//10%
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
 
@@ -16,6 +13,8 @@ google.charts.setOnLoadCallback(setupChart);
 // instantiates the pie chart, passes in the data and
 // draws it.
 function setupChart() {
+  time_min=0;
+time_max=100;
     //initialize chart data
     cond_data = new google.visualization.DataTable();
     temp_data = new google.visualization.DataTable();
@@ -127,10 +126,48 @@ function setupChart() {
    chart3.draw(depth_data, depth_options);
 }
 
-function redraw(c,t,d){
-  
+function redraw(C,T,D,time){
+    new_cond=[time,C];
+    new_temp=[time,T];
+    new_depth=[time,D];
+
+ 
+    if ( cond_data.getNumberOfRows() > table_limit ){
+        //This condition assumes all tables are of equal length
+        cond_data.removeRow(0);
+        temp_data.removeRow(0);
+        depth_data.removeRow(0);    
+    }
+    if ( time >= time_max ){
+        time_max = time;
+        time_min = time_max-time_range;
+        cond_options.hAxis.viewWindow.max = time_max;
+        cond_options.hAxis.viewWindow.min = time_min;
+        temp_options.hAxis.viewWindow.max = time_max;
+        temp_options.hAxis.viewWindow.min = time_min;
+        depth_options.hAxis.viewWindow.max = time_max;
+        depth_options.hAxis.viewWindow.min = time_min;
+    }
+    
+    cond_options.vAxis.viewWindow.max=(1+vMargin)*cond_data.getColumnRange(1).max;
+    cond_options.vAxis.viewWindow.min=(1-vMargin)*cond_data.getColumnRange(1).min;
+
+    temp_options.vAxis.viewWindow.max=(1+vMargin)*temp_data.getColumnRange(1).max;
+    temp_options.vAxis.viewWindow.min=(1-vMargin)*temp_data.getColumnRange(1).min;
+
+    depth_options.vAxis.viewWindow.max=(1+vMargin)*depth_data.getColumnRange(1).max;
+    depth_options.vAxis.viewWindow.min=(1-vMargin)*depth_data.getColumnRange(1).min;
+   
+    cond_data.addRow(new_cond);
+    temp_data.addRow(new_temp);
+    depth_data.addRow(new_depth);
+
+    chart1.draw(cond_data,cond_options);
+    chart2.draw(temp_data,temp_options);
+    chart3.draw(depth_data,depth_options);
 }
-setInterval(function(){
+
+/*setInterval(function(){
 //To update charts with actual data, replace the following with... recieved data from AJAX function?  
     new_cond=[t,0.5+Math.random()*0.1];
     new_temp=[t,10+Math.random()*2];
@@ -164,4 +201,4 @@ setInterval(function(){
 
     t=t+time_increment;
 
-},1000*time_increment);
+},1000*time_increment);*/

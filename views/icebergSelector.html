@@ -43,11 +43,13 @@
     <select id="selectYear" onchange="changeYear()"></select>
     Select the ID/name of the iceberg:
     <select id="selectIceberg"></select>
-    <button type="button" onclick="changeIceberg()">Render</button>
+    <button type="button" onclick="changeIceberg()">Load</button>
 	Download data:
 	<button type="button" onclick="download()">Download</button>
   Playback trial:
-	<button type="button" onclick="playback()">Start</button>
+	<button type="button" id="playbtn" onclick="play()">Play</button>
+  <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+  <button type="button" id="stopbtn" onclick="stop()">Stop</button>
   </div>
 	
 	<div id="site_content">		
@@ -67,15 +69,15 @@
             <table align="center" style="width:100%">
               <tr>
                 <td>Height (m) : </td>
-                <td  id="icebergHeight">?</td>
+                <td  id="icebergHeight">-</td>
               </tr>
               <tr>
                 <td>Width (m) : </td>
-                <td  id="icebergWidth">?</td>
+                <td  id="icebergWidth">-</td>
               </tr>
               <tr>
                 <td>Volume (cubic m) : </td>
-                <td   id="icebergVolume">?</td>
+                <td   id="icebergVolume">-</td>
               </tr>
             </table>
           </div>
@@ -89,18 +91,23 @@
               </tr>
               <tr>
                 <td>Min</td>
-                <td  id="minSpeedWind">?</td>
-                <td  id="minDirWind">?</td>
+                <td  id="minSpeedWind">-</td>
+                <td  id="minDirWind">-</td>
               </tr>
               <tr>
                 <td>Average</td>
-                <td  id="aveSpeedWind">?</td>
-                <td  id="aveDirWind">?</td>
+                <td  id="aveSpeedWind">-</td>
+                <td  id="aveDirWind">-</td>
               </tr>
               <tr>
                 <td>Max</td>
-                <td   id="maxSpeedWind">?</td>
-                <td   id="maxDirWind">?</td>
+                <td   id="maxSpeedWind">-</td>
+                <td   id="maxDirWind">-</td>
+              </tr>
+              <tr>
+                <td>Current</td>
+                <td   id="curSpeedWind">-</td>
+                <td   id="curDirWind">-</td>
               </tr>
             </table>
           </div>

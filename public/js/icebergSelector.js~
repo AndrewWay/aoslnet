@@ -7,6 +7,21 @@ var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
 time_index=0;
+disp_size=20;
+delay_factor=1;
+playid=0;
+cond=[];
+press=[];
+sal=[];
+svel=[];
+temp=[];
+pics=[];
+depth=[];
+lat=[];
+long=[];
+time=[];
+windDir=[];
+windSpd=[];
 
     /*if ( ! Detector.webgl ) 
         Detector.addGetWebGLMessage();
@@ -15,6 +30,8 @@ time_index=0;
 */
 
 $(document).ready(function() { 
+    document.getElementById("pausebtn").disabled=true;
+    document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
     var yearList = getList('/bergs/icebergyearlist');
     updateOptions('selectYear',yearList);
@@ -22,7 +39,7 @@ $(document).ready(function() {
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    updateMap(0,0);
+   // updateMap(0,0);
 });
 
 function getList(url){
@@ -80,7 +97,7 @@ function changeIceberg(){
     console.log("longitude: "+longitude);
     console.log("latitude: "+latitude);
     console.log(typeof longitude);    
-    console.log("test "+measData[0].Data[0].Picture);
+
     if(typeof longitude === 'number'){
       if(!(longitude>=-180 && longitude <= 180)){
         console.log("longitude invalid: out of range.");
@@ -101,12 +118,11 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-    
-
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
     //updateMap(latitude,longitude);
     distributeData(measData[0].Data);
+    displayWind(windSpd,windDir);
     console.log('changeIceberg() finished');
 }
 function distributeData(dat){
@@ -135,15 +151,42 @@ function distributeData(dat){
         depth[i]=dat[i].depth;        
         lat[i]=dat[i].latI0;        
         long[i]=dat[i].longI0;        
-        time[i]=dat[i].timestamp;        
-        windDir[i]=dat[i].longI0;        
-        windSpd[i]=dat[i].timestamp;            
+      //  time[i]=dat[i].adcp.timestamps;//Change this? 
+        windDir[i]=dat[i].windDir;        
+        windSpd[i]=dat[i].windSpd;            
     }
     console.log('distributeData() finished');
 }
 
-function playback(){
-    
+function play(){      
+    document.getElementById("pausebtn").disabled=false;
+    document.getElementById("stopbtn").disabled=false;
+    document.getElementById("playbtn").disabled=true;
+    playid=setInterval(function(){
+        var c = cond[time_index];
+        var t = temp[time_index];
+        var d = depth[time_index];
+        var ti = time_index;//time[time_index];//Json objects have bad timestamp data
+        redraw(c,t,d,ti);
+        var ws=windSpd[time_index];
+        var wd=windDir[time_index];        
+        updateWind(ws,wd);
+        time_index++;
+    },1000*delay_factor);
+}
+
+function pause(){
+  clearInterval(playid);
+  document.getElementById("pausebtn").disabled=true;
+  document.getElementById("playbtn").disabled=false;
+}
+function stop(){
+  clearInterval(playid);
+  time_index=0;
+  setupChart();
+  document.getElementById("stopbtn").disabled=true;
+  document.getElementById("pausebtn").disabled=true;
+  document.getElementById("playbtn").disabled=false;
 }
 function updateDim(h,w,v){
   console.log("updateDim() running");
@@ -208,16 +251,54 @@ function displayDimensions(jsonDataReceived){
     document.getElementById("icebergVolume").innerHTML = jsonDataReceived.Dimensions.VolumeTotal;
 }
 
+function updateWind(wD,wS){
+    if(typeof wD === 'number'){
+       document.getElementById("curSpeedWind").innerHTML = wD; 
+    }
+    else{
+      document.getElementById("curSpeedWind").innerHTML = wD; 
+    }
+    if(typeof wS === 'number'){
+       document.getElementById("curDirWind").innerHTML = "-";   
+    }
+    else{
+      document.getElementById("curDirWind").innerHTML = "-"; 
+    }
+}
 
-function displayWind(jsonDataReceived){
+function displayWind(wd,ws){
+    console.log("displaying wind");
+    var sAve=0;    
+    var sMin=Math.min.apply(Math,ws);
+    var sMax=Math.max.apply(Math,ws);
+    var div=1;
+    for(i=0;i<ws.length;i++){
+        if(typeof ws[i] === 'number'){
+          sAve+=parseFloat(ws[i]);            
+          div++;        
+        }
+    }    
+    sAve=sAve/div;
 
-    document.getElementById("minSpeedWind").innerHTML = jsonDataReceived.Winds.True.Speed.Min;
-    document.getElementById("aveSpeedWind").innerHTML = jsonDataReceived.Winds.True.Speed.Average;
-    document.getElementById("maxSpeedWind").innerHTML = jsonDataReceived.Winds.True.Speed.Max;
+    var dAve=0;
+    var dMin=Math.min.apply(Math,wd);
+    var dMax=Math.max.apply(Math,wd);
+    var div=1;
+    for(i=0;i<wd.length;i++){
+         if(typeof ws[i] === 'number'){
+          dAve+=parseFloat(wd[i]);           
+          div++;        
+        }
+    }    
+    dAve=dAve/div;
 
-    document.getElementById("minDirWind").innerHTML = jsonDataReceived.Winds.True.Heading.Min;
-    document.getElementById("aveDirWind").innerHTML = jsonDataReceived.Winds.True.Heading.Average;
-    document.getElementById("maxDirWind").innerHTML = jsonDataReceived.Winds.True.Heading.Max;
+    document.getElementById("minSpeedWind").innerHTML = sMin;
+    document.getElementById("aveSpeedWind").innerHTML = sAve;
+    document.getElementById("maxSpeedWind").innerHTML = sMax;
+
+    document.getElementById("minDirWind").innerHTML = dMin;
+    document.getElementById("aveDirWind").innerHTML = dAve;
+    document.getElementById("maxDirWind").innerHTML = dMax;
 }
 
 //Google map
