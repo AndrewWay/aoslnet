@@ -127,6 +127,9 @@ function setupChart() {
    chart3.draw(depth_data, depth_options);
 }
 
+function redraw(c,t,d){
+  
+}
 setInterval(function(){
 //To update charts with actual data, replace the following with... recieved data from AJAX function?  
     new_cond=[t,0.5+Math.random()*0.1];

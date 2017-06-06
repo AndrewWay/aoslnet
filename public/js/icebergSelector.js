@@ -6,6 +6,7 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+time_index=0;
 
     /*if ( ! Detector.webgl ) 
         Detector.addGetWebGLMessage();
@@ -23,6 +24,7 @@ $(document).ready(function() {
     updateMesh([],[],[]);//Render 3DMesh with no data
     updateMap(0,0);
 });
+
 function getList(url){
     console.log('requesting list from '+url);
     var request = new XMLHttpRequest();
@@ -31,7 +33,6 @@ function getList(url){
     var response = JSON.parse(request.responseText);
     console.log('database returned: '+request.responseText);
     console.log('function completing. Returning list');
-
     return response;
 }
 
@@ -57,26 +58,29 @@ function changeYear(){
     updateOptions('selectIceberg',bergList);  
     console.log('changeYear() finished');
 }
+
 function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
-    var bergdata = getIJSON(yearSelected,bergSelected);
-    
-    var xdata=bergdata[0].x;
-    var ydata=bergdata[0].y;
-    var zdata=bergdata[0].z;
-    var height=bergdata[0].height;
-    var width=bergdata[0].width;
-    var volume=bergdata[0].volume;
-    var longitude=bergdata[0].longitude;
-    var latitude=bergdata[0].latitude;
+    var pcd = getJSON('/bergs/icebergpcd/'+yearSelected+'/'+bergSelected);
+    var measData = getJSON('/bergs/icebergmeas/'+yearSelected+'/'+bergSelected);    
+
+    var xdata=pcd[0].x;
+    var ydata=pcd[0].y;
+    var zdata=pcd[0].z;
+    var height=pcd[0].height;
+    var width=pcd[0].width;
+    var volume=pcd[0].volume;
+    var longitude=pcd[0].longitude;
+    var latitude=pcd[0].latitude;
     console.log("height: "+height);
     console.log("width: "+width);
     console.log("volume: "+volume);
     console.log("longitude: "+longitude);
     console.log("latitude: "+latitude);
     console.log(typeof longitude);    
+    console.log("test "+measData[0].Data[0].Picture);
     if(typeof longitude === 'number'){
       if(!(longitude>=-180 && longitude <= 180)){
         console.log("longitude invalid: out of range.");
@@ -87,7 +91,7 @@ function changeIceberg(){
       console.log("longitude invalid: not of type 'number'")
       longitude=0;    
     }
-    if(typeof latitude ==='number'){
+    if(typeof latitude === 'number'){
       if(!(latitude>=-90 && latitude <= 90)){
         console.log("latitude invalid: out of range.");
         latitude=0;
@@ -101,10 +105,48 @@ function changeIceberg(){
 
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    updateMap(latitude,longitude);
+    //updateMap(latitude,longitude);
+    distributeData(measData[0].Data);
     console.log('changeIceberg() finished');
 }
+function distributeData(dat){
+    console.log('distributeData() start');
+    setSize = dat.length;
+    console.log("Measurement data set size: "+setSize);
+    cond=new Array(setSize);
+    press=new Array(setSize);
+    sal=new Array(setSize);
+    svel=new Array(setSize);
+    temp=new Array(setSize);
+    pics=new Array(setSize);
+    depth=new Array(setSize);
+    lat=new Array(setSize);
+    long=new Array(setSize);
+    time=new Array(setSize);
+    windDir=new Array(setSize);
+    windSpd=new Array(setSize);
+    for(i=0;i<setSize;i++){
+        cond[i]=dat[i].CTD.conductivity;        
+        press[i]=dat[i].CTD.pressure;        
+        sal[i]=dat[i].CTD.salinity;        
+        svel[i]=dat[i].CTD.soundVelocity;        
+        temp[i]=dat[i].CTD.temperature;        
+        pics[i]=dat[i].Picture;        
+        depth[i]=dat[i].depth;        
+        lat[i]=dat[i].latI0;        
+        long[i]=dat[i].longI0;        
+        time[i]=dat[i].timestamp;        
+        windDir[i]=dat[i].longI0;        
+        windSpd[i]=dat[i].timestamp;            
+    }
+    console.log('distributeData() finished');
+}
 
+function playback(){
+    setInterval(function(){
+        
+    },1000*time_increment);
+}
 function updateDim(h,w,v){
   console.log("updateDim() running");
   console.log("h: "+h+"w: "+w+"v: "+v);
@@ -123,19 +165,18 @@ function updateGallery(){
   var bergSelected = document.getElementById("selectIceberg").value;
 }
 
-function getIJSON(year,name){
-    console.log('getPCD() starting');
-    var url='/bergs/icebergpcd/'+year+'/'+name;
-    console.log('requesting PCD from:' + url);
+function getJSON(url){
+    console.log('getJSON() starting');
+    console.log('requesting data from:' + url);
     var request = new XMLHttpRequest();
     request.open("GET",url,false);
     request.send(null);
-    var response = JSON.parse(request.responseText);
     console.log('database returned: '+request.responseText);
-    console.log('getPCD() finished');
-
+    var response = JSON.parse(request.responseText);
+    console.log('getJSON() finished');
     return response;
 }
+
 /*var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -183,16 +224,16 @@ function displayWind(jsonDataReceived){
 
 //Google map
 function updateMap(Ilat,Ilong) {
-        mapInitialized=true;
-        var uluru = {lat: Ilat, lng: Ilong};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
-          center: uluru
-        });
-        var marker = new google.maps.Marker({
-          position: uluru,
-          map: map
-        });
+    mapInitialized=true;
+    var uluru = {lat: Ilat, lng: Ilong};
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: uluru
+    });
+    var marker = new google.maps.Marker({
+        position: uluru,
+        map: map
+    });
     setMapData();      
 }
 

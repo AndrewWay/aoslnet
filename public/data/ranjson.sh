@@ -1,13 +1,13 @@
 #!/bin/bash
 
-name="joey"
-year=1980
+name="Joey"
+year=2011
 long=-52.732711
 lat=47.571306
 height=101
 width=143
 volume=10832
-pcdsize=50
+pcdsize=200
 
 output="$name.json"
 xdat='"x" : ['

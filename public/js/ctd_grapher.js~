@@ -139,7 +139,7 @@ setInterval(function(){
         temp_data.removeRow(0);
         depth_data.removeRow(0);    
     }
-    if ( t >= time_max ){
+    if ( t > time_max ){
         time_max = time_max + time_increment;
         time_min = time_min + time_increment;
         cond_options.hAxis.viewWindow.max = time_max;

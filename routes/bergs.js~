@@ -31,4 +31,18 @@ router.get('/icebergpcd/:year/:bname',function(req,res){
    }));
 });
 
+router.get('/icebergmeas/:year/:bname',function(req,res){
+   var db = req.db;
+   var collection = db.get('bergmeas');
+   var bergyear = req.params.year;
+   var bergname = req.params.bname;
+   collection.find({'icebergID' : bergname,'year' : bergyear },(function(err, docs){
+       res.json(docs);            
+       db.close();
+   }));
+});
+
+/*router.get('icebergpic/:year/:name'function(req,res) {
+  
+});*/
 module.exports = router;
