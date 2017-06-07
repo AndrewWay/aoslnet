@@ -22,6 +22,8 @@ long=[];
 time=[];
 windDir=[];
 windSpd=[];
+sdlat=[];
+sdlong=[];
 
     /*if ( ! Detector.webgl ) 
         Detector.addGetWebGLMessage();
@@ -39,7 +41,7 @@ $(document).ready(function() {
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-   // updateMap(0,0);
+    updateMap(0,0);
 });
 
 function getList(url){
@@ -120,9 +122,10 @@ function changeIceberg(){
     }
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    //updateMap(latitude,longitude);
     distributeData(measData[0].Data);
     displayWind(windSpd,windDir);
+    updateMap(latitude,longitude);
+    setMapData();  
     console.log('changeIceberg() finished');
 }
 function distributeData(dat){
@@ -138,6 +141,8 @@ function distributeData(dat){
     depth=new Array(setSize);
     lat=new Array(setSize);
     long=new Array(setSize);
+    sdlat=new Array(setSize);
+    sdlong=new Array(setSize);
     time=new Array(setSize);
     windDir=new Array(setSize);
     windSpd=new Array(setSize);
@@ -151,9 +156,11 @@ function distributeData(dat){
         depth[i]=dat[i].depth;        
         lat[i]=dat[i].latI0;        
         long[i]=dat[i].longI0;        
-      //  time[i]=dat[i].adcp.timestamps;//Change this? 
+      //  time[i]=dat[i].adcp.timestamps;//Fix this. JSON objects have bad timestamp data
         windDir[i]=dat[i].windDir;        
-        windSpd[i]=dat[i].windSpd;            
+        windSpd[i]=dat[i].windSpd;      
+        sdlat[i]=dat[i].latitudeSD;
+        sdlong[i]=dat[i].longitudeSD;      
     }
     console.log('distributeData() finished');
 }
@@ -180,6 +187,7 @@ function pause(){
   document.getElementById("pausebtn").disabled=true;
   document.getElementById("playbtn").disabled=false;
 }
+
 function stop(){
   clearInterval(playid);
   time_index=0;
@@ -312,35 +320,64 @@ function updateMap(Ilat,Ilong) {
     var marker = new google.maps.Marker({
         position: uluru,
         map: map
-    });
-    setMapData();      
+    });    
 }
 
 // Google Maps functions
 function setMapData() {
-    
-    //calculate average lat long
+    console.log("Setting Map data");
+    //Calculate average latitude and longitude
     var centerLat = 0;
     var centerLng = 0;
+    
+    var sdlg=sdlong;
+    var sdlt=sdlat;    
+    var ibplg=long;
+    var ibplt=lat;
 
-    for (var i = 0; i < jsonIcberg.vehiclePath.length; i++) {
-        centerLat+=jsonIcberg.vehiclePath[i].lat;
-        centerLng+=jsonIcberg.vehiclePath[i].lng;
+    var sdpath = [];
+    var ibperim = [];
+
+    //Create SeaDragon path list
+    var i=0;
+    while(i < sdlt.length && i < sdlg.length){
+      if(typeof sdlt[i] === 'number'){
+        if(typeof sdlg[i] === 'number'){
+          sdpath.push({"lat" : sdlt[i],"lng" : sdlg[i]});        
+          i++;
         }
-    centerLat/=jsonIcberg.vehiclePath.length;
-    centerLng/=jsonIcberg.vehiclePath.length;
+      }
+    }
     
-    
+    i=0;
+    //Create iceberg path list
+    while(i < ibplg.length && i < ibplt.length){
+      if(typeof ibplt[i] === 'number'){
+        if(typeof ibplg[i] === 'number'){
+          ibperim.push({"lat" : ibplt[i],"lng" : ibplg[i]});
+          //Calculate average perimeter longitude and latitude for map centering          
+          centerLng+=ibplg[i];
+          centerLat+=ibplt[i];  
+          i++;  
+        }
+      }    
+    }
+ 
+    if (i > 0){
+      centerLng/=i;
+      centerLat/=i;
+    }
+
     //Init Map
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 13,
+    zoom: 15,
     center: {lat: centerLat, lng: centerLng},
     mapTypeId: google.maps.MapTypeId.TERRAIN //HYBRID
   });
     
     //Set SeaDragon Path
   var seaDragonPath = new google.maps.Polyline({
-    path: jsonIcberg.vehiclePath ,
+    path: sdpath,
     geodesic: true,
     strokeColor: '#ede900',
     strokeOpacity: 1.0,
@@ -350,7 +387,7 @@ function setMapData() {
 
     // Set Iceberg Perimeter
   var IcebergPerimeter = new google.maps.Polygon({
-    paths: jsonIcberg.IcebergPerimeter,
+    paths: ibperim,
     strokeColor: '#040060',
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -359,8 +396,8 @@ function setMapData() {
   });
   IcebergPerimeter.setMap(map);   
     
-    //Iceberg Drift Path
-    if(jsonIcberg.IcebergDrift.length>0){
+    //Iceberg Drift Path TODO
+    /*if(jsonIcberg.IcebergDrift.length>0){
       var IcebergDriftPath = new google.maps.Polyline({
         path: jsonIcberg.IcebergDrift,
         geodesic: true,
@@ -369,7 +406,6 @@ function setMapData() {
         strokeWeight: 2
       });
       IcebergDriftPath.setMap(map);         
-    }
-    
-    
+    }*/
+    console.log("Map data set");
 }

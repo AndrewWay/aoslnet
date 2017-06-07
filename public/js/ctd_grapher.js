@@ -166,39 +166,3 @@ function redraw(C,T,D,time){
     chart2.draw(temp_data,temp_options);
     chart3.draw(depth_data,depth_options);
 }
-
-/*setInterval(function(){
-//To update charts with actual data, replace the following with... recieved data from AJAX function?  
-    new_cond=[t,0.5+Math.random()*0.1];
-    new_temp=[t,10+Math.random()*2];
-    new_depth=[t,6+Math.random()*2];
-
-    if ( cond_data.getNumberOfRows() >= table_limit ){
-        //This condition assumes all tables are of equal length
-        cond_data.removeRow(0);
-        temp_data.removeRow(0);
-        depth_data.removeRow(0);    
-    }
-    if ( t > time_max ){
-        time_max = time_max + time_increment;
-        time_min = time_min + time_increment;
-        cond_options.hAxis.viewWindow.max = time_max;
-        cond_options.hAxis.viewWindow.min = time_min;
-        temp_options.hAxis.viewWindow.max = time_max;
-        temp_options.hAxis.viewWindow.min = time_min;
-        depth_options.hAxis.viewWindow.max = time_max;
-        depth_options.hAxis.viewWindow.min = time_min;
-    }
-
-
-    cond_data.addRow(new_cond);
-    temp_data.addRow(new_temp);
-    depth_data.addRow(new_depth);
-    
-    chart1.draw(cond_data,cond_options);
-    chart2.draw(temp_data,temp_options);
-    chart3.draw(depth_data,depth_options);
-
-    t=t+time_increment;
-
-},1000*time_increment);*/
