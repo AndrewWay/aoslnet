@@ -1,7 +1,5 @@
 //Parameters
 time_range=100;
-time_min=0;
-time_max=100;
 table_limit=time_range;//Change this (must be guaranteed to be integer)
 vMargin=0.1;//10%
 // Load the Visualization API and the corechart package.
