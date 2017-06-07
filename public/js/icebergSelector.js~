@@ -130,7 +130,7 @@ function changeIceberg(){
 }
 function distributeData(dat){
     console.log('distributeData() start');
-    setSize = dat.length;
+    setSize = 10;//dat.length;
     console.log("Measurement data set size: "+setSize);
     cond=new Array(setSize);
     press=new Array(setSize);
@@ -181,6 +181,9 @@ function play(){
         updateWind(ws,wd);
         updatePic(p);
         time_index++;
+        if(time_index>cond.length){
+          clearInterval(playid);
+        }
     },1000*delay_factor);
 }
 
