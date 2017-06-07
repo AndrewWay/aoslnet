@@ -69,15 +69,15 @@
             <table align="center" style="width:100%">
               <tr>
                 <td>Height (m) : </td>
-                <td  id="icebergHeight">?</td>
+                <td  id="icebergHeight">-</td>
               </tr>
               <tr>
                 <td>Width (m) : </td>
-                <td  id="icebergWidth">?</td>
+                <td  id="icebergWidth">-</td>
               </tr>
               <tr>
                 <td>Volume (cubic m) : </td>
-                <td   id="icebergVolume">?</td>
+                <td   id="icebergVolume">-</td>
               </tr>
             </table>
           </div>

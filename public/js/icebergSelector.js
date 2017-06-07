@@ -8,7 +8,7 @@ var jsonIcberg ={};
 var mapInitialized=false;
 time_index=0;
 disp_size=20;
-delay_factor=1;
+delay_factor=0.5;
 playid=0;
 cond=[];
 press=[];
@@ -177,8 +177,13 @@ function play(){
         redraw(c,t,d,ti);
         var ws=windSpd[time_index];
         var wd=windDir[time_index];        
+        var p = pics[time_index];        
         updateWind(ws,wd);
+        updatePic(p);
         time_index++;
+        if(time_index>cond.length){
+          clearInterval(playid);
+        }
     },1000*delay_factor);
 }
 
@@ -196,6 +201,16 @@ function stop(){
   document.getElementById("pausebtn").disabled=true;
   document.getElementById("playbtn").disabled=false;
 }
+
+function updatePic(p){
+  console.log('updatePic()');
+  console.log('pic: '+p);
+  if(!(p === 'null')){
+    
+    document.getElementById("icedisp").src="../images/2017/Joey/"+p;
+  }
+}
+
 function updateDim(h,w,v){
   console.log("updateDim() running");
   console.log("h: "+h+"w: "+w+"v: "+v);

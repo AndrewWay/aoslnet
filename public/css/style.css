@@ -297,7 +297,11 @@ IcebergSelector
   padding-top: 20px;
   padding-bottom: 20px;}
 
-  
+#icedisp{
+  max-height:50%;
+  max-width: 25%;
+  float: center;
+}
 footer
 { width: 940px;
   height: 50px;
