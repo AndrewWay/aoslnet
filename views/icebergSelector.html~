@@ -55,6 +55,9 @@
 	<div id="site_content">		
     <div class="left_sidebar_container">       
 	    <div class="sidebar">
+        <div id="iceberg_images">
+          <img id="icedisp" src="images/notfound.png"></img>
+        </div>
         <div class="data_plot" id="curve_chart1"></div>
         <div class="data_plot" id="curve_chart2"></div>
         <div class="data_plot" id="curve_chart3"></div>
@@ -130,12 +133,7 @@
     </div><!--close sidebar_container-->	
 	  <div id="content">
     <div id="iceberg_holder">
-      <div id="iceberg_plot" class="content_item"></div>
-      <div id="iceberg_gallery">
-        <h4 align="center">Gallery</h4>
-        <div id="iceberg_images">
-        </div>
-      </div><!--TODO: Load in images dynamically from server-->
+      <div id="iceberg_plot"></div>
     </div>
     </div>   
   </div><!--close site_content-->  	
