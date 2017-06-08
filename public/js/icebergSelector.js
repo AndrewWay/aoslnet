@@ -169,6 +169,7 @@ function play(){
     document.getElementById("pausebtn").disabled=false;
     document.getElementById("stopbtn").disabled=false;
     document.getElementById("playbtn").disabled=true;
+
     playid=setInterval(function(){
         var c = cond[time_index];
         var t = temp[time_index];
@@ -339,7 +340,9 @@ function updateMap(Ilat,Ilong) {
         map: map
     });    
 }
-
+function displayPosition(i,m){
+  
+}
 // Google Maps functions
 function setMapData() {
     console.log("Setting Map data");
