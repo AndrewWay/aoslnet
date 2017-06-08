@@ -130,7 +130,7 @@ function changeIceberg(){
 }
 function distributeData(dat){
     console.log('distributeData() start');
-    setSize = 10;//dat.length;
+    setSize = dat.length;
     console.log("Measurement data set size: "+setSize);
     cond=new Array(setSize);
     press=new Array(setSize);
@@ -206,8 +206,10 @@ function updatePic(p){
   console.log('updatePic()');
   console.log('pic: '+p);
   if(!(p === 'null')){
-    
     document.getElementById("icedisp").src="../images/2017/Joey/"+p;
+    $("#icedisp").on("error", function(){
+        $(this).attr('src', './images/nopicture.png');
+    });
   }
 }
 
