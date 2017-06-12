@@ -12,6 +12,7 @@ var db = monk('localhost:27017/aosldb');
 
 var index = require('./routes/index');
 var bergs = require('./routes/bergs');
+var path = require('path');
 
 var app = express();
 
@@ -19,13 +20,13 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.get('/bergs/:year/:bname/:file', function (req, res) {
+//app.get('/bergs/:year/:bname/:file', function (req, res) {
 //not working
-  var bergyear = req.params.year;
-  var bergname = req.params.bname;
-  var imgfile = req.params.file;
-  res.sendFile('public/images/'+bergyear+'/'+bergname+'/'+imgfile);
-});
+//  var bergyear = req.params.year;
+//  var bergname = req.params.bname;
+//  var imgfile = req.params.file;
+//  res.sendFile('public/images/'+bergyear+'/'+bergname+'/'+imgfile);
+//});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
