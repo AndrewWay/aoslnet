@@ -21,11 +21,14 @@ router.get('/icebergnamelist/:year',function(req,res){
 });
 
 router.get('/icebergpcd/:year/:bname',function(req,res){
+   console.log('HELLO');
    var db = req.db;
    var collection = db.get('bergpcd');
    var bergyear = req.params.year;
    var bergname = req.params.bname;
-   collection.find({ $and: [{'icebergID' : bergname},{'year' : bergyear }]},(function(err, docs){
+   bergyear=String(bergyear);
+   console.log('[bergs] bergyear: '+bergyear+' bergname: '+bergname);
+   collection.find({icebergID : "Joey"},(function(err, docs){
        res.json(docs);            
        db.close();
    }));
@@ -36,7 +39,7 @@ router.get('/icebergmeas/:year/:bname',function(req,res){
    var collection = db.get('bergmeas');
    var bergyear = req.params.year;
    var bergname = req.params.bname;
-   collection.find({'icebergID' : bergname},{'year' : bergyear },(function(err, docs){
+   collection.find({icebergID : "Joey"},(function(err, docs){
        res.json(docs);            
        db.close();
    }));
