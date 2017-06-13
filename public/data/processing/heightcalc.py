@@ -1,5 +1,6 @@
 #Determine the max height of a cloud of PCD
 import numpy
+import sys
 
 input=sys.argv[1]
 file=open(input)

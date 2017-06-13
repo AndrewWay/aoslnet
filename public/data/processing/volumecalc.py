@@ -1,6 +1,7 @@
 import numpy
+import sys
 
-input="june1_full.txt"
+input=sys.argv[1]
 file=open(input)
 i=0
 
