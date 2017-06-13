@@ -9,31 +9,40 @@ main(){
   pcd_input=$1 #pcd data must be space delimited in this version!
   meas_input=$2
   echo "Determining icebergID..."
-  #Get the name for the iceberg to be uploaded
+
+  #Create the ID for the iceberg to be uploaded
   index=`cat idindex.txt | head -n 1 | awk '{print $1}'`
   id=`cat names.txt | head -n $index | tail -n 1`
   echo $((index + 1)) > idindex.txt
-
   echo "icebergID=$id"
-  #Remove existing key pair for icebergID
- # jq 'del(.icebergID)' <<< `cat $pcd_input` > $pcd_input
-  #Add the new key pair  for icebergID
- # jq '. + {"icebergID" : "$id"}' <<< `cat $pcd_input` > $pcd_input
-  #Construct spatial JSON
- # spatialjson $id $pcd_input
-  spatial_data=$id.json
-  meas_data=$meas_input  
-  #Upload the JSONs to the database
-  echo "Uploading file{$spatial_data} --> collection{$spatial_coll} in database{$db}"
-  mongoimport -d $db -c $spatial_coll --file $spatial_data --jsonArray
-  echo "Uploading file{$meas_data} --> collection{$meas_coll} in database{$db}"
-  stat=$?  
   
+  #Create file names for output JSONs
+  meas_file="$id"_meas.json
+  pcd_file="$id"_pcd.json
+
+  #Remove existing key pair for icebergID
+  jq 'del(.icebergID)' <<< `cat $meas_input` > $meas_file
+    
+  #Add the new key pair  for icebergID
+  tmp=`cat $meas_file`
+  identry='. + {"icebergID" : "'$id'"}'
+  jq "$identry" <<< `cat $meas_file` > $meas_file
+
+
+  #Construct spatial JSON
+
+  spatialjson $id $pcd_input
+
+  #Upload the JSONs to the database
+  echo "Uploading file{$pcd_file} --> collection{$spatial_coll} in database{$db}"
+  mongoimport -d $db -c $spatial_coll --file $pcd_file
+  stat=$?  
   #Check if import of spatial data was successful. If so, upload measurement json  
   if [ $stat -eq 0 ];then  
-    mongoimport -d $db -c $meas_coll --file $meas_data --jsonArray
+    echo "Uploading file{$meas_file} --> collection{$meas_coll} in database{$db}"
+    mongoimport -d $db -c $meas_coll --file $meas_file
   else
-    echo "fatal error: $success. Upload cancelled"
+    echo "fatal error: $stat. Upload cancelled"
   fi
 }
 
@@ -48,16 +57,16 @@ spatialjson(){
 
   #Calculate max height
   echo "Calculating maximum height"
-  height=`python heightcalc.py $pcd_input`
+  height=0 #`python heightcalc.py $pcd_input`
   #calculate max width
   echo "Calculating maximum width"  
-  width=`python widthcalc.py $pcd_input`
+  width=0 #`python widthcalc.py $pcd_input`
   #Calculate volume
   echo "Calculating volume"
-  volume=`python volumecalc.py $pcd_input`
+  volume=0 #`python volumecalc.py $pcd_input`
 
   length=`cat $pcd_input | wc -l`
-  output="$id.json"
+  output="$id"_pcd.json
 
   xdat='"x" : ['
   ydat='"y" : ['
