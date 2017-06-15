@@ -1,3 +1,79 @@
+function(){
+  var yaw=0.5,pitch=0.5, width=325, height=300, drag=false;
+  
+    var gata = [de()];
+    function de(){
+        var output=[]
+            ,xlength = 10
+            ,ylength = 10
+            ,zlength = 10;
+        for(var x = 0; x < xlength; x++){
+            for(var y = 0; y < ylength; y++){
+                for(var z = 0; z < zlength; z++){
+                    output.push({
+                        x: x
+                        ,xl: xlength
+                        ,y: y
+                        ,yl: ylength
+                        ,z: z * 20
+                        ,zl: zlength
+                        ,dx:0
+                        ,dy:0
+                        ,h: (y / 10 / (z + 1)) + 2
+                        ,theta: 1.5 * z / (y + 1)
+                        ,psi: 3.14 * y / (x + 1)
+                        ,depth:0
+                    });
+                }
+            }
+        }
+        return output;
+    }
+    
+  var svg = d3.select("#ADCPprof")
+          .append('svg')
+            .attr('height',height)
+            .attr('width',width)
+            .attr("transform", "translate(0," + 150 + ")");
+
+
+  var md = svg.selectAll("g")
+      .data(gata)
+      .enter().append("g")
+    .surface3D(width,height-300)
+      .surfaceHeight(function(d){ 
+        return d;
+      }).surfaceColor(function(d){
+        var c=d3.hsl((d+100), 0.6, 0.5).rgb();
+        return "rgb("+parseInt(c.r)+","+parseInt(c.g)+","+parseInt(c.b)+")";
+      });
+
+    svg.on("mousedown",function(){
+        drag = [d3.mouse(this), yaw, pitch];
+    })
+    .on("mouseup", function(){
+        drag = false;
+    }).on("mousemove", function(){
+        if(drag){
+            var mouse = d3.mouse(this);
+            yaw = drag[1] - (mouse[0] - drag[0][0]) / 50;
+            pitch = drag[2] + (mouse[1] - drag[0][1]) / 50;
+            pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+            var pd = Math.round(pitch * 100) / 100
+                ,yd = Math.round(yaw * 100) / 100;
+            document.getElementById("yawval").value = yd;
+            document.getElementById("pitchval").value = pd;
+            md.turntable(yaw, pitch);
+        }
+    });
+    
+    function recalc(){
+        var y =  document.getElementById("yawval").value
+            ,p =  document.getElementById("pitchval").value;
+        if(y && p) md.turntable(y, p);
+    }
+}
+
 (function(){
 var Surface = function(node){
     var heightFunction
