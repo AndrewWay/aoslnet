@@ -11,6 +11,24 @@ function manualsetTime(){
 }
 function set_time(t){
   time_index=t;
+  var date = new Date(time[time_index]*1000);
+  // Hours part from the timestamp
+  var hours = date.getHours();
+  // Minutes part from the timestamp
+  var minutes = "0" + date.getMinutes();
+  // Seconds part from the timestamp
+  var seconds = "0" + date.getSeconds();
+
+  // Will display time in 10:30:23 format
+  var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+  var ap=airPress[get_time()];
+  var at=airTemp[get_time()];
+  var sv=svel[get_time()];
+
+  document.getElementById("clock").innerHTML=formattedTime;
+  document.getElementById("soundvel").innerHTML=sv;
+  document.getElementById("airpress").innerHTML=ap;
+  document.getElementById("airtemp").innerHTML=at;  
 }
 function get_time(){
   return parseInt(time_index); 
