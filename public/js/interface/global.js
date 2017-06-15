@@ -7,9 +7,7 @@ var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
 tmax=0;
-time_index=0;
 disp_size=20;
-delay_factor=0.5;
 playid=0;
 cond=[];
 press=[];
@@ -150,5 +148,6 @@ function distributeData(dat){
         sdlat[i]=dat[i].latitudeSD;
         sdlong[i]=dat[i].longitudeSD;      
     }
+    setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
 }

@@ -1,12 +1,19 @@
 //Trial playback
+time_index=0;
+delay_factor=0.5;
 
 function manualsetTime(){
   var newTime=document.getElementById("timebar").value;
   console.log("Manually setting time to: "+newTime);
-  time_index=newTime;
+  set_time(newTime);  
+  redraw(get_time());
+  updatePic(pics[get_time()]);
 }
-function setTime(t){
+function set_time(t){
   time_index=t;
+}
+function get_time(){
+  return parseInt(time_index); 
 }
 function setTimeBar(t){
   document.getElementById("timebar").value=t;
@@ -21,22 +28,20 @@ function play(){
     document.getElementById("pausebtn").disabled=false;
     document.getElementById("stopbtn").disabled=false;
     document.getElementById("playbtn").disabled=true;
-
+    document.getElementById("timebar").disabled=true;
     playid=setInterval(function(){
-        var c = cond[time_index];
-        var t = temp[time_index];
-        var d = depth[time_index];
-        var ti = time_index;//time[time_index];//Json objects have bad timestamp data
-        redraw(c,t,d,ti);
-        var ws=windSpd[time_index];
-        var wd=windDir[time_index];        
-        var p = pics[time_index];        
+        var ti = get_time();//time[time_index];//Json objects have bad timestamp data
+        console.log('time: '+ti);        
+        redraw(ti);
+        var ws=windSpd[ti];
+        var wd=windDir[ti];        
+        var p = pics[ti];        
         updateWind(ws,wd);
         updatePic(p);
-        setTimeBar(time_index);        
+        setTimeBar(ti);        
         
-        setTime(time_index+1);
-        if(time_index>cond.length){
+        set_time(ti+1);
+        if(ti>time.length){
           clearInterval(playid);
         }
     },1000*delay_factor);
@@ -44,15 +49,17 @@ function play(){
 
 function pause(){
   clearInterval(playid);
+  document.getElementById("timebar").disabled=false;
   document.getElementById("pausebtn").disabled=true;
   document.getElementById("playbtn").disabled=false;
 }
 
 function stop(){
   clearInterval(playid);
-  setTime(0);
-  setTimeBar(time_index);
+  set_time(0);
+  setTimeBar(get_time());
   setupChart();
+  document.getElementById("timebar").disabled=false;
   document.getElementById("stopbtn").disabled=true;
   document.getElementById("pausebtn").disabled=true;
   document.getElementById("playbtn").disabled=false;

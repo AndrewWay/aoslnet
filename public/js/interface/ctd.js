@@ -1,34 +1,31 @@
 //Parameters
-time_range=100;
-table_limit=time_range;//Change this (must be guaranteed to be integer)
+time_range=10;//TODO: Allow user to set this value in the interface
 vMargin=0.1;//10%
 // Load the Visualization API and the corechart package.
+
 google.charts.load('current', {'packages':['corechart']});
 
 
 // Set a callback to run when the Google Visualization API is loaded.
 google.charts.setOnLoadCallback(setupChart);
 
-// Callback that creates and populates a data table,
-// instantiates the pie chart, passes in the data and
-// draws it.
 function setupChart() {
-  time_min=0;
-time_max=100;
-    //initialize chart data
-    cond_data = new google.visualization.DataTable();
+    time_min=0;
+    time_max=time_min+time_range;
+    sal_data = new google.visualization.DataTable();
     temp_data = new google.visualization.DataTable();
     depth_data = new google.visualization.DataTable();
+
     //add data columns in chart data tables
-    cond_data.addColumn('number','t');
-    cond_data.addColumn('number','C');
+    sal_data.addColumn('number','t');
+    sal_data.addColumn('number','S');
     temp_data.addColumn('number','t');
     temp_data.addColumn('number','T');
     depth_data.addColumn('number','t');
     depth_data.addColumn('number','D');
     // Set chart options
-    cond_options = {
-        title: 'Conductivity',
+    sal_options = {
+        title: 'Salinity',
         curveType: 'function',
         legend: { position: 'bottom' },
       
@@ -121,48 +118,55 @@ time_max=100;
     chart2 = new google.visualization.LineChart(document.getElementById('curve_chart2'));
     chart3 = new google.visualization.LineChart(document.getElementById('curve_chart3'));
 
-   chart1.draw(cond_data, cond_options);
+   chart1.draw(sal_data, sal_options);
    chart2.draw(temp_data, temp_options);
    chart3.draw(depth_data, depth_options);
 }
 
-function redraw(C,T,D,time){
-    new_cond=[time,C];
-    new_temp=[time,T];
-    new_depth=[time,D];
+function setplotData(S,T,D,t){
+  for(i=0;i<sal_data.getNumberOfRows();i++){
+    sal_data.removeRow(0);
+  }
+  for(i=0;i<temp_data.getNumberOfRows();i++){
+    temp_data.removeRow(0);
+  }
+  for(i=0;i<depth_data.getNumberOfRows();i++){
+    depth_data.removeRow(0);
+  }
 
- 
-    if ( cond_data.getNumberOfRows() > table_limit ){
-        //This condition assumes all tables are of equal length
-        cond_data.removeRow(0);
-        temp_data.removeRow(0);
-        depth_data.removeRow(0);    
-    }
-    if ( time >= time_max ){
-        time_max = time;
-        time_min = time_max-time_range;
-        cond_options.hAxis.viewWindow.max = time_max;
-        cond_options.hAxis.viewWindow.min = time_min;
-        temp_options.hAxis.viewWindow.max = time_max;
-        temp_options.hAxis.viewWindow.min = time_min;
-        depth_options.hAxis.viewWindow.max = time_max;
-        depth_options.hAxis.viewWindow.min = time_min;
-    }
+  for(i=0;i<S.length;i++){
+    sal_data.addRow([i,S[i]]);
+  }
+  for(i=0;i<T.length;i++){
+    temp_data.addRow([i,T[i]]);
+  }
+  for(i=0;i<D.length;i++){
+    depth_data.addRow([i,D[i]]);
+  }
+}
+
+function redraw(time){
+  
+    time_max = time;
+    time_min = time_max-time_range;
+    sal_options.hAxis.viewWindow.max = time_max;
+    sal_options.hAxis.viewWindow.min = time_min;
+    temp_options.hAxis.viewWindow.max = time_max;
+    temp_options.hAxis.viewWindow.min = time_min;
+    depth_options.hAxis.viewWindow.max = time_max;
+    depth_options.hAxis.viewWindow.min = time_min;
     
-    cond_options.vAxis.viewWindow.max=(1+vMargin)*cond_data.getColumnRange(1).max;
-    cond_options.vAxis.viewWindow.min=(1-vMargin)*cond_data.getColumnRange(1).min;
+    //TODO: Set the vAxis size based on the currently viewed data
+    sal_options.vAxis.viewWindow.max=(1+vMargin)*sal_data.getColumnRange(1).max;
+    sal_options.vAxis.viewWindow.min=(1-vMargin)*sal_data.getColumnRange(1).min;
 
     temp_options.vAxis.viewWindow.max=(1+vMargin)*temp_data.getColumnRange(1).max;
     temp_options.vAxis.viewWindow.min=(1-vMargin)*temp_data.getColumnRange(1).min;
 
     depth_options.vAxis.viewWindow.max=(1+vMargin)*depth_data.getColumnRange(1).max;
     depth_options.vAxis.viewWindow.min=(1-vMargin)*depth_data.getColumnRange(1).min;
-   
-    cond_data.addRow(new_cond);
-    temp_data.addRow(new_temp);
-    depth_data.addRow(new_depth);
 
-    chart1.draw(cond_data,cond_options);
+    chart1.draw(sal_data,sal_options);
     chart2.draw(temp_data,temp_options);
     chart3.draw(depth_data,depth_options);
 }
