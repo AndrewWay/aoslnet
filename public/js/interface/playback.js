@@ -1,14 +1,19 @@
 //Trial playback
 time_index=0;
+delay_factor=0.5;
 
 function manualsetTime(){
   var newTime=document.getElementById("timebar").value;
   console.log("Manually setting time to: "+newTime);
-  setime(newTime);  
-  redraw(time_index);
+  set_time(newTime);  
+  redraw(get_time());
+  updatePic(pics[get_time()]);
 }
-function setime(t){
+function set_time(t){
   time_index=t;
+}
+function get_time(){
+  return parseInt(time_index); 
 }
 function setTimeBar(t){
   document.getElementById("timebar").value=t;
@@ -25,10 +30,8 @@ function play(){
     document.getElementById("playbtn").disabled=true;
     document.getElementById("timebar").disabled=true;
     playid=setInterval(function(){
-        var c = cond[time_index];
-        var t = temp[time_index];
-        var d = depth[time_index];
-        var ti = time_index;//time[time_index];//Json objects have bad timestamp data
+        var ti = get_time();//time[time_index];//Json objects have bad timestamp data
+        console.log('time: '+ti);        
         redraw(ti);
         var ws=windSpd[ti];
         var wd=windDir[ti];        
@@ -37,8 +40,8 @@ function play(){
         updatePic(p);
         setTimeBar(ti);        
         
-        setime(ti+1);
-        if(time_index>cond.length){
+        set_time(ti+1);
+        if(ti>time.length){
           clearInterval(playid);
         }
     },1000*delay_factor);
@@ -53,8 +56,8 @@ function pause(){
 
 function stop(){
   clearInterval(playid);
-  setTime(0);
-  setTimeBar(time_index);
+  set_time(0);
+  setTimeBar(get_time());
   setupChart();
   document.getElementById("timebar").disabled=false;
   document.getElementById("stopbtn").disabled=true;

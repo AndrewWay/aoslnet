@@ -8,7 +8,6 @@ var jsonIcberg ={};
 var mapInitialized=false;
 tmax=0;
 disp_size=20;
-delay_factor=0.5;
 playid=0;
 cond=[];
 press=[];
