@@ -6,6 +6,7 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+tmax=0;
 time_index=0;
 disp_size=20;
 delay_factor=0.5;
@@ -126,7 +127,14 @@ function changeIceberg(){
     displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
+    updateTimeMax(measData[0].Data.length);
     console.log('changeIceberg() finished');
+}
+
+function updateTimeMax(t){
+  tmax=t;
+  console.log("Setting timebar max to "+tmax);
+  document.getElementById("timebar").max=tmax;
 }
 function distributeData(dat){
     console.log('distributeData() start');
@@ -165,6 +173,18 @@ function distributeData(dat){
     console.log('distributeData() finished');
 }
 
+function download(){
+    console.log("download() starting");
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergSelected = document.getElementById("selectIceberg").value;
+    var url='download/'+yearSelected+'/'+bergSelected+'/'+yearSelected+'_'+bergSelected+'.gz';
+    var request = new XMLHttpRequest();
+    request.open("GET",url,false);
+    request.send(null);
+    console.log('database returned: '+request.responseText);
+    console.log('download() finished');
+}
+
 function play(){      
     document.getElementById("pausebtn").disabled=false;
     document.getElementById("stopbtn").disabled=false;
@@ -181,13 +201,25 @@ function play(){
         var p = pics[time_index];        
         updateWind(ws,wd);
         updatePic(p);
-        time_index++;
+        setTimeBar(time_index);        
+        
+        setTime(time_index+1);
         if(time_index>cond.length){
           clearInterval(playid);
         }
     },1000*delay_factor);
 }
-
+function manualsetTime(){
+  var newTime=document.getElementById("timebar").value;
+  console.log("Manually setting time to: "+newTime);
+  time_index=newTime;
+}
+function setTime(t){
+  time_index=t;
+}
+function setTimeBar(t){
+  document.getElementById("timebar").value=t;
+}
 function pause(){
   clearInterval(playid);
   document.getElementById("pausebtn").disabled=true;
@@ -196,7 +228,8 @@ function pause(){
 
 function stop(){
   clearInterval(playid);
-  time_index=0;
+  setTime(0);
+  setTimeBar(time_index);
   setupChart();
   document.getElementById("stopbtn").disabled=true;
   document.getElementById("pausebtn").disabled=true;

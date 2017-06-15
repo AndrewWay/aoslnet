@@ -46,10 +46,13 @@
     <button type="button" onclick="changeIceberg()">Load</button>
 	Download data:
 	<button type="button" onclick="download()">Download</button>
-  Playback trial:
-	<button type="button" id="playbtn" onclick="play()">Play</button>
-  <button type="button" id="pausebtn" onclick="pause()">Pause</button>
-  <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+  </div>
+  <div>
+    Playback trial:
+	  <button type="button" id="playbtn" onclick="play()">Play</button>
+    <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+    <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+    <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/>  
   </div>
 	
 	<div id="site_content">		

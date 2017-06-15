@@ -20,13 +20,14 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//app.get('/bergs/:year/:bname/:file', function (req, res) {
+app.get('download/:year/:bname/:file', function (req, res) {
 //not working
-//  var bergyear = req.params.year;
-//  var bergname = req.params.bname;
-//  var imgfile = req.params.file;
-//  res.sendFile('public/images/'+bergyear+'/'+bergname+'/'+imgfile);
-//});
+    console.log("Download request");
+  var bergyear = req.params.year;
+  var bergname = req.params.bname;
+  var file = req.params.file;
+  res.download('public/'+bergyear+'/'+bergname+'/'+file);
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -61,6 +62,18 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.use(function(err, req, res, next){
+  // special-case 404s,
+  // remember you could
+  // render a 404 template here
+  if (404 == err.status) {
+    res.statusCode = 404;
+    res.send('Cant find that file, sorry!');
+  } else {
+    next(err);
+  }
 });
 
 module.exports = app;
