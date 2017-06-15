@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var homepage = 'index'
-var icebergSelector='icebergSelector'
+var icebergSelector='interface'
 var ibMap='icebergMap'
 
 /* GET home page. */
