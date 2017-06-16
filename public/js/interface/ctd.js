@@ -144,6 +144,15 @@ function setplotData(S,T,D,t){
   for(i=0;i<D.length;i++){
     depth_data.addRow([i,D[i]]);
   }
+    //TODO: Set the vAxis size based on the currently viewed data
+    sal_options.vAxis.viewWindow.max=(1+vMargin)*sal_data.getColumnRange(1).max;
+    sal_options.vAxis.viewWindow.min=(1-vMargin)*sal_data.getColumnRange(1).min;
+
+    temp_options.vAxis.viewWindow.max=(1+vMargin)*temp_data.getColumnRange(1).max;
+    temp_options.vAxis.viewWindow.min=(1-vMargin)*temp_data.getColumnRange(1).min;
+
+    depth_options.vAxis.viewWindow.max=(1+vMargin)*depth_data.getColumnRange(1).max;
+    depth_options.vAxis.viewWindow.min=(1-vMargin)*depth_data.getColumnRange(1).min;
 }
 
 function redraw(time){
@@ -157,15 +166,6 @@ function redraw(time){
     depth_options.hAxis.viewWindow.max = time_max;
     depth_options.hAxis.viewWindow.min = time_min;
     
-    //TODO: Set the vAxis size based on the currently viewed data
-    sal_options.vAxis.viewWindow.max=(1+vMargin)*sal_data.getColumnRange(1).max;
-    sal_options.vAxis.viewWindow.min=(1-vMargin)*sal_data.getColumnRange(1).min;
-
-    temp_options.vAxis.viewWindow.max=(1+vMargin)*temp_data.getColumnRange(1).max;
-    temp_options.vAxis.viewWindow.min=(1-vMargin)*temp_data.getColumnRange(1).min;
-
-    depth_options.vAxis.viewWindow.max=(1+vMargin)*depth_data.getColumnRange(1).max;
-    depth_options.vAxis.viewWindow.min=(1-vMargin)*depth_data.getColumnRange(1).min;
 
     chart1.draw(sal_data,sal_options);
     chart2.draw(temp_data,temp_options);

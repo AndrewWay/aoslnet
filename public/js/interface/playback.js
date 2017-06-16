@@ -76,7 +76,7 @@ function stop(){
   clearInterval(playid);
   set_time(0);
   setTimeBar(get_time());
-  setupChart();
+  redraw(get_time());
   document.getElementById("timebar").disabled=false;
   document.getElementById("stopbtn").disabled=true;
   document.getElementById("pausebtn").disabled=true;
