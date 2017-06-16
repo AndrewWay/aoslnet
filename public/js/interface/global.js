@@ -42,7 +42,7 @@ $(document).ready(function() {
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    setMapData();
+   // setMapData();
     updateMap(0,0);
 });
 
