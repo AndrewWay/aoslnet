@@ -9,20 +9,28 @@ var mapInitialized=false;
 tmax=0;
 disp_size=20;
 playid=0;
-cond=[];
-press=[];
-sal=[];
-svel=[];
-temp=[];
 pics=[];
-depth=[];
-lat=[];
-long=[];
 time=[];
-windDir=[];
-windSpd=[];
+
+//Geometric Data
 sdlat=[];
 sdlong=[];
+lat=[];
+long=[];
+
+//Oceanic data
+sal=[];
+svel=[];
+depth=[];
+temp=[];
+cond=[];
+press=[];
+
+//Atmospheric Data
+windDir=[];
+windSpd=[];
+airTemp=[];
+airPress=[];
 
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
@@ -132,6 +140,8 @@ function distributeData(dat){
     time=new Array(setSize);
     windDir=new Array(setSize);
     windSpd=new Array(setSize);
+    airPress=new Array(setSize);
+    airTemp=new Array(setSize);
     for(i=0;i<setSize;i++){
         cond[i]=dat[i].CTD.conductivity;        
         press[i]=dat[i].CTD.pressure;        
@@ -142,11 +152,13 @@ function distributeData(dat){
         depth[i]=dat[i].depth;        
         lat[i]=dat[i].latI0;        
         long[i]=dat[i].longI0;        
-      //  time[i]=dat[i].adcp.timestamps;//Fix this. JSON objects have bad timestamp data
+        time[i]=dat[i].timestamp;//Fix this. JSON objects have bad timestamp data
         windDir[i]=dat[i].windDir;        
         windSpd[i]=dat[i].windSpd;      
         sdlat[i]=dat[i].latitudeSD;
-        sdlong[i]=dat[i].longitudeSD;      
+        sdlong[i]=dat[i].longitudeSD;  
+        airPress[i]=dat[i].pressure;
+        airTemp[i]=dat[i].temperature;    
     }
     setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
