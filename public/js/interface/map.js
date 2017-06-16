@@ -14,16 +14,40 @@ function updateMap(Ilat,Ilong) {
         map: map
     });    
 }
-function displaySDPosition(i,m){
-    var seaDragonPath = new google.maps.Polyline({
-    path: sdpath,
+function updateSDPosition(t){
+  removeSDPosition();
+  displaySDPosition(t);
+}
+function displaySDPosition(t){
+    var centerlat=sdlat[t];
+    var centerlng=sdlong[t];
+    var x=0.00001;
+    var y=0.00001;
+    var tri=[];
+    var ax=centerlng;
+    var ay=centerlat+y;
+    var bx=centerlng-x;
+    var by=centerlat-y;
+    var cx=centerlng+x;
+    var cy=centerlat-y;
+
+    tri.push({"lat" : ay,"lng" : ax});
+    tri.push({"lat" : by,"lng" : bx});
+    tri.push({"lat" : cy,"lng" : cx});
+
+    sdpos = new google.maps.Polyline({
+    path: tri,
     geodesic: true,
-    strokeColor: '#ede900',
+    strokeColor: '#ff0000',
     strokeOpacity: 1.0,
     strokeWeight: 2
   });
-  seaDragonPath.setMap(map);
+  sdpos.setMap(map);
 }
+function removeSDPosition(){
+  sdpos.setMap(null);
+}
+
 // Google Maps functions
 function setMapData() {
     console.log("Setting Map data");
@@ -96,7 +120,9 @@ function setMapData() {
     fillOpacity: 0.35
   });
   IcebergPerimeter.setMap(map);   
-    
+ 
+  //Set seadgragon position
+  displaySDPosition(0);
     //Iceberg Drift Path TODO
     /*if(jsonIcberg.IcebergDrift.length>0){
       var IcebergDriftPath = new google.maps.Polyline({
