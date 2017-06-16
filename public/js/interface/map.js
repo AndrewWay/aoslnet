@@ -14,8 +14,15 @@ function updateMap(Ilat,Ilong) {
         map: map
     });    
 }
-function displayPosition(i,m){
-  
+function displaySDPosition(i,m){
+    var seaDragonPath = new google.maps.Polyline({
+    path: sdpath,
+    geodesic: true,
+    strokeColor: '#ede900',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+  seaDragonPath.setMap(map);
 }
 // Google Maps functions
 function setMapData() {
@@ -63,7 +70,7 @@ function setMapData() {
     }
 
     //Init Map
-  var map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
     center: {lat: centerLat, lng: centerLng},
     mapTypeId: google.maps.MapTypeId.TERRAIN //HYBRID
