@@ -21,8 +21,8 @@ function updateSDPosition(t){
 function displaySDPosition(t){
     var centerlat=sdlat[t];
     var centerlng=sdlong[t];
-    var x=0.00001;
-    var y=0.00001;
+    var x=0.0001;
+    var y=0.0001;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
@@ -30,17 +30,21 @@ function displaySDPosition(t){
     var by=centerlat-y;
     var cx=centerlng+x;
     var cy=centerlat-y;
+    var dx=centerlng;
+    var dy=centerlat+y;
 
     tri.push({"lat" : ay,"lng" : ax});
     tri.push({"lat" : by,"lng" : bx});
     tri.push({"lat" : cy,"lng" : cx});
+    tri.push({"lat" : dy,"lng" : dx});
 
     sdpos = new google.maps.Polyline({
     path: tri,
     geodesic: true,
     strokeColor: '#ff0000',
     strokeOpacity: 1.0,
-    strokeWeight: 2
+    strokeWeight: 2,
+    zIndex: 3
   });
   sdpos.setMap(map);
 }
@@ -106,7 +110,7 @@ function setMapData() {
     geodesic: true,
     strokeColor: '#ede900',
     strokeOpacity: 1.0,
-    strokeWeight: 2
+    strokeWeight: 2,
   });
   seaDragonPath.setMap(map);
 
@@ -117,7 +121,8 @@ function setMapData() {
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: '#3634d1',
-    fillOpacity: 0.35
+    fillOpacity: 0.35,
+   // zIndex : 1
   });
   IcebergPerimeter.setMap(map);   
  
