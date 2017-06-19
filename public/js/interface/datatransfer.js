@@ -1,6 +1,7 @@
 //Browser-server data transfer
 
 function download(){
+    //Not working
     console.log("download() starting");
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;

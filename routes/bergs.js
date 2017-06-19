@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/icebergyearlist',function(req,res){
+    console.log("Gathering iceberg year list");
     var db = req.db;
     var collection = db.get('bergpcd');
     collection.distinct("year",(function(err, docs){
@@ -21,25 +22,25 @@ router.get('/icebergnamelist/:year',function(req,res){
 });
 
 router.get('/icebergpcd/:year/:bname',function(req,res){
-   console.log('HELLO');
    var db = req.db;
    var collection = db.get('bergpcd');
    var bergyear = req.params.year;
    var bergname = req.params.bname;
    bergyear=String(bergyear);
    console.log('[bergs] bergyear: '+bergyear+' bergname: '+bergname);
-   collection.find({icebergID : "Joey"},(function(err, docs){
+   collection.find({icebergID : bergname},(function(err, docs){
        res.json(docs);            
        db.close();
    }));
 });
 
-router.get('/icebergmeas/:year/:bname',function(req,res){
+router.get('/icebergmeas/year/:year/id/:bname',function(req,res){
    var db = req.db;
    var collection = db.get('bergmeas');
    var bergyear = req.params.year;
    var bergname = req.params.bname;
-   collection.find({icebergID : "Joey"},(function(err, docs){
+   console.log("Requested bergname: "+bergname);
+   collection.find({icebergID : bergname},(function(err, docs){
        res.json(docs);            
        db.close();
    }));
