@@ -81,10 +81,6 @@
           <td id="airtemp"></td>
         </tr>
       </table>
-      <div><h3>Clock:</h3><p id="clock">--:--:--</p></div>
-      <div><h3>Sound Velocity:</h3><p id="soundvel">--</p></div>
-      <div><h3>Air Pressure:</h3><p id="airpress">--</p></div>
-      <div><h3>Air Temperature:</h3><p id="airtemp">--</p></div>
     </div>
     <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/>  
   </div>

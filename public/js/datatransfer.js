@@ -1,7 +1,6 @@
 //Browser-server data transfer
 
 function download(){
-    //Not working
     console.log("download() starting");
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
@@ -20,7 +19,7 @@ function getList(url){
     request.send(null);
     var response = JSON.parse(request.responseText);
     console.log('database returned: '+request.responseText);
-    console.log('function completing. Returning list');
+    console.log('Returning list');
     return response;
 }
 

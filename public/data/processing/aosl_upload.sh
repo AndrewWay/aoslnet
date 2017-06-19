@@ -3,7 +3,7 @@
 db=aosldb
 spatial_coll=bergpcd
 meas_coll=bergmeas
-
+year=2017
 
 main(){
   pcd_input=$1 #pcd data must be space delimited in this version!
@@ -46,6 +46,10 @@ main(){
   fi
 }
 
+coords(){
+
+}
+
 spatialjson(){
   #function assumes data is space-separated
   #TODO: Have function analyze data to determine how to delimit  
@@ -53,7 +57,6 @@ spatialjson(){
   echo "Constructing spatial JSON"
   id=$1
   pcd_input=$2
-  year=2017
 
   #Calculate max height
   echo "Calculating maximum height"
