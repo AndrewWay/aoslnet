@@ -58,7 +58,10 @@ function addMarker(i){
     title: nm
   });
   //Add a new google marker to the map
-  marker.setMap(map);  
+  marker.setMap(map); 
+  google.maps.event.addListener(marker, 'click', function() {
+    document.getElementById('desc').innerHTML=nm+' was clicked';
+  });
   console.log("marker added for: "+nm);
 }
 

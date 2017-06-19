@@ -47,8 +47,8 @@ function distributeData(dat){
 
 function addMarker(i){
   console.log("adding marker...");
-  var lt = lat[i];
-  var lg = long[i];  
+  var lt = parseFloat(lat[i]);
+  var lg = parseFloat(long[i]);  
   var nm = id[i];
   var coord = {lat: lt,lng: lg};
   //Create a new google marker
@@ -58,7 +58,10 @@ function addMarker(i){
     title: nm
   });
   //Add a new google marker to the map
-  marker.setMap(map);  
+  marker.setMap(map); 
+  google.maps.event.addListener(marker, 'click', function() {
+    document.getElementById('overview').innerHTML=nm+' was clicked';
+  });
   console.log("marker added for: "+nm);
 }
 

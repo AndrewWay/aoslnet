@@ -1,7 +1,7 @@
 #!/bin/bash
 
 input=Iceberg_Sightings_all_data.csv # change this
-lim=500
+lim=10
 badh=-1
 
 widthindex=$badh
