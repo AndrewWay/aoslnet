@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/icebergyearlist',function(req,res){
+router.get('/years',function(req,res){
     console.log("Gathering iceberg year list");
     var db = req.db;
     var collection = db.get('bergmeas');
@@ -11,7 +11,7 @@ router.get('/icebergyearlist',function(req,res){
      }));
 });
 
-router.get('/icebergnamelist/:year',function(req,res){
+router.get('/names/:year',function(req,res){
     var db = req.db;
     var bergyear=req.params.year;
     var collection = db.get('bergmeas');
@@ -21,7 +21,7 @@ router.get('/icebergnamelist/:year',function(req,res){
      }));
 });
 
-router.get('/icebergpcd/:year/:bname',function(req,res){
+router.get('/data/:year/:bname',function(req,res){
    var db = req.db;
    var collection = db.get('bergpcd');
    var bergyear = req.params.year;
