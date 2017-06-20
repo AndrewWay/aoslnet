@@ -2,51 +2,39 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/years',function(req,res){
-    console.log("Gathering iceberg year list");
     var db = req.db;
-    var collection = db.get('bergmeas');
+    var collection = db.get('data');
     collection.distinct("year",(function(err, docs){
+            res.json(docs);      
+            db.close();
+     }));
+});
+
+router.get('/names/:yr',function(req,res){
+    var db = req.db;    
+    var collection = db.get('data');
+    var yr=req.params.yr;
+    collection.distinct("name",{year : yr},(function(err, docs){
             res.json(docs);            
             db.close();
      }));
 });
 
-router.get('/names/:year',function(req,res){
-    var db = req.db;
-    var bergyear=req.params.year;
-    var collection = db.get('bergmeas');
-    collection.distinct("icebergID",{year : bergyear},(function(err, docs){
-            res.json(docs);            
-            db.close();
-     }));
-});
-
-router.get('/icebergpcd/:year/:bname',function(req,res){
+router.get('/data/:yr/:nm',function(req,res){
    var db = req.db;
-   var collection = db.get('bergpcd');
-   var bergyear = req.params.year;
-   var bergname = req.params.bname;
-   bergyear=String(bergyear);
-   console.log('[bergs] bergyear: '+bergyear+' bergname: '+bergname);
-   collection.find({icebergID : bergname},(function(err, docs){
+   var collection = db.get('data');
+   var yr = req.params.yr;
+   var nm = req.params.nm;
+   yr=String(yr);
+   collection.find({name : nm,year : yr},(function(err, docs){
        res.json(docs);            
        db.close();
    }));
 });
 
-router.get('/icebergmeas/year/:year/id/:bname',function(req,res){
-   var db = req.db;
-   var collection = db.get('bergmeas');
-   var bergyear = req.params.year;
-   var bergname = req.params.bname;
-   console.log("Requested bergname: "+bergname);
-   collection.find({icebergID : bergname},(function(err, docs){
-       res.json(docs);            
-       db.close();
-   }));
-});
 
-/*router.get('icebergpic/:year/:name'function(req,res) {
+/*router.get('icebergpic/:year/:name',function(req,res) {
   
 });*/
+
 module.exports = router;

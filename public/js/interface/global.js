@@ -6,6 +6,12 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+
+//strings for making data requests
+namesReq='bergs/names';
+yearsReq='bergs/years';
+dataReq='bergs/data';
+
 tmax=0;
 disp_size=20;
 playid=0;
@@ -33,14 +39,13 @@ airTemp=[];
 airPress=[];
 
 $(document).ready(function() { 
-
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    var yearList = getList('/bergs/icebergyearlist');
+    var yearList = getList(yearReq);
     updateOptions('selectYear',yearList);
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
     preselect();
@@ -80,7 +85,7 @@ function updateOptions(optionID,options){
 function changeYear(){
     console.log('changeYear() starting');
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);  
     console.log('changeYear() finished');
 }
@@ -89,17 +94,16 @@ function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
-    var pcd = getJSON('/bergs/icebergpcd/'+yearSelected+'/'+bergSelected);
-    var measData = getJSON('/bergs/icebergmeas/'+yearSelected+'/'+bergSelected);    
+    var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
 
-    var xdata=pcd[0].x;
-    var ydata=pcd[0].y;
-    var zdata=pcd[0].z;
-    var height=pcd[0].height;
-    var width=pcd[0].width;
-    var volume=pcd[0].volume;
-    var longitude=pcd[0].longitude;
-    var latitude=pcd[0].latitude;
+    var xdata=json[0].x;
+    var ydata=json[0].y;
+    var zdata=json[0].z;
+    var height=json[0].height;
+    var width=json[0].width;
+    var volume=json[0].volume;
+    var longitude=json[0].longitude;
+    var latitude=json[0].latitude;
     console.log("height: "+height);
     console.log("width: "+width);
     console.log("volume: "+volume);
@@ -129,11 +133,11 @@ function changeIceberg(){
     }
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    distributeData(measData[0].Data);
+    distributeData(json.Data);
     displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
-    updateTimeMax(measData[0].Data.length);
+    updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
 
