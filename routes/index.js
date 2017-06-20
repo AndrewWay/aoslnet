@@ -13,7 +13,7 @@ router.get('/icebergMap', function(req, res, next) {
   res.render(ibMap, { title: 'Express' });
 });
 
-router.get('/icebergs', function(req, res, next) {
+router.get('/interface', function(req, res, next) {
   res.render(icebergSelector, { title: 'Express' });
 });
 

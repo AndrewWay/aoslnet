@@ -33,6 +33,7 @@ airTemp=[];
 airPress=[];
 
 $(document).ready(function() { 
+
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
@@ -42,10 +43,25 @@ $(document).ready(function() {
     var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    setMapData();
+    preselect();
+   // setMapData();
     updateMap(0,0);
 });
 
+function preselect(){
+  var selectedID=sessionStorage.getItem('selectedID');
+  var selectedYear=sessionStorage.getItem('selectedYear');
+  //TODO: Clean up the if condition. Too long. 
+  //TODO: Use regular expressions to detect valid names and years
+  if( selectedID == 'null' || selectedID == '' || selectedYear == '' || selectedYear == 'null'){
+    console.log("No pre-selected iceberg");
+  }
+  else{
+    console.log("pre-selected iceberg: "+selectedYear+" "+selectedID );
+    document.getElementById('selectYear').value=selectedYear;
+    document.getElementById('selectIceberg').value=selectedID;  
+  }
+}
 function updateOptions(optionID,options){
     var optList = document.getElementById(optionID); 
     //Remove existing options from option list    
