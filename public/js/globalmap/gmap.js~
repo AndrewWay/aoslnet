@@ -1,4 +1,5 @@
-
+selectedID="";
+selectedYear="";
 lat=[];
 long=[];
 id=[];
@@ -31,6 +32,14 @@ function setup() {
   console.log(long);
 }
 
+function view(){
+  console.log("selected: "+selectedID);
+  sessionStorage.setItem('selectedID', selectedID);
+  sessionStorage.setItem('selectedYear', selectedYear);
+  console.log("redirecting to interface");
+   window.location.href = '/interface'
+}
+
 function distributeData(dat){
   console.log("distributing data...");  
   var lt=dat[0].lat;//Im not even sure why I'm accessing the JSON like an array. 
@@ -47,9 +56,10 @@ function distributeData(dat){
 
 function addMarker(i){
   console.log("adding marker...");
-  var lt = lat[i];
-  var lg = long[i];  
+  var lt = parseFloat(lat[i]);
+  var lg = parseFloat(long[i]);  
   var nm = id[i];
+  var yr = year[i];
   var coord = {lat: lt,lng: lg};
   //Create a new google marker
   var marker = new google.maps.Marker({
@@ -58,7 +68,12 @@ function addMarker(i){
     title: nm
   });
   //Add a new google marker to the map
-  marker.setMap(map);  
+  marker.setMap(map); 
+  google.maps.event.addListener(marker, 'click', function() {
+    document.getElementById('desc').innerHTML=nm+' was clicked';
+    selectedID=nm;
+    selectedYear=yr;
+  });
   console.log("marker added for: "+nm);
 }
 

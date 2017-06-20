@@ -1,0 +1,37 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+  <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="css/gmap.css">
+  <script type="text/javascript" src="js/datatransfer.js"></script>
+  <script type="text/javascript" src="js/globalmap/gmap.js"></script>
+</head>
+
+<body>
+<div class="main">
+  <div id="menu" class="page-segment">
+    <div id="menubar">
+        <ul id="nav">
+          <li ><a href="/">Home</a></li>
+          <li class="current"><a href="/icebergMap">Iceberg Map</a></li>
+          <li><a href="/interface">Icebergs</a></li>
+          <li><a href="http://www.aosl.ca">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+  <div id="overview">
+    <h2>Iceberg Information</h2>
+    <p id="desc">Click a marker</p>  
+    <button type="button" onclick="view()">Download</button>
+  </div>
+  <div id="map" class="page-segment"></div>
+  <div id="filters" class="page-segment">FILTERS</div>
+</div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
+
+</body>
+</html>
