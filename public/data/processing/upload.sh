@@ -26,8 +26,8 @@ output=$(processYear)
 echo -e "${ICyan}Enter the path to the file containing the timestamped data ${Color_Off}"
 pcdpath="R11I01.txt"
 output=$(processPCD $pcdpath)
-
-# Calculate the width, height and volume from the point cloud data
+echo $output | less
+#Calculate the width, height and volume from the point cloud data
 
 #Specify the directory for the images 
 
@@ -96,13 +96,13 @@ processPCD(){
         header=${headarrs[$h]}
 
         if [ "$header" ==  "x" ];then
-            xindex=$h
+            xindex=$((h+1)) #HU: This might cause issues
         fi
         if [ "$header" == "y" ];then
-            yindex=$h
+            yindex=$((h+1))
         fi
         if [ "$header" == "z" ];then
-            zindex=$h
+            zindex=$((h+1))
         fi    
     done
     echo "x: $xindex y: $yindex z: $zindex" >&2
@@ -123,19 +123,20 @@ processPCD(){
     #Create the data arrays
     length=`cat $input | wc -l`
     length=$((length-1))
-    xdat='['
-    ydat='['
-    zdat='['
+    local xdat='['
+    local ydat='['
+    local zdat='['
     
     echo -e "Now processing PCD..." >&2   
     for i in `seq 2 $length`
     do
       echo -en "\rpoints processed: $i/$length " >&2
-      line=`cat $input | head -n $i | tail -n 1`
-
-      newx=`echo $line | awk '{print $xindex}'`
-      newy=`echo $line | awk '{print $yindex}'`
-      newz=`echo $line | awk '{print $zindex}'`
+      local line=`cat $input | head -n $i | tail -n 1`
+      echo $line >&2
+      #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
+      local newx=`echo $line | awk '{print $xindex}'`
+      local newy=`echo $line | awk '{print $yindex}'`
+      local newz=`echo $line | awk '{print $zindex}'`
       
       if [[ $newx == [0-9]*\.[0-9]* || $newx == -[0-9]*\.[0-9]* ]];then
         xdat=$xdat$newx,
@@ -165,7 +166,7 @@ processPCD(){
       fi
   done
 
-  line=`cat $pcd_input | head -n $length | tail -n 1`
+  line=`cat $input | head -n $length | tail -n 1`
 
   newx=`echo $line | awk '{print $1}'`
   newy=`echo $line | awk '{print $2}'`
@@ -185,6 +186,7 @@ processPCD(){
   ydat="$ydat$newy]"
   zdat="$zdat$newz]"
 
+  echo $xdat | less
   local tmp=`jq '{x : '$xdat'} + .' <<< "$output"`
   local tmp2=tmp
   tmp=`jq '{y : '$ydat'} + .' <<< "$output"`
