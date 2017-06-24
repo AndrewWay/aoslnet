@@ -1,4 +1,4 @@
-Report_Number, Iceberg_Number, X_Value, Y_Value, Z_Value
+Report_Number, Iceberg_Number, x, y, z
 11, R11I01, 16.8893, 9.887, 20
 11, R11I01, 20.8969, 2.18348, 20
 11, R11I01, 22.3852, -5.0494, 20
