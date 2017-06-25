@@ -40,9 +40,9 @@ main(){
   output=$(processPCD $pcdpath)
 
   #Calculate the width, height and volume from the point cloud data
-
-  output=$(dimensional_analysis $output)
   
+  output=$(dimensional_analysis "$output")
+ # echo $output | less
   #Specify the directory for the images 
 
   #Upload the images
@@ -56,6 +56,7 @@ heightcalc(){
   local z=$3
   local bound=0.05
   local card=${#x[@]}
+  local height=0  
   for i in `seq 0 $card`
   do
     local p1=(${x[$i]} ${y[$i]} ${z[$i]}) # grab the first point
@@ -65,15 +66,37 @@ heightcalc(){
       local vec[0]=`echo $p2[0] - $p1[0] | bc -l`
       local vec[1]=`echo $p2[1] - $p1[1] | bc -l`
       local vec[2]=`echo $p2[2] - $p1[2] | bc -l`    
+      
+      local subnorm=`echo sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} ) | bc -l`
+      local abs_subnorm=`abs $subnorm`
+      local check=`echo $abs_subnorm <= $bound | bc -l`
+      if [ $check == 1 ];then
+        local norm=`echo sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} + ${vec[2]}*${vec[2]} ) | bc -l`
+        check=`echo $norm < $height | bc -l`
+        if [ $check == 1 ];then
+          height=$norm
+        fi      
+      fi
     done
   done
-
+  echo $height >&2
 }
+
+abs(){
+  local input=$1
+  local output=$input  
+  local check=`echo $input < 0 | bc -l`
+  if [ $check == 1 ];then
+    output=`echo -1 * $input | bc -l`
+  fi
+  echo $output
+}
+
 widthcalc(){
   local x=$1
   local y=$2
   local z=$3
-
+  
 }
 volcalc(){
   local x=$1
@@ -85,30 +108,37 @@ volcalc(){
 dimensional_analysis(){
   #Preceding function for dimanalysis. Converts xyz strings into BASH recognizable arrays
   local json="$1"
-  local xlen=`echo ${json} | jq '.x | length'`
-  echo ${json} | jq '.x[0]' >&2
-  local xarr=""
-  local yarr=""
-  local zarr=""
 
-  for i in `seq 0 $xlen`
-  do
-    local iflt=`bc -l <<<$i`
-    xarr[$i]=`echo ${json} | jq -r --arg i $iflt '.x['$i']'`
-    yarr[$i]=`echo ${json} | jq -r --arg i $iflt '.y['$i']'`
-    zarr[$i]=`echo ${json} | jq -r --arg i $iflt '.z['$i']'`
-  done
+  local x=`echo ${json} | jq '.x'`
+  local y=`echo ${json} | jq '.y'`
+  local z=`echo ${json} | jq '.z'`
+  
+  local xarr=""  
+  local yarr=""  
+  local zarr=""  
+
+  x=`echo "${x//[}"`
+  x=`echo "${x//]}"`
+  IFS='\ ,' read -r -a xarr <<< $x
+
+  y=`echo "${y//[}"`
+  y=`echo "${y//]}"`
+  IFS='\ ,' read -r -a yarr <<< $y
+
+  z=`echo "${z//[}"`
+  z=`echo "${z//]}"`
+  IFS='\ ,' read -r -a zarr <<< $z
   
   height=`heightcalc $xarr $yarr $zarr`
   width=`widthcalc $xarr $yarr $zarr`
   volume=`volcalc $xarr $yarr $zarr`
   
-  local tmp=`jq '{height : '$height'} + .' <<< "$json"`
-  local tmp2=$tmp
-  local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
-  local tmp2=$tmp
-  local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
-  echo "$tmp"
+  #local tmp=`jq '{height : '$height'} + .' <<< "$json"`
+  #local tmp2=$tmp
+  #local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
+  #local tmp2=$tmp
+  #local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
+  #echo "$tmp"
 }
 
 getName(){
