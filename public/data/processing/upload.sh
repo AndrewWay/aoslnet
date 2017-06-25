@@ -40,11 +40,75 @@ main(){
   output=$(processPCD $pcdpath)
 
   #Calculate the width, height and volume from the point cloud data
-  echo $output | jq .
+
+  output=$(dimensional_analysis $output)
+  
   #Specify the directory for the images 
 
   #Upload the images
 
+}
+
+
+heightcalc(){
+  local x=$1
+  local y=$2
+  local z=$3
+  local bound=0.05
+  local card=${#x[@]}
+  for i in `seq 0 $card`
+  do
+    local p1=(${x[$i]} ${y[$i]} ${z[$i]}) # grab the first point
+    for j in `seq 0 $((card+1))`
+    do
+      local p2=(${x[$j]} ${y[$j]} ${z[$j]}) #grab the second point
+      local vec[0]=`echo $p2[0] - $p1[0] | bc -l`
+      local vec[1]=`echo $p2[1] - $p1[1] | bc -l`
+      local vec[2]=`echo $p2[2] - $p1[2] | bc -l`    
+    done
+  done
+
+}
+widthcalc(){
+  local x=$1
+  local y=$2
+  local z=$3
+
+}
+volcalc(){
+  local x=$1
+  local y=$2
+  local z=$3
+
+}
+
+dimensional_analysis(){
+  #Preceding function for dimanalysis. Converts xyz strings into BASH recognizable arrays
+  local json="$1"
+  local xlen=`echo ${json} | jq '.x | length'`
+  echo ${json} | jq '.x[0]' >&2
+  local xarr=""
+  local yarr=""
+  local zarr=""
+
+  for i in `seq 0 $xlen`
+  do
+    local iflt=`bc -l <<<$i`
+    xarr[$i]=`echo ${json} | jq -r --arg i $iflt '.x['$i']'`
+    yarr[$i]=`echo ${json} | jq -r --arg i $iflt '.y['$i']'`
+    zarr[$i]=`echo ${json} | jq -r --arg i $iflt '.z['$i']'`
+  done
+  
+  height=`heightcalc $xarr $yarr $zarr`
+  width=`widthcalc $xarr $yarr $zarr`
+  volume=`volcalc $xarr $yarr $zarr`
+  
+  local tmp=`jq '{height : '$height'} + .' <<< "$json"`
+  local tmp2=$tmp
+  local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
+  local tmp2=$tmp
+  local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
+  echo "$tmp"
 }
 
 getName(){
@@ -156,8 +220,7 @@ processPCD(){
       ydat=$ydat$newy,
       zdat=$zdat$newz,
   done
-  echo ""
-
+  echo -e "" >&2
   local line=`cat $input | head -n $i | tail -n 1`
   IFS='\ ,' read -r -a linearr <<< "$line"
   #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
