@@ -1,4 +1,16 @@
 #!/bin/bash
+
+#Two input files: PCD and TSD (Point cloud data and time-stamped data.)
+#PCD: can be comma separated, space separated, or both. 
+#TSD: JSON. You can specify the name of the array that contains the time-stamped data
+#Both: The script will check either for a consistent year to be used in the uploaded JSON.
+
+#Knowledge base
+pcd_is_csv=0
+pcd_is_json=0
+tsd_is_csv=0
+tsd_is_json=0
+
 vno=0.1
 badh=-1
 
@@ -10,28 +22,29 @@ tsdname='Data'
 output=""
 
 main(){
-echo -e "${BBlue}AOSL MongoDB Data Upload"
-echo -e "${UWhite}Version $vno"
-echo -e "${ICyan}Press enter following any of the prompts to skip appending data to the json file"
-echo ""
+  echo -e "${BBlue}AOSL MongoDB Data Upload"
+  echo -e "${UWhite}Version $vno"
+  echo -e "${ICyan}Press enter following any of the prompts to skip appending data to the json file"
+  echo ""
 
-output=$(getName)
-output='{ "name" : "'$name'" }'
+  output=$(getName)
+  output='{ "name" : "'$name'" }'
 
-echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-tsdatapath="../2017_11.json"
-output=$(processTSD $tsdatapath)
+  echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
+  tsdatapath="../2017_11.json"
+  output=$(processTSD $tsdatapath)
 
-output=$(processYear)
-echo -e "${ICyan}Enter the path to the file containing the timestamped data ${Color_Off}"
-pcdpath="R11I01.txt"
-output=$(processPCD $pcdpath)
-echo $output | less
-#Calculate the width, height and volume from the point cloud data
+  output=$(processYear)
+  echo -e "${ICyan}Enter the path to the file containing the point cloud data ${Color_Off}"
+  pcdpath="R11I01.txt"
+  output=$(processPCD $pcdpath)
 
-#Specify the directory for the images 
+  #Calculate the width, height and volume from the point cloud data
+  echo $output | jq .
+  #Specify the directory for the images 
 
-#Upload the images
+  #Upload the images
+
 }
 
 getName(){
@@ -49,6 +62,7 @@ getName(){
 
 processYear(){
   year=`echo $output | jq -r '.year'`
+  #TODO Check the PCD and TSD files for the year
   if [[ ! "$year" =~ ^[0-9]{4}$ ]];then
     echo "No year detected in output string. Please enter the year: " >&2
     read year
@@ -96,13 +110,13 @@ processPCD(){
         header=${headarrs[$h]}
 
         if [ "$header" ==  "x" ];then
-            xindex=$((h+1)) #HU: This might cause issues
+            xindex=$h
         fi
         if [ "$header" == "y" ];then
-            yindex=$((h+1))
+            yindex=$h
         fi
         if [ "$header" == "z" ];then
-            zindex=$((h+1))
+            zindex=$h
         fi    
     done
     echo "x: $xindex y: $yindex z: $zindex" >&2
@@ -132,68 +146,31 @@ processPCD(){
     do
       echo -en "\rpoints processed: $i/$length " >&2
       local line=`cat $input | head -n $i | tail -n 1`
-      echo $line >&2
+      IFS='\ ,' read -r -a linearr <<< "$line"
       #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
-      local newx=`echo $line | awk '{print $xindex}'`
-      local newy=`echo $line | awk '{print $yindex}'`
-      local newz=`echo $line | awk '{print $zindex}'`
+      local newx=${linearr[$xindex]}
+      local newy=${linearr[$yindex]}
+      local newz=${linearr[$zindex]}
       
-      if [[ $newx == [0-9]*\.[0-9]* || $newx == -[0-9]*\.[0-9]* ]];then
-        xdat=$xdat$newx,
-      elif [[ $newx == [0-9]*\.[0-9]*, || $newx == -[0-9]*\.[0-9]*, ]];then
-        xdat=$xdat$newx
-      else
-        echo -e "${Red}x array data not of type float. Exiting...${Color_Off}" >&2
-        exit 1
-      fi
-
-      if [[ $newy == [0-9]*\.[0-9]* || $newy == -[0-9]*\.[0-9]* ]];then
-        ydat=$ydat$newy,
-      elif [[ $newy == [0-9]*\.[0-9]*, || $newy == -[0-9]*\.[0-9]*, ]];then
-        ydat=$ydat$newy
-      else
-        echo -e "${Red}y array data not of type float. Exiting...${Color_Off}" >&2
-        exit 1
-      fi
-
-      if [[ $newz == [0-9]*\.[0-9]* || $newz == -[0-9]*\.[0-9]* ]];then
-        zdat=$zdat$newz,
-      elif [[ $newz == [0-9]*\.[0-9]*, || $newz == -[0-9]*\.[0-9]*, ]];then
-        zdat=$zdat$newz
-      else
-        echo -e "${Red}z array data not of type float. Exiting...${Color_Off}" >&2
-        exit 1
-      fi
+      xdat=$xdat$newx,
+      ydat=$ydat$newy,
+      zdat=$zdat$newz,
   done
+  echo ""
 
-  line=`cat $input | head -n $length | tail -n 1`
-
-  newx=`echo $line | awk '{print $1}'`
-  newy=`echo $line | awk '{print $2}'`
-  newz=`echo $line | awk '{print $3}'`
-
-  if [[ ${newx: -1} == , ]];then
-    newx=${newx%?}
-  fi
- if [[ ${newy: -1} == , ]];then
-    newy=${newy%?}
-  fi
- if [[ ${newz: -1} == , ]];then
-    newz=${newz%?}
-  fi
+  local line=`cat $input | head -n $i | tail -n 1`
+  IFS='\ ,' read -r -a linearr <<< "$line"
+  #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
+  local newx=${linearr[$xindex]}
+  local newy=${linearr[$yindex]}
+  local newz=${linearr[$zindex]}
 
   xdat="$xdat$newx]"
   ydat="$ydat$newy]"
   zdat="$zdat$newz]"
 
-  echo $xdat | less
-  local tmp=`jq '{x : '$xdat'} + .' <<< "$output"`
-  local tmp2=tmp
-  tmp=`jq '{y : '$ydat'} + .' <<< "$output"`
-  tmp2=tmp  
-  tmp=`jq '{z : '$zdat'} + .' <<< "$output"`
-  tmp2=tmp
-  echo $tmp2
+  local ret=`jq '{x : '$xdat'} + {y : '$ydat'} + {z : '$zdat'} + . ' <<< "$output"`
+  echo $ret
 }
 
 # Reset
