@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Takes data from TSD and PCD sources and appends it to a JSON file that is compatible with MongoDB
 #Two input files: PCD and TSD (Point cloud data and time-stamped data.)
 #PCD: can be comma separated, space separated, or both. 
 #TSD: JSON. You can specify the name of the array that contains the time-stamped data
@@ -10,6 +11,8 @@ pcd_is_csv=0
 pcd_is_json=0
 tsd_is_csv=0
 tsd_is_json=0
+
+imagestore="/home/away/workspace/aoslnet/site/public/images"
 
 vno=0.1
 badh=-1
@@ -36,45 +39,62 @@ main(){
 
   output=$(processYear)
   echo -e "${ICyan}Enter the path to the file containing the point cloud data ${Color_Off}"
-  pcdpath="R11I01.txt"
-  output=$(processPCD $pcdpath)
+  read pcdpath
 
-  #Calculate the width, height and volume from the point cloud data
+  output=$(processPCD $pcdpath) #Process the PCD and add to the output JSON xyz JSON arrays
+
+  output=$(dimensional_analysis "$output")  #Calculate the width, height and volume from the point cloud data
+
   
-  output=$(dimensional_analysis "$output")
- # echo $output | less
   #Specify the directory for the images 
-
-  #Upload the images
+  echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
+  read imagepath
+  storeimages $imagepath  
+  
 
 }
 
+storeimages(){
+  path=$1
+  echo "moving to $imagestore/$year/$name"
+  #cp -r $path/* $imagestore/$year/$name
+}
 
 heightcalc(){
-  local x=$1
-  local y=$2
-  local z=$3
+  declare -a x=("${!1}")
+  declare -a y=("${!2}")
+  declare -a z=("${!3}")
+
   local bound=0.05
-  local card=${#x[@]}
+  local card="${#x[@]}"
   local height=0  
+  echo cardinality: $card >&2
+
+  
+  #Iterate over every unique pair of points in the PCD
   for i in `seq 0 $card`
   do
     local p1=(${x[$i]} ${y[$i]} ${z[$i]}) # grab the first point
-    for j in `seq 0 $((card+1))`
+    for j in `seq $((i+1)) $card`
     do
+      local counter=`echo "($i * $card) + $j" | bc -l`
+      echo -en "\r $counter" >&2
       local p2=(${x[$j]} ${y[$j]} ${z[$j]}) #grab the second point
-      local vec[0]=`echo $p2[0] - $p1[0] | bc -l`
-      local vec[1]=`echo $p2[1] - $p1[1] | bc -l`
-      local vec[2]=`echo $p2[2] - $p1[2] | bc -l`    
       
-      local subnorm=`echo sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} ) | bc -l`
+      #construct the vector connecting p1 and p2
+      local vec[0]=`echo ${p2[0]} - ${p1[0]} | bc -l` #construct the x component 
+      local vec[1]=`echo ${p2[1]} - ${p1[1]} | bc -l` #construct the y component
+      local vec[2]=`echo ${p2[2]} - ${p1[2]} | bc -l` #construct the z component
+
+      local subnorm=`echo "sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} )" | bc -l`
       local abs_subnorm=`abs $subnorm`
-      local check=`echo $abs_subnorm <= $bound | bc -l`
-      if [ $check == 1 ];then
-        local norm=`echo sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} + ${vec[2]}*${vec[2]} ) | bc -l`
-        check=`echo $norm < $height | bc -l`
-        if [ $check == 1 ];then
+      local check=`echo "$abs_subnorm <= $bound" | bc -l`  
+      if [ $check -eq 1 ];then
+        local norm=`echo "sqrt( ${vec[0]}*${vec[0]} + ${vec[1]}*${vec[1]} + ${vec[2]}*${vec[2]} )" | bc -l`
+        check=`echo "$norm > $height" | bc -l`
+        if [ $check -eq 1 ];then
           height=$norm
+          echo new height: $height >&2
         fi      
       fi
     done
@@ -85,9 +105,9 @@ heightcalc(){
 abs(){
   local input=$1
   local output=$input  
-  local check=`echo $input < 0 | bc -l`
-  if [ $check == 1 ];then
-    output=`echo -1 * $input | bc -l`
+  local check=`echo "$input < 0" | bc -l`
+  if [ $check -eq 1 ];then
+    output=`echo "-1 * $input" | bc -l`
   fi
   echo $output
 }
@@ -129,16 +149,16 @@ dimensional_analysis(){
   z=`echo "${z//]}"`
   IFS='\ ,' read -r -a zarr <<< $z
   
-  height=`heightcalc $xarr $yarr $zarr`
-  width=`widthcalc $xarr $yarr $zarr`
-  volume=`volcalc $xarr $yarr $zarr`
+  height=120 #`heightcalc xarr[@] yarr[@] zarr[@]`
+  width=50 #`widthcalc "$xarr" "$yarr" "$zarr"`
+  volume=43000 #`volcalc "$xarr" "$yarr" "$zarr"`
   
-  #local tmp=`jq '{height : '$height'} + .' <<< "$json"`
-  #local tmp2=$tmp
-  #local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
-  #local tmp2=$tmp
-  #local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
-  #echo "$tmp"
+  local tmp=`jq '{height : '$height'} + .' <<< "$json"`
+  local tmp2=$tmp
+  local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
+  local tmp2=$tmp
+  local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
+  echo "$tmp"
 }
 
 getName(){
@@ -159,7 +179,8 @@ processYear(){
   #TODO Check the PCD and TSD files for the year
   if [[ ! "$year" =~ ^[0-9]{4}$ ]];then
     echo "No year detected in output string. Please enter the year: " >&2
-    read year
+    year=2017
+    #read year
   fi
   echo "Adding year $year to output" >&2
 
