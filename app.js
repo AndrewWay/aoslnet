@@ -13,6 +13,8 @@ var db = monk('localhost:27017/aosldb');
 var index = require('./routes/index');
 var bergs = require('./routes/bergs');
 var path = require('path');
+var serverport=3000;
+
 
 var app = express();
 

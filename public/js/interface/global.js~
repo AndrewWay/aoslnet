@@ -1,4 +1,4 @@
-var yearSelected="2017";
+var yearSelected="";
 var icebergSelected="";
 var filepathIcebergsData = "";
 var filePathIcebergSelected="";
@@ -48,7 +48,7 @@ $(document).ready(function() {
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    preselect();
+   // preselect();
 });
 
 function preselect(){

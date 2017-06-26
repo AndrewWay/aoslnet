@@ -11,19 +11,17 @@ router.get('/years',function(req,res){
 });
 
 router.get('/names/:yr',function(req,res){
-    var db = req.db;    
-    //var collection = db.get('data');
+    var db = req.db;   
+    var collection = db.get('data');
     var yr=req.params.yr;
-    db.collection('data', function(err, collection) {
-        collection.find({year : yr},{name : 1}).toArray(function(err, items) {
-            res.json(items);
-        });
+    console.log("For the year :"+yr);
+    collection.distinct("name",{"year" : yr},function(err, items) {
+        console.log(err);  
+        console.log("ITEMS: "+items);  
+      res.json(items);
+      db.close();
     });
- /*   console.log("requesting from names/"+yr);
-    collection.find({year : yr},{ name : 1 }).toArray(function(err, docs){
-            res.json(docs);            
-            db.close();
-     });*/
+
 });
 
 router.get('/data/:yr/:nm',function(req,res){
