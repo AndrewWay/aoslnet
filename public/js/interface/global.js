@@ -1,4 +1,4 @@
-var yearSelected="2017";
+var yearSelected="";
 var icebergSelected="";
 var filepathIcebergsData = "";
 var filePathIcebergSelected="";
@@ -42,15 +42,13 @@ $(document).ready(function() {
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    var yearList = getList(yearReq);
+    var yearList = getList(yearsReq);
     updateOptions('selectYear',yearList);
     var yearSelected = document.getElementById("selectYear").value;
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
     preselect();
-   // setMapData();
-    updateMap(0,0);
 });
 
 function preselect(){

@@ -17,15 +17,15 @@
     <header>
 	  <div id="strapline">
 	    <div id="welcome_slogan">
-	      <h3>Welcome To the AOSL delivery data website <span>Beta</span></h3>
+	      <h3>Welcome To the AOSL delivery data website <span>v0.5</span></h3>
 	    </div><!--close welcome_slogan-->
       </div><!--close strapline-->	  
 	  <nav>
 	    <div id="menubar">
           <ul id="nav">
             <li class="current"><a href="index.html">Home</a></li>
-            <li><a href="/icebergMap">Iceberg Map</a></li>
-            <li><a href="/icebergs">Icebergs</a></li>
+            <li><a href="/map">Iceberg Map</a></li>
+            <li><a href="/interface">Icebergs</a></li>
             <li><a href="http://www.aosl.ca">About Us</a></li>
           </ul>
         </div><!--close menubar-->	

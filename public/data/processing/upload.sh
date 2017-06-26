@@ -21,7 +21,6 @@ xindex=$badh
 yindex=$badh
 zindex=$badh
 
-tsdname='Data'
 output=""
 
 main(){
@@ -30,28 +29,31 @@ main(){
   echo -e "${ICyan}Press enter following any of the prompts to skip appending data to the json file"
   echo ""
 
-  output=$(getName)
+  name=$(getName)
   output='{ "name" : "'$name'" }'
 
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-  tsdatapath="../2017_11.json"
-  output=$(processTSD $tsdatapath)
+  #read tsdpath
+  tsdpath="../2017_11.json"  
+  output=$(processTSD $tsdpath)
 
-  output=$(processYear)
   echo -e "${ICyan}Enter the path to the file containing the point cloud data ${Color_Off}"
-  read pcdpath
+ # read pcdpath
+  pcdpath="R11I01.txt"
+  output=$(processYear $pcdpath $tsdpath)
 
   output=$(processPCD $pcdpath) #Process the PCD and add to the output JSON xyz JSON arrays
 
   output=$(dimensional_analysis "$output")  #Calculate the width, height and volume from the point cloud data
 
-  
   #Specify the directory for the images 
-  echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
-  read imagepath
-  storeimages $imagepath  
-  
-
+ # echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
+ # read imagepath
+ # storeimages $imagepath  
+  echo $output > tmp.json
+  less tmp.json
+  mongoimport -d aosldb -c data --file tmp.json
+  rm tmp.json
 }
 
 storeimages(){
@@ -163,8 +165,8 @@ dimensional_analysis(){
 
 getName(){
   if [[ -f "idindex.txt" && -f "names.txt" ]];then
-    nameindex=`cat idindex.txt | head -n 1`
-    name=`cat names.txt | head -n $nameindex | tail -n 1`
+    local nameindex=`cat idindex.txt | head -n 1`
+    local name=`cat names.txt | head -n $nameindex | tail -n 1`
     echo $((nameindex + 1)) > idindex.txt
   else
     echo "idindex.txt or names.txt does not exist. Exiting..." >&2  
@@ -175,12 +177,22 @@ getName(){
 }
 
 processYear(){
-  year=`echo $output | jq -r '.year'`
+  local pcd="$1"
+  local tsd="$2"
+
+  #Check if pcd and tsd are jsons
+  if [ ${pcd: -5} == ".json" ];then
+    local yearpcd=`cat $pcd | jq -r '.year'`
+  fi
+  
+  if [ ${tsd: -5} == ".json" ];then
+    local yeartsd=`cat $tsd | jq -r '.year'`
+  fi
+  
   #TODO Check the PCD and TSD files for the year
-  if [[ ! "$year" =~ ^[0-9]{4}$ ]];then
+  if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
     echo "No year detected in output string. Please enter the year: " >&2
-    year=2017
-    #read year
+    read year
   fi
   echo "Adding year $year to output" >&2
 
@@ -191,18 +203,12 @@ processTSD(){
     local path=$1
     echo "path $path" >&2
     if [ ${path: -5} == ".json" ];then
-      if [[ $tsdname == '' ]];then
-        echo "What is the name the measurement data array: " >&2        
-        read tsdname
-      else
-        echo "Using preset measurement data array name: $tsdname" >&2
-      fi
-      local tsd=`cat $path | jq ."$tsdname"`  
+      local tsd=`cat $path | jq ".Data"`  
     else
         echo "Time-stamped data file must be JSON. Exiting..." >&2
         exit 1
     fi
-    local data_array=`echo $tsd | jq -R --argjson output "$output" '$output + {'$tsdname': .}'`
+    local data_array=`echo $tsd | jq -R --argjson output "$output" '$output + {Data : .}'`
     echo $data_array > debug.txt
     echo "$data_array"
 }
@@ -234,7 +240,6 @@ processPCD(){
             zindex=$h
         fi    
     done
-    echo "x: $xindex y: $yindex z: $zindex" >&2
 
     if [ $xindex == $badh ];then
         echo "'"x"' heading not detected." >&2
@@ -262,7 +267,6 @@ processPCD(){
       echo -en "\rpoints processed: $i/$length " >&2
       local line=`cat $input | head -n $i | tail -n 1`
       IFS='\ ,' read -r -a linearr <<< "$line"
-      #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
       local newx=${linearr[$xindex]}
       local newy=${linearr[$yindex]}
       local newz=${linearr[$zindex]}
@@ -274,7 +278,6 @@ processPCD(){
   echo -e "" >&2
   local line=`cat $input | head -n $i | tail -n 1`
   IFS='\ ,' read -r -a linearr <<< "$line"
-  #TODO: Process the x,y,z data so that you strip the commas from them if they are there.
   local newx=${linearr[$xindex]}
   local newy=${linearr[$yindex]}
   local newz=${linearr[$zindex]}

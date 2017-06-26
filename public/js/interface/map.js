@@ -2,6 +2,10 @@
 
 
 //Google map
+function mapReady() {
+  updateMap(0,0);
+}
+
 function updateMap(Ilat,Ilong) {
     mapInitialized=true;
     var uluru = {lat: Ilat, lng: Ilong};
@@ -14,6 +18,7 @@ function updateMap(Ilat,Ilong) {
         map: map
     });    
 }
+
 function updateSDPosition(t){
   removeSDPosition();
   displaySDPosition(t);

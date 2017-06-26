@@ -17,9 +17,10 @@ function getList(url){
     var request = new XMLHttpRequest();
     request.open("GET",url,false);
     request.send(null);
+    console.log("hello?");
     var response = JSON.parse(request.responseText);
     console.log('database returned: '+request.responseText);
-    console.log('function completing. Returning list');
+    console.log('Returning list');
     return response;
 }
 
