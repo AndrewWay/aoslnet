@@ -15,13 +15,6 @@ tsd_is_json=0
 imagestore="/home/away/workspace/aoslnet/site/public/images"
 
 vno=0.1
-badh=-1
-
-xindex=$badh
-yindex=$badh
-zindex=$badh
-
-output=""
 
 main(){
   echo -e "${BBlue}AOSL MongoDB Data Upload"
@@ -29,31 +22,215 @@ main(){
   echo -e "${ICyan}Press enter following any of the prompts to skip appending data to the json file"
   echo ""
 
-  name=$(getName)
-  output='{ "name" : "'$name'" }'
+  #NAME_________________________
+  local name=$(getName)  
 
+  #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
   #read tsdpath
-  tsdpath="../2017_11.json"  
-  output=$(processTSD $tsdpath)
+  local tsdpath="../2017_11.json"  
+  local tsd=$(processTSD $tsdpath)
 
+  #POINT CLOUD DATA_____________
   echo -e "${ICyan}Enter the path to the file containing the point cloud data ${Color_Off}"
- # read pcdpath
+  #read pcdpath
   pcdpath="R11I01.txt"
-  output=$(processYear $pcdpath $tsdpath)
+  local pcd=$(processPCD $pcdpath)
 
-  output=$(processPCD $pcdpath) #Process the PCD and add to the output JSON xyz JSON arrays
+  #YEAR_________________________
+  local year=$(processYear $pcdpath $tsdpath)
 
-  output=$(dimensional_analysis "$output")  #Calculate the width, height and volume from the point cloud data
+  #DIMENSIONAL ANALYSIS_________
+  local dima=$(dimensional_analysis "$output")  #Get width, height, and volume from PCD
 
-  #Specify the directory for the images 
- # echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
- # read imagepath
- # storeimages $imagepath  
-  echo $output > tmp.json
-  less tmp.json
+  #IMAGES_______________________ 
+  echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
+  #read imagepath
+  #storeimages $imagepath  
+  jsonraw="$name $year $dima $pcd $tsd"
+  local json=`echo "$name $year $dima $pcd $tsd" | jq -s add`
+
+  echo $json > tmp.json
+  #less tmp.json
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
+}
+
+getName(){
+  #Accepts nothing
+  #Creates a name
+  #Returns name JSON
+  
+  if [[ -f "idindex.txt" && -f "names.txt" ]];then
+    local nameindex=`cat idindex.txt | head -n 1`
+    local name=`cat names.txt | head -n $nameindex | tail -n 1`
+    echo $((nameindex + 1)) > idindex.txt
+  else
+    echo "idindex.txt or names.txt does not exist. Exiting..." >&2  
+    exit 1
+  fi
+  echo "Document name: $name" >&2
+  local ret=`jq -n '{ name : "'$name'"}'`
+  echo $ret
+}
+
+processTSD(){
+  #Accepts path to JSON file
+  #Extracts the Data JSON array
+  #Returns data JSON
+
+  local path=$1
+  if [ ${path: -5} == ".json" ];then
+    local tsd=`cat $path | jq ".Data"`  
+  else
+    echo "Time-stamped data file must be JSON. Exiting..." >&2
+    exit 1
+  fi
+  ret=`jq -r '{ Data : . }' <<< "$tsd"`
+  echo "$ret"
+}
+
+processPCD(){
+  #Accepts the path to a space separated or comma separated file 
+  #Converts the file into 3 JSON-compatible arrays: x y and z
+  #Returns JSON with 3 arrays, for x, y and z coordinates of points
+
+  local input=$1
+  local badh=-1
+
+  local xindex=$badh
+  local yindex=$badh
+  local zindex=$badh
+
+  if [ ! -f $input ];then
+    echo -e "${Red} $input does not exist. exiting... ${Color_Off}"
+    exit 1
+  fi
+  #Take the raw data file and determine what columns contain the x,y, and z data
+  local headers=`cat $input | head -n 1`
+  local headarrs=""
+  echo $headers >&2
+  IFS='\ ,' read -r -a headarrs <<< "$headers"
+
+  #check which columns contain strings x y and z
+  for h in `seq 0 "${#headarrs[@]}"`
+  do
+    header=${headarrs[$h]}
+
+    if [ "$header" ==  "x" ];then
+      xindex=$h
+    fi
+    if [ "$header" == "y" ];then
+      yindex=$h
+    fi
+    if [ "$header" == "z" ];then
+      zindex=$h
+    fi    
+  done
+
+  if [ $xindex == $badh ];then
+    echo "'"x"' heading not detected." >&2
+    exit 1
+  fi
+  if [ $yindex == $badh ];then
+    echo "'"y"' heading not detected." >&2
+    exit 1
+  fi
+  if [ $zindex == $badh ];then
+    echo "'"z"' heading not detected." >&2
+    exit 1
+  fi
+
+  #Create the data arrays
+  local length=`cat $input | wc -l`
+  length=$((length-1)) #Why am I subtracting here?
+  local xdat='['
+  local ydat='['
+  local zdat='['
+ 
+  echo -e "Now processing PCD..." >&2   
+  for i in `seq 2 $length`
+  do
+    echo -en "\rpoints processed: $i/$length " >&2
+    local line=`cat $input | head -n $i | tail -n 1`
+    local linearr=""
+    IFS='\ ,' read -r -a linearr <<< "$line"
+    local newx=${linearr[$xindex]}
+    local newy=${linearr[$yindex]}
+    local newz=${linearr[$zindex]}
+    
+    xdat=$xdat$newx,
+    ydat=$ydat$newy,
+    zdat=$zdat$newz,
+  done
+  echo -e "" >&2
+  local line=`cat $input | head -n $i | tail -n 1`
+  IFS='\ ,' read -r -a linearr <<< "$line"
+  newx=${linearr[$xindex]}
+  newy=${linearr[$yindex]}
+  newz=${linearr[$zindex]}
+
+  xdat="$xdat$newx]"
+  ydat="$ydat$newy]"
+  zdat="$zdat$newz]"
+
+  local ret=`jq -n '{x : '$xdat'} + {y : '$ydat'} + {z : '$zdat'}'`
+  echo "$ret"
+}
+
+processYear(){
+  local pcd="$1"
+  local tsd="$2"
+
+  #Check if pcd and tsd are jsons
+  if [ ${pcd: -5} == ".json" ];then
+    local yearpcd=`cat $pcd | jq -r '.year'`
+  fi
+  
+  if [ ${tsd: -5} == ".json" ];then
+    local yeartsd=`cat $tsd | jq -r '.year'`
+  fi
+  
+  #Check if either files contain a key "year"
+  if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
+    echo "No year detected in output string. Please enter the year: " >&2
+    read year
+  fi
+
+  local ret=`jq -n '{year : "'$year'"}'`
+  echo "$ret"
+}
+
+dimensional_analysis(){
+  #Preceding function for dimanalysis. Converts xyz strings into BASH recognizable arrays
+  local json="$1"
+
+  local x=`echo ${json} | jq '.x'`
+  local y=`echo ${json} | jq '.y'`
+  local z=`echo ${json} | jq '.z'`
+  
+  local xarr=""  
+  local yarr=""  
+  local zarr=""  
+
+  x=`echo "${x//[}"`
+  x=`echo "${x//]}"`
+  IFS='\ ,' read -r -a xarr <<< $x
+
+  y=`echo "${y//[}"`
+  y=`echo "${y//]}"`
+  IFS='\ ,' read -r -a yarr <<< $y
+
+  z=`echo "${z//[}"`
+  z=`echo "${z//]}"`
+  IFS='\ ,' read -r -a zarr <<< $z
+  
+  height=120 #`heightcalc xarr[@] yarr[@] zarr[@]`
+  width=50 #`widthcalc "$xarr" "$yarr" "$zarr"`
+  volume=43000 #`volcalc "$xarr" "$yarr" "$zarr"`
+  
+  local ret=`jq -n '{height :'$height'} + { width : '$width' } + { volume : '$volume'}'`
+  echo $ret
 }
 
 storeimages(){
@@ -126,170 +303,6 @@ volcalc(){
   local z=$3
 
 }
-
-dimensional_analysis(){
-  #Preceding function for dimanalysis. Converts xyz strings into BASH recognizable arrays
-  local json="$1"
-
-  local x=`echo ${json} | jq '.x'`
-  local y=`echo ${json} | jq '.y'`
-  local z=`echo ${json} | jq '.z'`
-  
-  local xarr=""  
-  local yarr=""  
-  local zarr=""  
-
-  x=`echo "${x//[}"`
-  x=`echo "${x//]}"`
-  IFS='\ ,' read -r -a xarr <<< $x
-
-  y=`echo "${y//[}"`
-  y=`echo "${y//]}"`
-  IFS='\ ,' read -r -a yarr <<< $y
-
-  z=`echo "${z//[}"`
-  z=`echo "${z//]}"`
-  IFS='\ ,' read -r -a zarr <<< $z
-  
-  height=120 #`heightcalc xarr[@] yarr[@] zarr[@]`
-  width=50 #`widthcalc "$xarr" "$yarr" "$zarr"`
-  volume=43000 #`volcalc "$xarr" "$yarr" "$zarr"`
-  
-  local tmp=`jq '{height : '$height'} + .' <<< "$json"`
-  local tmp2=$tmp
-  local tmp=`jq '{width : '$width'} + .' <<< "$tmp2"`
-  local tmp2=$tmp
-  local tmp=`jq '{volume : '$volume'} + .' <<< "$tmp2"`
-  echo "$tmp"
-}
-
-getName(){
-  if [[ -f "idindex.txt" && -f "names.txt" ]];then
-    local nameindex=`cat idindex.txt | head -n 1`
-    local name=`cat names.txt | head -n $nameindex | tail -n 1`
-    echo $((nameindex + 1)) > idindex.txt
-  else
-    echo "idindex.txt or names.txt does not exist. Exiting..." >&2  
-    exit 1
-  fi
-  echo "Document name: $name" >&2
-  echo $name
-}
-
-processYear(){
-  local pcd="$1"
-  local tsd="$2"
-
-  #Check if pcd and tsd are jsons
-  if [ ${pcd: -5} == ".json" ];then
-    local yearpcd=`cat $pcd | jq -r '.year'`
-  fi
-  
-  if [ ${tsd: -5} == ".json" ];then
-    local yeartsd=`cat $tsd | jq -r '.year'`
-  fi
-  
-  #TODO Check the PCD and TSD files for the year
-  if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
-    echo "No year detected in output string. Please enter the year: " >&2
-    read year
-  fi
-  echo "Adding year $year to output" >&2
-
-  echo `jq '{year : '$year'} + .' <<< "$output"`
-}
-processTSD(){
-    #This should be a json! Should we also be able to work with a csv file?
-    local path=$1
-    echo "path $path" >&2
-    if [ ${path: -5} == ".json" ];then
-      local tsd=`cat $path | jq ".Data"`  
-    else
-        echo "Time-stamped data file must be JSON. Exiting..." >&2
-        exit 1
-    fi
-    local data_array=`echo $tsd | jq -R --argjson output "$output" '$output + {Data : .}'`
-    echo $data_array > debug.txt
-    echo "$data_array"
-}
-processPCD(){
-    #Expects a space separated or comma separated file
-    input=$1
-    
-    if [ ! -f $input ];then
-      echo -e "${Red} $input does not exist. exiting... ${White}"
-      exit 1
-    fi
-    #Take the raw data file and determine what columns contain the x,y, and z data
-    headers=`cat $input | head -n 1`
-    echo $headers >&2
-    IFS='\ ,' read -r -a headarrs <<< "$headers"
-
-    #check which columns contain x y and z
-    for h in `seq 0 "${#headarrs[@]}"`
-    do
-        header=${headarrs[$h]}
-
-        if [ "$header" ==  "x" ];then
-            xindex=$h
-        fi
-        if [ "$header" == "y" ];then
-            yindex=$h
-        fi
-        if [ "$header" == "z" ];then
-            zindex=$h
-        fi    
-    done
-
-    if [ $xindex == $badh ];then
-        echo "'"x"' heading not detected." >&2
-        exit 1
-    fi
-    if [ $yindex == $badh ];then
-        echo "'"y"' heading not detected." >&2
-        exit 1
-    fi
-    if [ $zindex == $badh ];then
-        echo "'"z"' heading not detected." >&2
-        exit 1
-    fi
-
-    #Create the data arrays
-    length=`cat $input | wc -l`
-    length=$((length-1))
-    local xdat='['
-    local ydat='['
-    local zdat='['
-    
-    echo -e "Now processing PCD..." >&2   
-    for i in `seq 2 $length`
-    do
-      echo -en "\rpoints processed: $i/$length " >&2
-      local line=`cat $input | head -n $i | tail -n 1`
-      IFS='\ ,' read -r -a linearr <<< "$line"
-      local newx=${linearr[$xindex]}
-      local newy=${linearr[$yindex]}
-      local newz=${linearr[$zindex]}
-      
-      xdat=$xdat$newx,
-      ydat=$ydat$newy,
-      zdat=$zdat$newz,
-  done
-  echo -e "" >&2
-  local line=`cat $input | head -n $i | tail -n 1`
-  IFS='\ ,' read -r -a linearr <<< "$line"
-  local newx=${linearr[$xindex]}
-  local newy=${linearr[$yindex]}
-  local newz=${linearr[$zindex]}
-
-  xdat="$xdat$newx]"
-  ydat="$ydat$newy]"
-  zdat="$zdat$newz]"
-
-  local ret=`jq '{x : '$xdat'} + {y : '$ydat'} + {z : '$zdat'} + . ' <<< "$output"`
-  echo $ret
-}
-
 # Reset
 Color_Off='\033[0m'       # Text Reset
 

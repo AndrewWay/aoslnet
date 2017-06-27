@@ -48,7 +48,7 @@ $(document).ready(function() {
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    preselect();
+   // preselect();
 });
 
 function preselect(){
@@ -131,7 +131,7 @@ function changeIceberg(){
     }
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    distributeData(json.Data);
+    distributeData(json[0].Data);
     displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
