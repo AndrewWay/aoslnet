@@ -214,7 +214,7 @@ processPCD(){
       local newz=${linearr[$zindex]}
 
      # echo 30 | grep -Eq '^[-+]?[0-9]+\.?[0-9]*$' && echo Match >&2 #&& rejectcode=1
-       if [ "$newy" == ^[-+]?[0-9]+\.?[0-9]*$ ];then
+       if [[ "$newy" == ^[-+]?[0-9]+\.?[0-9]*$ ]];then
          echo "Fail"
       fi
 #      ! [[ "$newz" =~ ^-?[0-9]*\.?[0-9]*$ ]] && rejectcode=1
