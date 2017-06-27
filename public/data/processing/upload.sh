@@ -47,12 +47,13 @@ main(){
   echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
   #read imagepath
   #storeimages $imagepath  
-  local json=`jq -n "$name + $year + $dima + $pcd + $tsd"`
-  echo $json | less  
-  #echo $output > tmp.json
+  jsonraw="$name $year $dima $pcd $tsd"
+  local json=`echo "$name $year $dima $pcd $tsd" | jq -s add`
+
+  echo $json > tmp.json
   #less tmp.json
-  #mongoimport -d aosldb -c data --file tmp.json
-  #rm tmp.json
+  mongoimport -d aosldb -c data --file tmp.json
+  rm tmp.json
 }
 
 getName(){
@@ -85,7 +86,7 @@ processTSD(){
     echo "Time-stamped data file must be JSON. Exiting..." >&2
     exit 1
   fi
-  ret="{ Data : $tsd }"
+  ret=`jq -r '{ Data : . }' <<< "$tsd"`
   echo "$ret"
 }
 
