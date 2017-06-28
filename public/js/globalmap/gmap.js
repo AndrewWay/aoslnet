@@ -7,15 +7,16 @@ year=[];
 iq=0;
 
 function setup() {
-    var yearList = getList('/bergs/icebergyearlist');
+    var yearList = getList('/bergs/years');
     console.log(yearList);    
+    console.log("Hello?");
     for(i=0;i<yearList.length;i++){
       var yearSelected = parseInt(yearList[i]);
-      var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
-      
+      var bergList = getList('/bergs/names/'+yearSelected);
+      console.log("Berglist "+bergList);
       for(j=0;j<bergList.length;j++){
         bergSelected = bergList[j]; //Get the name of the iceberg        
-        var dat = getJSON('/bergs/icebergmeas/year/'+yearSelected+'/id/'+bergSelected);//Get iceberg data
+        var dat = getJSON('/bergs/data/'+yearSelected+'/'+bergSelected);//Get iceberg data
         if(dat.length > 0){
           console.log("adding iceberg");
           distributeData(dat);//Add data to the global array
@@ -42,10 +43,10 @@ function view(){
 
 function distributeData(dat){
   console.log("distributing data...");  
-  var lt=dat[0].lat;//Im not even sure why I'm accessing the JSON like an array. 
-  var lg=dat[0].long;
+  var lt=dat[0].latitude;//Im not even sure why I'm accessing the JSON like an array. 
+  var lg=dat[0].longitude;
   var yr=dat[0].year;
-  var nm=dat[0].icebergID;
+  var nm=dat[0].name;
 
   lat.push(lt);        
   long.push(lg);  

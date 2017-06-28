@@ -3,7 +3,7 @@
 
 //Google map
 function mapReady() {
-updateMap(0,0);
+  updateMap(0,0);
 }
 
 function updateMap(Ilat,Ilong) {
@@ -82,7 +82,7 @@ function setMapData() {
         }
       }
     }
-    
+    //TODO: Fix this whole process for centering the map. 
     i=0;
     //Create iceberg path list
     while(i < ibplg.length && i < ibplt.length){
@@ -101,14 +101,20 @@ function setMapData() {
       centerLng/=i;
       centerLat/=i;
     }
-
+    console.log("setMapData(): lat "+centerlat+" long "+centerlong);
     //Init Map
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
-    center: {lat: centerLat, lng: centerLng},
+    zoom: 3,
+    center: {lat: centerlat, lng: centerlong}, //Change this.
     mapTypeId: google.maps.MapTypeId.TERRAIN //HYBRID
   });
-    
+    var uluru = {lat: centerlat, lng: centerlong};
+  var marker = new google.maps.Marker({
+   position: uluru,
+   map: map
+  });   
+
+  //TODO: put the seadragon and iceberg perimeter path creation into a separate function
     //Set SeaDragon Path
   var seaDragonPath = new google.maps.Polyline({
     path: sdpath,

@@ -23,6 +23,8 @@ sdlat=[];
 sdlong=[];
 lat=[];
 long=[];
+centerlong=0;
+centerlat=0;
 
 //Oceanic data
 sal=[];
@@ -102,6 +104,8 @@ function changeIceberg(){
     var volume=json[0].volume;
     var longitude=json[0].longitude;
     var latitude=json[0].latitude;
+    centerlong=longitude;
+    centerlat=latitude;
     console.log("height: "+height);
     console.log("width: "+width);
     console.log("volume: "+volume);

@@ -40,7 +40,7 @@ main(){
     dos2unix $pcdpath #Ensure the data file is in unix format
   fi
   local pcd=$(processPCD $pcdpath)
-  echo "$pcd" | less
+
   #NAME_________________________
   local name=$(getName)  
 
@@ -66,7 +66,6 @@ main(){
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
-  less tmp.json
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
 

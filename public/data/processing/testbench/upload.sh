@@ -29,13 +29,12 @@ main(){
 
   #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-  #read tsdpath  
-  local tsdpath="" #"../../2017_11.json"  
+  read tsdpath  
   local tsd=$(processTSD $tsdpath)
+  
   #POINT CLOUD DATA_____________
   echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
-  read pcdpath
-  #local pcdpath="r11i02.Txt"
+  read pcdpath  
   if [ -f $pcdpath ];then
     dos2unix $pcdpath #Ensure the data file is in unix format
   fi
@@ -66,7 +65,6 @@ main(){
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
-  less tmp.json
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
 

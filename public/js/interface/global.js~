@@ -23,6 +23,8 @@ sdlat=[];
 sdlong=[];
 lat=[];
 long=[];
+centerlong=0;
+centerlat=0;
 
 //Oceanic data
 sal=[];
@@ -131,7 +133,7 @@ function changeIceberg(){
     }
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    distributeData(json.Data);
+    distributeData(json[0].Data);
     displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
