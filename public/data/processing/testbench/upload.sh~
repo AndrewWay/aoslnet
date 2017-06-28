@@ -32,13 +32,15 @@ main(){
   #read tsdpath  
   local tsdpath="" #"../../2017_11.json"  
   local tsd=$(processTSD $tsdpath)
-
   #POINT CLOUD DATA_____________
   echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
-  #read pcdpath
-  local pcdpath="r11i02.Txt"
+  read pcdpath
+  #local pcdpath="r11i02.Txt"
+  if [ -f $pcdpath ];then
+    dos2unix $pcdpath #Ensure the data file is in unix format
+  fi
   local pcd=$(processPCD $pcdpath)
-  
+  echo "$pcd" | less
   #NAME_________________________
   local name=$(getName)  
 
@@ -235,10 +237,10 @@ processPCD(){
     ydat="$ydat$newy]"
     zdat="$zdat$newz]"
   fi
-  local xarr=`jq -n '{x : .}' <<< $"xdat"`
-  local yarr=`jq -n '{y : .}' <<< $"ydat"`
-  local zarr=`jq -n '{z : .}' <<< $"zdat"`
- # + {y : '$ydat'} + {z : '$zdat'}'`
+  local xarr=`jq '{x : .}' <<< "$xdat"`
+  local yarr=`jq '{y : .}' <<< "$ydat"`
+  local zarr=`jq '{z : .}' <<< "$zdat"`
+
   local ret=`echo "$xarr $yarr $zarr" | jq -s add` # The final combined JSON
   echo "$ret"
 }
