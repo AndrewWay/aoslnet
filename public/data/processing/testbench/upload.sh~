@@ -213,21 +213,15 @@ processPCD(){
       local newy=${linearr[$yindex]}
       local newz=${linearr[$zindex]}
 
-     # echo 30 | grep -Eq '^[-+]?[0-9]+\.?[0-9]*$' && echo Match >&2 #&& rejectcode=1
-       if [[ "$newy" == ^[-+]?[0-9]+\.?[0-9]*$ ]];then
-         echo "Fail"
-      fi
-#      ! [[ "$newz" =~ ^-?[0-9]*\.?[0-9]*$ ]] && rejectcode=1
-      
-  #    if [[ "$newx" =~ ^-?[0-9]*\.?[0-9]*$ ]] && [["$newy" =~ ^-?[0-9]*\.?[0-9]*$ ]] && [[ "$newz" =~ ^-?[0-9]*\.?[0-9]*$ ]];then 
-      if [ "$rejectcode" == 0 ];then    
-        xdat=$xdat$newx,
-        ydat=$ydat$newy,
-        zdat=$zdat$newz,      
-      else
-        rejectedpoints=$((rejectedpoints + 1))
-        rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off}"
-      fi
+  #Shorten this if statement
+    if [[ $newx =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newy =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newz =~ ^[-+]?[0-9]+\.?[0-9]*$ ]];then
+      xdat=$xdat$newx,
+      ydat=$ydat$newy,
+      zdat=$zdat$newz,
+    else
+      rejectedpoints=$((rejectedpoints + 1))
+      rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off}"
+    fi
       echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
     done
     echo -e "" >&2
@@ -241,8 +235,11 @@ processPCD(){
     ydat="$ydat$newy]"
     zdat="$zdat$newz]"
   fi
-
-  local ret=`jq -n '{x : '$xdat'} + {y : '$ydat'} + {z : '$zdat'}'`
+  local xarr=`jq -n '{x : .}' <<< $"xdat"`
+  local yarr=`jq -n '{y : .}' <<< $"ydat"`
+  local zarr=`jq -n '{z : .}' <<< $"zdat"`
+ # + {y : '$ydat'} + {z : '$zdat'}'`
+  local ret=`echo "$xarr $yarr $zarr" | jq -s add` # The final combined JSON
   echo "$ret"
 }
 

@@ -17,13 +17,10 @@ imagestore="/home/away/workspace/aoslnet/site/public/images"
 vno=0.1
 
 main(){
+  
   echo -e "${BBlue}AOSL MongoDB Data Upload"
   echo -e "${UWhite}Version $vno"
-  echo -e "${ICyan}Press enter following any of the prompts to skip appending data to the json file"
   echo ""
-
-  #NAME_________________________
-  local name=$(getName)  
 
   #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
@@ -37,6 +34,9 @@ main(){
   pcdpath="R11I01.txt"
   local pcd=$(processPCD $pcdpath)
 
+  #NAME_________________________
+  local name=$(getName)  
+
   #YEAR_________________________
   local year=$(processYear $pcdpath $tsdpath)
 
@@ -48,7 +48,7 @@ main(){
   #read imagepath
   #storeimages $imagepath  
   jsonraw="$name $year $dima $pcd $tsd"
-  local json=`echo "$name $year $dima $pcd $tsd" | jq -s add`
+  local json=`echo "$name $year $dima $pcd $tsd" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
   #less tmp.json
@@ -57,7 +57,7 @@ main(){
 }
 
 getName(){
-  #Accepts nothing
+  #Accepts path to 
   #Creates a name
   #Returns name JSON
   
@@ -80,13 +80,23 @@ processTSD(){
   #Returns data JSON
 
   local path=$1
-  if [ ${path: -5} == ".json" ];then
-    local tsd=`cat $path | jq ".Data"`  
+  local ret=""  
+  if [ ${path: -5} == ".json" && -f $path ];then #Check if the file is an existing json
+    local dataexist=`echo $path | jq 'has("Data")'` 
+    if [ $dataexist == 'true' ];then #Check if the json file has the Data array
+      local tsd=`cat $path | jq ".Data"`  
+      ret=`jq -r '{ Data : . }' <<< "$tsd"`
+    else  
+      echo "Data array is not present in $path" >&2 #Set the Data array to null if not found
+      echo "Setting Data array to []" >&2
+      ret=`jq -n '{ Data : [] }'`
+    fi
   else
-    echo "Time-stamped data file must be JSON. Exiting..." >&2
+    echo "Time-stamped data file must be an existing JSON. Exiting..." >&2 #File not json: Data array set to empty
+    echo "Setting Data array to []" >&2
+    ret=`jq -n '{ Data : [] }'`
     exit 1
   fi
-  ret=`jq -r '{ Data : . }' <<< "$tsd"`
   echo "$ret"
 }
 
