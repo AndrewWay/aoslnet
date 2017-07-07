@@ -42,7 +42,6 @@ main(){
 
   #NAME_________________________
   local name=$(getName)  
-
   #YEAR_________________________
   local year=$(processYear $pcdpath $tsdpath)
 
@@ -91,7 +90,7 @@ getName(){
   #Returns name JSON
 
   local ret=""  
-  name=""
+  local name=""
   if [[ -f "idindex.txt" && -f "names.txt" ]];then
     local nameindex=`cat idindex.txt | head -n 1`
     name=`cat names.txt | head -n $nameindex | tail -n 1`
@@ -101,6 +100,7 @@ getName(){
     read name
   fi
   ret=`jq -n '{ name : "'$name'" }'`
+  echo "Name set to: $name" >&2
   echo "$ret"
 }
 
@@ -156,7 +156,7 @@ processPCD(){
   #Take the raw data file and determine what columns contain the x,y, and z data
   local headers=`cat $input | head -n 1`
   local headarrs=""
-  IFS='\ ,' read -r -a headarrs <<< "$headers"
+  IFS=$', \t' read -r -a headarrs <<< "$headers"
 
   #check which columns contain strings x y and z
   for h in `seq 0 "${#headarrs[@]}"`
@@ -202,17 +202,17 @@ processPCD(){
     zdat="[]" 
   else #Else grab the x y z data from the input file and create the x y and z JSON arrays
     echo -e "Now processing PCD..." >&2
-
     for i in `seq 2 $length`
     do
       local rejectcode=0
       local line=`cat $input | head -n $i | tail -n 1`
       local linearr=""
-      IFS='\ ,' read -r -a linearr <<< "$line"
+      IFS=$', \t' read -r -a linearr <<< "$line"
+
       local newx=${linearr[$xindex]}
       local newy=${linearr[$yindex]}
       local newz=${linearr[$zindex]}
-
+      #echo "newx: $newx" >&2
   #Shorten this if statement
     if [[ $newx =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newy =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newz =~ ^[-+]?[0-9]+\.?[0-9]*$ ]];then
       xdat=$xdat$newx,
@@ -226,7 +226,7 @@ processPCD(){
     done
     echo -e "" >&2
     local line=`cat $input | tail -n 1`
-    IFS='\ ,' read -r -a linearr <<< "$line"
+    IFS=$', \t' read -r -a linearr <<< "$line"
     newx=${linearr[$xindex]}
     newy=${linearr[$yindex]}
     newz=${linearr[$zindex]}
