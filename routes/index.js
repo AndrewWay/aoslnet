@@ -3,6 +3,7 @@ var router = express.Router();
 var homepage = 'index'
 var icebergSelector='interface'
 var ibMap='globalmap'
+var testpage='testpage'
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -15,6 +16,11 @@ router.get('/icebergMap', function(req, res, next) {
 
 router.get('/interface', function(req, res, next) {
   res.render(icebergSelector, { title: 'Express' });
+});
+
+/* GET test page */
+router.get('/testpage',function(req, res, next) {
+  res.render(testpage, { title: 'Express' });
 });
 
 /* GET Iceberg PCD data. */
