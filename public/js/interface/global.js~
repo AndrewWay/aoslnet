@@ -41,15 +41,16 @@ airTemp=[];
 airPress=[];
 
 $(document).ready(function() { 
-    document.getElementById("pausebtn").disabled=true;
-    document.getElementById("stopbtn").disabled=true;
+    //document.getElementById("pausebtn").disabled=true;
+    //document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    var yearList = getList(yearsReq);
-    updateOptions('selectYear',yearList);
-    var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList(namesReq+'/'+yearSelected);
-    updateOptions('selectIceberg',bergList);
-    updateMesh('[],[],[]''');//Render 3DMesh with no data
+    //var yearList = getList(yearsReq);
+    //updateOptions('selectYear',yearList);
+    //var yearSelected = document.getElementById("selectYear").value;
+    //var bergList = getList(namesReq+'/'+yearSelected);
+    //updateOptions('selectIceberg',bergList);
+    updateMesh('');//Render 3DMesh with no data
+    setupChart();
    // preselect();
 });
 

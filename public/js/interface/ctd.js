@@ -2,8 +2,11 @@
 //TODO Rename this file to include functions for handling data regarding water
 time_range=10;//TODO: Allow user to set this value in the interface
 vMargin=0.1;//10%
-// Load the Visualization API and the corechart package.
+graph1_id='curve_chart1';
+graph2_id='curve_chart2';
+graph3_id='curve_chart3';
 
+// Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
 
 
@@ -115,9 +118,9 @@ function setupChart() {
 
    
     // Instantiate and draw our chart, passing in some options.
-    chart1 = new google.visualization.LineChart(document.getElementById('curve_chart1'));
-    chart2 = new google.visualization.LineChart(document.getElementById('curve_chart2'));
-    chart3 = new google.visualization.LineChart(document.getElementById('curve_chart3'));
+    chart1 = new google.visualization.LineChart(document.getElementById(graph1_id));
+    chart2 = new google.visualization.LineChart(document.getElementById(graph2_id));
+    chart3 = new google.visualization.LineChart(document.getElementById(graph3_id));
 
    chart1.draw(sal_data, sal_options);
    chart2.draw(temp_data, temp_options);

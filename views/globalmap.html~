@@ -25,7 +25,7 @@
   <div id="overview">
     <h2>Iceberg Information</h2>
     <p id="desc">Click a marker</p>  
-    <button type="button" onclick="view()">Download</button>
+    <button type="button" onclick="view()">View</button>
   </div>
   <div id="map" class="page-segment"></div>
   <div id="filters" class="page-segment">FILTERS</div>
