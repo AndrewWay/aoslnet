@@ -49,7 +49,7 @@ $(document).ready(function() {
     var yearSelected = document.getElementById("selectYear").value;
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
-    updateMesh([],[],[]);//Render 3DMesh with no data
+    updateMesh('');//Render 3DMesh with no data
    // preselect();
 });
 
