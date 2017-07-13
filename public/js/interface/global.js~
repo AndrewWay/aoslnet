@@ -49,7 +49,7 @@ $(document).ready(function() {
     var yearSelected = document.getElementById("selectYear").value;
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
-    updateMesh([],[],[]);//Render 3DMesh with no data
+    updateMesh('[],[],[]''');//Render 3DMesh with no data
    // preselect();
 });
 
@@ -104,6 +104,8 @@ function changeIceberg(){
     var volume=json[0].volume;
     var longitude=json[0].longitude;
     var latitude=json[0].latitude;
+    centerlong=longitude;
+    centerlat=latitude;
     console.log("height: "+height);
     console.log("width: "+width);
     console.log("volume: "+volume);
