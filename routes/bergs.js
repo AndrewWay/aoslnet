@@ -1,5 +1,21 @@
 var express = require('express');
 var router = express.Router();
+var fs  = require('fs');
+var StlReader = require('stl-reader');
+
+router.get('/test',function(req,res){
+  console.log('request for stl file');
+fs.readFile('public/data/pr2_head_pan.stl',function (err, data) {
+    var databuffer = toArrayBuffer(data);
+    if (err) {
+      return console.log(err);
+    }
+    console.log(typeof databuffer);
+    //console.log(res.vertices);
+    //console.log(res.normals);
+    res.json(databuffer);
+  });
+});
 
 router.get('/years',function(req,res){
     var db = req.db;
@@ -40,5 +56,15 @@ router.get('/data/:yr/:nm',function(req,res){
 /*router.get('icebergpic/:year/:name',function(req,res) {
   
 });*/
+
+function toArrayBuffer(buffer) {
+  var ab = new ArrayBuffer(buffer.length);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return ab;
+}
+
 
 module.exports = router;
