@@ -1,7 +1,7 @@
 //iceberg model
 
 currentfile='';
-modelcontainerid='iceberg_plot';
+modelcontainerid='model';
 resize_factor=0.25;
 function updateMesh(file){
   console.log('updateMesh() starting');
@@ -50,19 +50,19 @@ function init() {
 	renderer = new THREE.WebGLRenderer(); // Create the renderer
 	//renderer.setClearColor( scene.fog.color ); //Set the clear color ?
 	renderer.setPixelRatio( window.devicePixelRatio ); // tch
-	renderer.setSize( resize_factor * window.innerWidth,resize_factor * window.innerHeight ); //tch
-
   /* DOM CONTAINER FOR RENDERER */
 
 	var container = document.getElementById( modelcontainerid ); //Assign the output to container
+  renderer.setSize($(container).width(), $(container).height());
 	container.appendChild( renderer.domElement );
 
   /* CAMERA */
 
-	camera = new THREE.PerspectiveCamera( 60,resize_factor * window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
 	camera.position.z = 500;
+	camera.updateProjectionMatrix();
   console.log('Creating trackballcontrols');
-	controls = new THREE.TrackballControls( camera );
+	controls = new THREE.TrackballControls( camera,container);
   //controls = new THREE.OrbitControls(camera);  
   controls.staticMoving = false;	
 	controls.enableDamping = false;
@@ -104,9 +104,10 @@ function init() {
 }
 
 function onWindowResize() {
-	camera.aspect = resize_factor * window.innerWidth / window.innerHeight;
+  var container = document.getElementById( modelcontainerid ); //Assign the output to container
+	camera.aspect = $(container).width()/$(container).height();
 	camera.updateProjectionMatrix();
-	renderer.setSize( resize_factor * window.innerWidth, resize_factor * window.innerHeight );
+	renderer.setSize( $(container).width(), $(container).height());
 }
 
 function animate() {
