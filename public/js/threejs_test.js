@@ -31,20 +31,21 @@ function init() {
   //getJSON(url);
   
   console.log("Distributing Data");
-  
-  var geom = new THREE.Geometry();
-  var url = 'bergs/data/2017/DEREK';
-  var json = getJSON(url);
-  console.log('x: '+json.x);
-  console.log('y: '+json.y);
-  console.log('z: '+json.z);
 
- // y=json.y;
- // z=json.z;
+  var geom = new THREE.Geometry();
+  url='/bergs/test';
+  var request = new XMLHttpRequest();
+  request.open("GET",url,false);
+  request.send(null);
+  console.log('database returned: '+request.responseText);
+
+    var s = request.responseText;
+  // "stl" represents a raw STL binary read from HTTP response data
+  var parseStlBinary = parsebinary(s);
+  console.log('finished!');
   x=[];
   y=[];
   z=[];
-  var scale=1;
 
   //Scale our data
   for(i=0;i<y.length;i++){
@@ -101,6 +102,48 @@ function init() {
 	window.addEventListener( 'resize', onWindowResize, false );
 }
 
+function parsebinary(stl) {
+    console.log('hello!');  
+    // create three.js geometry object, discussed later
+    var geo = new THREE.Geometry();
+    // The stl binary is read into a DataView for processing
+    var dv = new DataView(stl, 80); // 80 == unused header
+    var isLittleEndian = true;
+
+    // Read a 32 bit unsigned integer
+    var triangles = dv.getUint32(0, isLittleEndian);
+
+    var offset = 4;
+    for (var i = 0; i < triangles; i++) {
+      // Get the normal for this triangle by reading 3 32 but floats
+      var normal = new THREE.Vector3(
+        dv.getFloat32(offset, isLittleEndian),
+        dv.getFloat32(offset+4, isLittleEndian),
+        dv.getFloat32(offset+8, isLittleEndian)
+      );
+      offset += 12;
+
+      // Get all 3 vertices for this triangle, each represented
+      // by 3 32 bit floats.
+      for (var j = 0; j < 3; j++) {
+        geo.vertices.push(
+          new THREE.Vector3(
+            dv.getFloat32(offset, isLittleEndian),
+            dv.getFloat32(offset+4, isLittleEndian),
+            dv.getFloat32(offset+8, isLittleEndian)
+          )
+        );
+        offset += 12
+      }
+      // there's also a Uint16 "attribute byte count" that we
+      // don't need, it should always be zero.
+      offset += 2;
+
+      // Create a new face for from the vertices and the normal
+      geo.faces.push(new THREE.Face3(i*3, i*3+1, i*3+2, normal));
+    }
+    // continue parsing STL faces for rendering...
+};
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
