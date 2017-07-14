@@ -134,7 +134,7 @@ function changeIceberg(){
       latitude=0;    
     }
     //updateMesh('');
-    updateDim(height,width,volume);
+    //updateDim(height,width,volume);
     distributeData(json[0].Data);
     //displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
@@ -182,6 +182,7 @@ function distributeData(dat){
         airPress[i]=dat[i].pressure;
         airTemp[i]=dat[i].temperature;    
     }
+    console.log('pics: '+pics);
     setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
 }

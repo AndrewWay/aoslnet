@@ -20,8 +20,20 @@
   background-color: white;
 }
 
-.miscdisp{
-  color: #00ff00;
+#pics{
+  z-index: 3;
+  position: absolute;
+  height: 100px;
+  width: 150px;
+  right:16%;
+  top: 16vh;
+  border: 1px solid black;
+  z-index: 4;
+}
+
+#icedisp{
+  height:100%;
+  width:100%;
 }
 #miscdata_table{
   table-layout: fixed;
@@ -30,6 +42,7 @@
 
 #miscdata_table,th,td{
   width: 150px;
+  color: #00ff00;
 }
 #miscdata{
   position: absolute;

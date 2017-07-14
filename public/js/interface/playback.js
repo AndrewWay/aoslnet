@@ -5,6 +5,10 @@ timebarid='timebar';
 playbtnid='playbtn';
 pausebtnid='pausebtn';
 stopbtnid='stopbtn';
+clockid='clock_display';
+soundvelid='sound_speed_display';
+airpressid='air_pressure_display';
+airtempid='air_temp_display';
 
 function manualsetTime(){
   var newTime=document.getElementById(timebarid).value;
@@ -37,12 +41,13 @@ function dispdata(t){
   var ap=airPress[t];
   var at=airTemp[t];
   var sv=svel[t];      
- // updateWind(ws,wd);
- // updatePic(p);
- // updateSDPosition(t);
- // updateSvel(sv);
- // updateAir(ap,at);
- // setclock(t);
+  updateWind(ws,wd);
+  updatePic(p);
+  console.log('helo?');
+  updateSDPosition(t);
+  updateSvel(sv);
+  updateAir(ap,at);
+  setclock(t);
 }
 
 function pause(){
@@ -71,17 +76,16 @@ function setclock(t){
 
   // Will display time in 10:30:23 format
   var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-  document.getElementById("clock").innerHTML=formattedTime;
+  document.getElementById(clockid).innerHTML=formattedTime;
 }
 function updateSvel(sv){
-  document.getElementById("soundvel").innerHTML=sv;
+  document.getElementById(soundvelid).innerHTML=sv;
 }
 function updateAir(ap,at){
-  document.getElementById("airpress").innerHTML=ap;
-  document.getElementById("airtemp").innerHTML=at;    
+  document.getElementById(airpressid).innerHTML=ap;
+  document.getElementById(airtempid).innerHTML=at;    
 }
 function set_time(t){
-  console.log('Argument '+t);
   time_index=t;
 }
 function get_time(){
@@ -92,6 +96,5 @@ function setTimeBar(t){
 }
 function updateTimeMax(t){
   tmax=t;
-  console.log("Setting timebar max to "+tmax);
   document.getElementById(timebarid).max=tmax;
 }

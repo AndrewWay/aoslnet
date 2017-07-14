@@ -10,7 +10,7 @@ function updateMap(Ilat,Ilong) {
     mapInitialized=true;
     var uluru = {lat: Ilat, lng: Ilong};
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
+        zoom: 12,
         center: uluru
     });
     var marker = new google.maps.Marker({
@@ -104,7 +104,7 @@ function setMapData() {
     console.log("setMapData(): lat "+centerlat+" long "+centerlong);
     //Init Map
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 3,
+    zoom: 14,
     center: {lat: centerlat, lng: centerlong}, //Change this.
     mapTypeId: google.maps.MapTypeId.TERRAIN //HYBRID
   });

@@ -1,17 +1,19 @@
 //Air stats
+windspeedid='windspeed_display';
+winddirectionid='winddir_display';
 
 function updateWind(wD,wS){
     if(typeof wD === 'number'){
-       document.getElementById("curSpeedWind").innerHTML = wD; 
+       document.getElementById(windspeedid).innerHTML = wD; 
     }
     else{
-      document.getElementById("curSpeedWind").innerHTML = "-"; 
+      document.getElementById(windspeedid).innerHTML = "-"; 
     }
     if(typeof wS === 'number'){
-       document.getElementById("curDirWind").innerHTML = wS;   
+       document.getElementById(winddirectionid).innerHTML = wS;   
     }
     else{
-      document.getElementById("curDirWind").innerHTML = "-"; 
+      document.getElementById(winddirectionid).innerHTML = "-"; 
     }
 }
 
@@ -40,13 +42,14 @@ function displayWind(wd,ws){
         }
     }    
     dAve=dAve/div;
-
-    document.getElementById("minSpeedWind").innerHTML = sMin;
+console.log('Wind statistics commented out');
+ /*   document.getElementById("minSpeedWind").innerHTML = sMin;
     document.getElementById("aveSpeedWind").innerHTML = sAve;
     document.getElementById("maxSpeedWind").innerHTML = sMax;
 
     document.getElementById("minDirWind").innerHTML = dMin;
     document.getElementById("aveDirWind").innerHTML = dAve;
     document.getElementById("maxDirWind").innerHTML = dMax;
+*/
 }
 

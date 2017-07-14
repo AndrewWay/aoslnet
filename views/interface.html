@@ -58,6 +58,7 @@
   </div>
 
   <!-- TODO Allow the user to append/remove graphs, or append/remove data display at run-time -->
+  <!-- TODO Dynamically detect what simulation data is available and create graphs and data monitors -->
 
   <div id="graphs">
     <!-- GRAPH 1 -->
@@ -73,29 +74,53 @@
   <!-- DATA -->
   <div id='miscdata'>
     <table id='miscdata_table'>
-    <tr id="clock_display" class="miscdisp">
+    <tr>
       <td>
         Time: 
       </td>
-      <td>
+      <td id="clock_display">
         --:--:--
       </td>
     </tr>
 
-    <tr id="wind_display" class="miscdisp">
+    <tr>
       <td>
-        Wind Speed
+        Wind Direction:
       </td>
-      <td>
+      <td  id="winddir_display">
         --
       </td>
     </tr>
 
-    <tr id="water_velocity_display" class="miscdisp">
+    <tr>
       <td>
-        Water velocity
+        Wind Speed:
       </td>
+      <td id="windspeed_display">
+        --
+      </td>
+    </tr>
+    <tr>
       <td>
+        Speed of Sound:
+      </td>
+      <td id="sound_speed_display">
+        --
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Air Pressure:
+      </td>
+      <td id="air_pressure_display">
+        --
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Air Temperature: 
+      </td>
+      <td id="air_temp_display">
         --
       </td>
     </tr>
@@ -104,6 +129,11 @@
 
   <!-- GOOGLE MAP -->
   <div id="map"></div>
+
+  <!-- PICTURES -->
+  <div id="pics">
+    <img id="icedisp" src="images/notfound.png"></img>
+  </div>
 
   <!-- ICEBERG MODEL -->  
   <div id="model" class="page-segment"></div>
