@@ -17,7 +17,6 @@
   
   <!-- MISC -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" xlink:href="svg.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="js/stats.min.js"></script>
@@ -29,6 +28,8 @@
   <script src="js/3d/OrbitControls.js"></script>
   <script src="js/3d/ConvexGeometry.js"></script>
   <script src="js/3d/Detector.js"></script>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
 
   <!-- CLIENT-SIDE FUNCTIONALITY -->
   <script src="js/interface/global.js"></script>
@@ -132,7 +133,7 @@
 
   <!-- PICTURES -->
   <div id="pics">
-    <img id="icedisp" src="./public/images/notfound.png"></img>
+    <img id="icedisp" src="images/notfound.png"></img>
   </div>
 
   <!-- ICEBERG MODEL -->  
