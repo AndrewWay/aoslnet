@@ -76,14 +76,21 @@
   
   <!-- TEMPORAL -->
   <div id="temporal">
-    <button type="button" id="playbtn" onclick="play()">Play</button>
-    <button type="button" id="pausebtn" onclick="pause()">Pause</button>
-    <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+    <div id="buttons">    
+      <button type="button" id="playbtn" onclick="play()">Play</button>
+      <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+      <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+    </div>
+    <div id="timebarbox">
+      <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/> 
+    </div>
   </div>
 
   <!-- DATABASE DATA CONTROL AND QUERY -->
-  <div id="filters" class="page-segment">FILTERS</div>
-  
+  <div id="datacontrol" class="page-segment">
+    <select id="selectYear" onchange="changeYear()"></select>
+    <select id="selectIceberg"></select>
+  </div>
   
 </div>
 
