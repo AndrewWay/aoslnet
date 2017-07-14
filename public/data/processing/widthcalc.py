@@ -1,6 +1,7 @@
 import numpy
+import sys
 
-input="june1_full.txt"
+input=sys.argv[1]
 file=open(input)
 i=0
 
@@ -22,5 +23,5 @@ for i in range(0,card):
             vnorm=numpy.linalg.norm(vector)
             if(vnorm>wid): 
                 wid=vnorm
-                print "New choice | ",wid,p1,p2
+#                print "New choice | ",wid,p1,p2
 print wid

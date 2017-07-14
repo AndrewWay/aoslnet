@@ -1,4 +1,4 @@
-var yearSelected="2017";
+var yearSelected="";
 var icebergSelected="";
 var filepathIcebergsData = "";
 var filePathIcebergSelected="";
@@ -6,39 +6,67 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+
+//strings for making data requests
+namesReq='bergs/names';
+yearsReq='bergs/years';
+dataReq='bergs/data';
+
 tmax=0;
-time_index=0;
 disp_size=20;
-delay_factor=0.5;
 playid=0;
-cond=[];
-press=[];
-sal=[];
-svel=[];
-temp=[];
 pics=[];
-depth=[];
-lat=[];
-long=[];
 time=[];
-windDir=[];
-windSpd=[];
+
+//Geometric Data
 sdlat=[];
 sdlong=[];
+lat=[];
+long=[];
+centerlong=0;
+centerlat=0;
+
+//Oceanic data
+sal=[];
+svel=[];
+depth=[];
+temp=[];
+cond=[];
+press=[];
+
+//Atmospheric Data
+windDir=[];
+windSpd=[];
+airTemp=[];
+airPress=[];
 
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    var yearList = getList('/bergs/icebergyearlist');
+    var yearList = getList(yearsReq);
     updateOptions('selectYear',yearList);
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh([],[],[]);//Render 3DMesh with no data
-    updateMap(0,0);
+   // preselect();
 });
 
+function preselect(){
+  var selectedID=sessionStorage.getItem('selectedID');
+  var selectedYear=sessionStorage.getItem('selectedYear');
+  //TODO: Clean up the if condition. Too long. 
+  //TODO: Use regular expressions to detect valid names and years
+  if( selectedID == 'null' || selectedID == '' || selectedYear == '' || selectedYear == 'null'){
+    console.log("No pre-selected iceberg");
+  }
+  else{
+    console.log("pre-selected iceberg: "+selectedYear+" "+selectedID );
+    document.getElementById('selectYear').value=selectedYear;
+    document.getElementById('selectIceberg').value=selectedID;  
+  }
+}
 function updateOptions(optionID,options){
     var optList = document.getElementById(optionID); 
     //Remove existing options from option list    
@@ -57,7 +85,7 @@ function updateOptions(optionID,options){
 function changeYear(){
     console.log('changeYear() starting');
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+    var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);  
     console.log('changeYear() finished');
 }
@@ -66,17 +94,18 @@ function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
-    var pcd = getJSON('/bergs/icebergpcd/'+yearSelected+'/'+bergSelected);
-    var measData = getJSON('/bergs/icebergmeas/'+yearSelected+'/'+bergSelected);    
+    var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
 
-    var xdata=pcd[0].x;
-    var ydata=pcd[0].y;
-    var zdata=pcd[0].z;
-    var height=pcd[0].height;
-    var width=pcd[0].width;
-    var volume=pcd[0].volume;
-    var longitude=pcd[0].longitude;
-    var latitude=pcd[0].latitude;
+    var xdata=json[0].x;
+    var ydata=json[0].y;
+    var zdata=json[0].z;
+    var height=json[0].height;
+    var width=json[0].width;
+    var volume=json[0].volume;
+    var longitude=json[0].longitude;
+    var latitude=json[0].latitude;
+    centerlong=longitude;
+    centerlat=latitude;
     console.log("height: "+height);
     console.log("width: "+width);
     console.log("volume: "+volume);
@@ -106,11 +135,11 @@ function changeIceberg(){
     }
     updateMesh(xdata,ydata,zdata);
     updateDim(height,width,volume);
-    distributeData(measData[0].Data);
+    distributeData(json[0].Data);
     displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
-    updateTimeMax(measData[0].Data.length);
+    updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
 
@@ -133,6 +162,8 @@ function distributeData(dat){
     time=new Array(setSize);
     windDir=new Array(setSize);
     windSpd=new Array(setSize);
+    airPress=new Array(setSize);
+    airTemp=new Array(setSize);
     for(i=0;i<setSize;i++){
         cond[i]=dat[i].CTD.conductivity;        
         press[i]=dat[i].CTD.pressure;        
@@ -143,29 +174,14 @@ function distributeData(dat){
         depth[i]=dat[i].depth;        
         lat[i]=dat[i].latI0;        
         long[i]=dat[i].longI0;        
-      //  time[i]=dat[i].adcp.timestamps;//Fix this. JSON objects have bad timestamp data
+        time[i]=dat[i].timestamp;//Fix this. JSON objects have bad timestamp data
         windDir[i]=dat[i].windDir;        
         windSpd[i]=dat[i].windSpd;      
         sdlat[i]=dat[i].latitudeSD;
-        sdlong[i]=dat[i].longitudeSD;      
+        sdlong[i]=dat[i].longitudeSD;  
+        airPress[i]=dat[i].pressure;
+        airTemp[i]=dat[i].temperature;    
     }
+    setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
-}
-
-
-function updatePic(p){
-  console.log('updatePic()');
-  console.log('pic: '+p);
-  if(!(p === 'null')){
-    document.getElementById("icedisp").src="../images/2017/Joey/"+p;
-    $("#icedisp").on("error", function(){
-        $(this).attr('src', 'images/notfound.png');
-    });
-  }
-}
-
-function updateGallery(){
-  console.log('updateGallery() starting');
-  var yearSelected = document.getElementById("selectYear").value;
-  var bergSelected = document.getElementById("selectIceberg").value;
 }

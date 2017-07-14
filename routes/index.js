@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var homepage = 'index'
-var icebergSelector='icebergSelector'
-var ibMap='icebergMap'
+var icebergSelector='interface'
+var ibMap='globalmap'
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -13,7 +13,7 @@ router.get('/icebergMap', function(req, res, next) {
   res.render(ibMap, { title: 'Express' });
 });
 
-router.get('/icebergs', function(req, res, next) {
+router.get('/interface', function(req, res, next) {
   res.render(icebergSelector, { title: 'Express' });
 });
 

@@ -1,0 +1,66 @@
+
+lat=[];
+long=[];
+name=[];
+year=[];
+iq=0;
+
+$(document).ready(function() {
+    var yearList = ["2017"];//getList('/bergs/icebergyearlist');
+    console.log(yearList);    
+    for(i=0;i<yearList.length;i++){
+      var yearSelected = yearList[i];
+      var bergList = getList('/bergs/icebergnamelist/'+yearSelected);
+      
+      for(j=0;j<bergList.length;i++){
+        bergSelected = bergList[j]; //Get the name of the iceberg        
+        var dat = getJSON('/icebergmeas/'+yearSelected+'/'+bergSelected);//Get iceberg data
+        distributeData(dat);//Add data to the global array        
+        addMarker(iq);//Add an iceberg marker to the map
+        iq++;//Increment the iceberg quantity      
+      } 
+    }
+});
+
+function distributeData(dat){
+  console.log("distributing data...");
+  lat.push(dat[i].latI0);        
+  long.push(dat[i].longI0);  
+  year.push(dat[i].year);
+  name.push(dat[i].icebergID);
+  console.log("data distributed.");
+}
+
+function addMarker(i){
+  console.log("adding marker...");
+  var lt = lat[i];
+  var lg = lng[i];  
+  var nm = name[i];
+  var coord = {lat: lt,lng: lg};
+  //Create a new google marker
+  var marker = new google.maps.Marker({
+    position: coord,
+    map: map,
+    title: nm
+  });
+  //Add a new google marker to the map
+  marker.setMap(map);  
+  console.log("marker added for: "+nm);
+}
+
+function mapReady() {
+  console.log("Setting Map data");
+
+  var centerLat = 0;
+  var centerLng = 0;
+
+  //Initialize Map
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 3,
+    center: {lat: centerLat, lng: centerLng},
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  });
+    
+
+  console.log("Map data set");
+}

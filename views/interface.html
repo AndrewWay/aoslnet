@@ -14,8 +14,22 @@
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
   <!--Load the AJAX API-->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src="js/ctd_grapher.js"></script>
-  <script src="js/dlfile.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
+<script type="text/javascript" xlink:href="svg.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+  <script src="js/interface/global.js"></script>
+  <script src="js/datatransfer.js"></script>
+  <script src="js/interface/playback.js"></script>
+  <script src="js/interface/model.js"></script>
+  <script src="js/interface/map.js"></script>
+  <script src="js/interface/ctd.js"></script>
+  <script src="js/interface/airstats.js"></script>
+  <script src="js/interface/pictures.js"></script>
+
 </head>
 
 <body>
@@ -23,7 +37,7 @@
   <header>
     <div id="strapline">
 	    <div id="welcome_slogan">
-	      <h3>Welcome To the AOSL delivery data website <span>v0.5</span></h3>
+	      <h3>Welcome To the AOSL delivery data website <span>v0.6</span></h3>
 	    </div>
     </div>
 	  <nav>
@@ -31,7 +45,7 @@
         <ul id="nav">
           <li ><a href="/">Home</a></li>
           <li><a href="/icebergMap">Iceberg Map</a></li>
-          <li class="current"><a href="/icebergSelector">Icebergs</a></li>
+          <li class="current"><a href="/interface">Icebergs</a></li>
           <li><a href="http://www.aosl.ca">About Us</a></li>
         </ul>
       </div>
@@ -52,7 +66,23 @@
 	  <button type="button" id="playbtn" onclick="play()">Play</button>
     <button type="button" id="pausebtn" onclick="pause()">Pause</button>
     <button type="button" id="stopbtn" onclick="stop()">Stop</button>
-    <input type="range" id="timebar" min="0" max="0" value="0" onclick="pause()" oninput="manualsetTime()"/>  
+    <div>
+      <table>
+        <tr>
+          <th>Clock</th>
+          <th>Sound Velocity</th>
+          <th>Air Pressure</th>
+          <th>Air Temperature</th>
+        </tr>
+        <tr>
+          <td id="clock"></td>
+          <td id="soundvel"></td>
+          <td id="airpress"></td>
+          <td id="airtemp"></td>
+        </tr>
+      </table>
+    </div>
+    <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/>  
   </div>
 	
 	<div id="site_content">		
@@ -122,7 +152,8 @@
           
           </div>
           <a>ADCP Water Current Profile</a>
-          <div id="ADCPprof" class="output_html rendered_html output_subarea output_execute_result">
+            <p>COMMENTED OUT UNTIL DEVELOPED</p>
+          <!--div id="ADCPprof" class="output_html rendered_html output_subarea output_execute_result">
             <form>
               Yaw: <input id="yawval" type="text" placeholder="Yaw" required>
               Pitch: <input id="pitchval" type="text" placeholder="Pitch" required>
@@ -130,7 +161,7 @@
             </form>
             <script src="http://d3js.org/d3.v3.min.js"></script>
             <script src="js/vectorfield3d.js"></script>
-          </div>
+          </div-->
         </div><!--close right_sidebar_item--> 
       </div><!--close sidebar-->     		
     </div><!--close sidebar_container-->	
@@ -141,100 +172,5 @@
     </div>   
   </div><!--close site_content-->  	
 </div><!--close main-->
-
-
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
-  <script src="js/three.js"></script>
-  <!--script src="js/loaders/PCDLoader.js"></script>
-  <script src="js/controls/TrackballControls.js"></script>
-  <script src="js/Detector.js"></script>
-  <script src="js/libs/stats.min.js"></script>
-  <!--<script src="js/PCDSceneCreator.js"></script>-->
-  <script type="text/javascript" src="js/icebergSelector.js"></script>    
-  <!-- Load PCD data plotter -->   
-  <!--script src="js/render.js"></script--> 
-  <script>
-  function mapReady() {
-    setMapData(); 
-  }
-  </script>
-  <script>
-  var yaw=0.5,pitch=0.5, width=325, height=300, drag=false;
-  
-    var gata = [de()];
-    function de(){
-        var output=[]
-            ,xlength = 10
-            ,ylength = 10
-            ,zlength = 10;
-        for(var x = 0; x < xlength; x++){
-            for(var y = 0; y < ylength; y++){
-                for(var z = 0; z < zlength; z++){
-                    output.push({
-                        x: x
-                        ,xl: xlength
-                        ,y: y
-                        ,yl: ylength
-                        ,z: z * 20
-                        ,zl: zlength
-                        ,dx:0
-                        ,dy:0
-                        ,h: (y / 10 / (z + 1)) + 2
-                        ,theta: 1.5 * z / (y + 1)
-                        ,psi: 3.14 * y / (x + 1)
-                        ,depth:0
-                    });
-                }
-            }
-        }
-        return output;
-    }
-    
-  var svg = d3.select("#ADCPprof")
-          .append('svg')
-            .attr('height',height)
-            .attr('width',width)
-            .attr("transform", "translate(0," + 150 + ")");
-
-
-  var md = svg.selectAll("g")
-      .data(gata)
-      .enter().append("g")
-    .surface3D(width,height-300)
-      .surfaceHeight(function(d){ 
-        return d;
-      }).surfaceColor(function(d){
-        var c=d3.hsl((d+100), 0.6, 0.5).rgb();
-        return "rgb("+parseInt(c.r)+","+parseInt(c.g)+","+parseInt(c.b)+")";
-      });
-
-    svg.on("mousedown",function(){
-        drag = [d3.mouse(this), yaw, pitch];
-    })
-    .on("mouseup", function(){
-        drag = false;
-    }).on("mousemove", function(){
-        if(drag){
-            var mouse = d3.mouse(this);
-            yaw = drag[1] - (mouse[0] - drag[0][0]) / 50;
-            pitch = drag[2] + (mouse[1] - drag[0][1]) / 50;
-            pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
-            var pd = Math.round(pitch * 100) / 100
-                ,yd = Math.round(yaw * 100) / 100;
-            document.getElementById("yawval").value = yd;
-            document.getElementById("pitchval").value = pd;
-            md.turntable(yaw, pitch);
-        }
-    });
-    
-    function recalc(){
-        var y =  document.getElementById("yawval").value
-            ,p =  document.getElementById("pitchval").value;
-        if(y && p) md.turntable(y, p);
-    }
-  </script>
 </body>
 </html>
