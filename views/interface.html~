@@ -57,6 +57,8 @@
     </div>
   </div>
 
+  <!-- TODO Allow the user to append/remove graphs, or append/remove data display at run-time -->
+
   <div id="graphs">
     <!-- GRAPH 1 -->
     <div id="graph1" class="graph"></div>
@@ -66,6 +68,38 @@
 
     <!-- GRAPH 3 -->
     <div id="graph3" class="graph"></div>
+  </div>
+
+  <!-- DATA -->
+  <div id='miscdata'>
+    <table id='miscdata_table'>
+    <tr id="clock_display" class="miscdisp">
+      <td>
+        Time: 
+      </td>
+      <td>
+        --:--:--
+      </td>
+    </tr>
+
+    <tr id="wind_display" class="miscdisp">
+      <td>
+        Wind Speed
+      </td>
+      <td>
+        --
+      </td>
+    </tr>
+
+    <tr id="water_velocity_display" class="miscdisp">
+      <td>
+        Water velocity
+      </td>
+      <td>
+        --:--:--
+      </td>
+    </tr>
+    </table>
   </div>
 
   <!-- GOOGLE MAP -->
