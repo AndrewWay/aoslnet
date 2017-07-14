@@ -1,18 +1,22 @@
 //Trial playback
 time_index=0;
 delay_factor=0.5;
+timebarid='timebar';
+playbtnid='playbtn';
+pausebtnid='pausebtn';
+stopbtnid='stopbtn';
 
 function manualsetTime(){
-  var newTime=document.getElementById("timebar").value;
+  var newTime=document.getElementById(timebarid).value;
   console.log("Manually setting time to: "+newTime);
   set_time(newTime);  
   dispdata(get_time());
 }
 function play(){      
-    document.getElementById("pausebtn").disabled=false;
-    document.getElementById("stopbtn").disabled=false;
-    document.getElementById("playbtn").disabled=true;
-    document.getElementById("timebar").disabled=true;
+    document.getElementById(pausebtnid).disabled=false;
+    document.getElementById(stopbtnid).disabled=false;
+    document.getElementById(playbtnid).disabled=true;
+    document.getElementById(timebarid).disabled=true;
     playid=setInterval(function(){
         var ti = get_time();//time[time_index];//Json objects have bad timestamp data
         console.log('time: '+ti);        
@@ -43,20 +47,20 @@ function dispdata(t){
 
 function pause(){
   clearInterval(playid);
-  document.getElementById("timebar").disabled=false;
-  document.getElementById("pausebtn").disabled=true;
-  document.getElementById("playbtn").disabled=false;
+  document.getElementById(timebarid).disabled=false;
+  document.getElementById(pausebtnid).disabled=true;
+  document.getElementById(playbtnid).disabled=false;
 }
 
 function stop(){
   clearInterval(playid);
   set_time(0);
   setTimeBar(get_time());
-  redraw(get_time());
-  document.getElementById("timebar").disabled=false;
-  document.getElementById("stopbtn").disabled=true;
-  document.getElementById("pausebtn").disabled=true;
-  document.getElementById("playbtn").disabled=false;
+  dispdata(get_time());
+  document.getElementById(timebarid).disabled=false;
+  document.getElementById(stopbtnid).disabled=true;
+  document.getElementById(pausebtnid).disabled=true;
+  document.getElementById(playbtnid).disabled=false;
 }
 function setclock(t){
   var date = new Date(time[t]*1000);
@@ -83,10 +87,10 @@ function get_time(){
   return parseInt(time_index); 
 }
 function setTimeBar(t){
-  document.getElementById("timebar").value=t;
+  document.getElementById(timebarid).value=t;
 }
 function updateTimeMax(t){
   tmax=t;
   console.log("Setting timebar max to "+tmax);
-  document.getElementById("timebar").max=tmax;
+  document.getElementById(timebarid).max=tmax;
 }

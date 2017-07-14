@@ -41,14 +41,14 @@ airTemp=[];
 airPress=[];
 
 $(document).ready(function() { 
-    //document.getElementById("pausebtn").disabled=true;
-    //document.getElementById("stopbtn").disabled=true;
+    document.getElementById("pausebtn").disabled=true;
+    document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    //var yearList = getList(yearsReq);
-    //updateOptions('selectYear',yearList);
-    //var yearSelected = document.getElementById("selectYear").value;
-    //var bergList = getList(namesReq+'/'+yearSelected);
-    //updateOptions('selectIceberg',bergList);
+    var yearList = getList(yearsReq);
+    updateOptions('selectYear',yearList);
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergList = getList(namesReq+'/'+yearSelected);
+    updateOptions('selectIceberg',bergList);
     updateMesh('');//Render 3DMesh with no data
    // preselect();
 });
@@ -133,7 +133,7 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-    updateMesh(xdata,ydata,zdata);
+    //updateMesh('');
     updateDim(height,width,volume);
     distributeData(json[0].Data);
     displayWind(windSpd,windDir);

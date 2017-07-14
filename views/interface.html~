@@ -90,6 +90,7 @@
   <div id="datacontrol" class="page-segment">
     <select id="selectYear" onchange="changeYear()"></select>
     <select id="selectIceberg"></select>
+    <button type="button" onclick="changeIceberg()">Load</button>
   </div>
   
 </div>
