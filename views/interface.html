@@ -74,8 +74,22 @@
   <!-- ICEBERG MODEL -->  
   <div id="model" class="page-segment"></div>
   
+  <!-- TEMPORAL -->
+  <div id="temporal">
+    <div id="buttons">    
+      <button type="button" id="playbtn" onclick="play()">Play</button>
+      <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+      <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+    </div>
+    <div id="timebarbox">
+      <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/> 
+    </div>
+  </div>
+
   <!-- DATABASE DATA CONTROL AND QUERY -->
   <div id="filters" class="page-segment">FILTERS</div>
+  
+  
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>

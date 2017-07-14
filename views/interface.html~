@@ -67,14 +67,24 @@
     <!-- GRAPH 3 -->
     <div id="graph3" class="graph"></div>
   </div>
+
   <!-- GOOGLE MAP -->
   <div id="map"></div>
 
   <!-- ICEBERG MODEL -->  
   <div id="model" class="page-segment"></div>
   
+  <!-- TEMPORAL -->
+  <div id="temporal">
+    <button type="button" id="playbtn" onclick="play()">Play</button>
+    <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+    <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+  </div>
+
   <!-- DATABASE DATA CONTROL AND QUERY -->
   <div id="filters" class="page-segment">FILTERS</div>
+  
+  
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
