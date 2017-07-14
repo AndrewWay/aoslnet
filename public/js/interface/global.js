@@ -134,9 +134,9 @@ function changeIceberg(){
       latitude=0;    
     }
     //updateMesh('');
-    updateDim(height,width,volume);
+    //updateDim(height,width,volume);
     distributeData(json[0].Data);
-    displayWind(windSpd,windDir);
+    //displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
     updateTimeMax(json[0].Data.length);

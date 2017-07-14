@@ -159,7 +159,6 @@ function setplotData(S,T,D,t){
 }
 
 function redraw(time){
-  
     time_max = time;
     time_min = time_max-time_range;
     sal_options.hAxis.viewWindow.max = time_max;

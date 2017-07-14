@@ -16,7 +16,7 @@ function play(){
     document.getElementById(pausebtnid).disabled=false;
     document.getElementById(stopbtnid).disabled=false;
     document.getElementById(playbtnid).disabled=true;
-    document.getElementById(timebarid).disabled=true;
+    document.getElementById(timebarid).disabled=false;
     playid=setInterval(function(){
         var ti = get_time();//time[time_index];//Json objects have bad timestamp data
         console.log('time: '+ti);        
@@ -37,12 +37,12 @@ function dispdata(t){
   var ap=airPress[t];
   var at=airTemp[t];
   var sv=svel[t];      
-  updateWind(ws,wd);
-  updatePic(p);
-  updateSDPosition(t);
-  updateSvel(sv);
-  updateAir(ap,at);
-  setclock(t);
+ // updateWind(ws,wd);
+ // updatePic(p);
+ // updateSDPosition(t);
+ // updateSvel(sv);
+ // updateAir(ap,at);
+ // setclock(t);
 }
 
 function pause(){
@@ -81,6 +81,7 @@ function updateAir(ap,at){
   document.getElementById("airtemp").innerHTML=at;    
 }
 function set_time(t){
+  console.log('Argument '+t);
   time_index=t;
 }
 function get_time(){

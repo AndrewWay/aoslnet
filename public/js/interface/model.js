@@ -61,7 +61,6 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
 	camera.position.z = 500;
 	camera.updateProjectionMatrix();
-  console.log('Creating trackballcontrols');
 	controls = new THREE.TrackballControls( camera,container);
   //controls = new THREE.OrbitControls(camera);  
   controls.staticMoving = false;	
@@ -70,19 +69,16 @@ function init() {
 	controls.enableZoom = true;
   controls.addEventListener( 'change', render ); // remove when using animation loop
 	// enable animation loop when using damping or autorotation
-  console.log('trackball created');
   /* GEOMETRY */
 
   var loader = new THREE.STLLoader();
   loader.load(currentfile, function ( geometry ) {
-    console.log('I am in the function?');
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.material.side = THREE.DoubleSide;
     scene.add( mesh );
   });
 
-    console.log('STL loaded');
 	/* LIGHTS */
 
 	var light = new THREE.DirectionalLight( 0xffffff );

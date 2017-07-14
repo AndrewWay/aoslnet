@@ -133,10 +133,10 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-    updateMesh('');
+    //updateMesh('');
     updateDim(height,width,volume);
     distributeData(json[0].Data);
-    displayWind(windSpd,windDir);
+    //displayWind(windSpd,windDir);
     updateMap(latitude,longitude);
     setMapData();  
     updateTimeMax(json[0].Data.length);
