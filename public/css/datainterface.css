@@ -74,6 +74,7 @@
   top: 16vh;
   left: 10px;
   z-index: 2;
+  overflow: auto;
 }
 #menu {
   border: 1px solid;

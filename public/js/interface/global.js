@@ -17,28 +17,7 @@ disp_size=20;
 playid=0;
 pics=[];
 time=[];
-
-//Geometric Data
-sdlat=[];
-sdlong=[];
-lat=[];
-long=[];
-centerlong=0;
-centerlat=0;
-
-//Oceanic data
-sal=[];
-svel=[];
-depth=[];
-temp=[];
-cond=[];
-press=[];
-
-//Atmospheric Data
-windDir=[];
-windSpd=[];
-airTemp=[];
-airPress=[];
+datakeys=[];
 
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
@@ -50,7 +29,6 @@ $(document).ready(function() {
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh('');//Render 3DMesh with no data
-   // preselect();
 });
 
 function preselect(){
@@ -135,14 +113,22 @@ function changeIceberg(){
     }
     //updateMesh('');
     //updateDim(height,width,volume);
-    distributeData(json[0].Data);
-    //displayWind(windSpd,windDir);
-    updateMap(latitude,longitude);
-    setMapData();  
+   // distributeData(json[0].Data);
+    //displayWind(windSpd,windDir); 
+    extractDataKeys(json);
+   // updateMap(latitude,longitude);
+   // setMapData();  
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
 
+function extractDataKeys(json){
+  console.log("extracting data keys");
+  for(var k in json) datakeys.push(k);
+  for(var i=0;i<datakeys.length;i++){
+    console.log('i : '+i+ ' key: '+datakeys[i]);
+  }
+}
 
 function distributeData(dat){
     console.log('distributeData() start');
@@ -182,6 +168,6 @@ function distributeData(dat){
         airPress[i]=dat[i].pressure;
         airTemp[i]=dat[i].temperature;    
     }
-    setplotData(sal,temp,depth,time);
+  //  setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
 }
