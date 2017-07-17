@@ -6,6 +6,7 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+autographlimit=4;
 
 //strings for making data requests
 namesReq='bergs/names';
@@ -17,7 +18,7 @@ disp_size=20;
 playid=0;
 pics=[];
 time=[];
-datakeys=[];
+datakeys=new Map();
 
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
@@ -115,7 +116,7 @@ function changeIceberg(){
     //updateDim(height,width,volume);
    // distributeData(json[0].Data);
     //displayWind(windSpd,windDir); 
-    extractDataKeys(json);
+   testkeys=extractDataKeys(json[0].Data[0]);
    // updateMap(latitude,longitude);
    // setMapData();  
     updateTimeMax(json[0].Data.length);
@@ -124,10 +125,23 @@ function changeIceberg(){
 
 function extractDataKeys(json){
   console.log("extracting data keys");
-  for(var k in json) datakeys.push(k);
-  for(var i=0;i<datakeys.length;i++){
-    console.log('i : '+i+ ' key: '+datakeys[i]);
-  }
+  var keys=Object.keys(json);
+  var keyarray=new Array();
+  for(var i=0;i<keys.length;i++){
+    var childkey=keys[i];
+    if(json[childkey] !== null && typeof json[childkey] === 'object'){
+      datakeys.set(childkey,extractDataKeys(json[childkey])); 
+    }
+    else{
+      if($("#graphs > div").length < autographlimit){
+        addChart(childkey);
+      }
+      else{
+       // addDisplay();
+      }
+    }
+  }   
+  return keys;
 }
 
 function distributeData(dat){
