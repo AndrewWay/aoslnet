@@ -7,7 +7,7 @@ var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
 autographlimit=4;
-
+dsstrings=new Array(0);
 //strings for making data requests
 namesReq='bergs/names';
 yearsReq='bergs/years';
@@ -116,32 +116,65 @@ function changeIceberg(){
     //updateDim(height,width,volume);
    // distributeData(json[0].Data);
     //displayWind(windSpd,windDir); 
-   testkeys=extractDataKeys(json[0].Data[0]);
-   // updateMap(latitude,longitude);
+   //testkeys=extractDataKeys(json[0].Data[0]);
+    extractKeyPaths(json[0].Data[0]);
+    console.log(dsstrings);
+    for(var i=0;i<dsstrings.length;i++){
+      var label=dsstrings[i];
+      if($("#graphs > div").length < autographlimit){
+        //create a graph
+        createDisplay('graph',label);
+      }
+      else{
+        //Create a monitor
+        createDisplay('monitor',label);
+      }
+    }
+
+    // updateMap(latitude,longitude);
    // setMapData();  
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
 
-function extractDataKeys(json){
-  console.log("extracting data keys");
+function createDisplay(type,label){
+  if( label === 'graph'){
+    addChart(label);
+  }
+  else if(label === 'monitor'){
+    addDisplay(label);
+  }
+}
+
+function extractKeyPaths(json){
   var keys=Object.keys(json);
-  var keyarray=new Array();
   for(var i=0;i<keys.length;i++){
     var childkey=keys[i];
-    if(json[childkey] !== null && typeof json[childkey] === 'object'){
-      datakeys.set(childkey,extractDataKeys(json[childkey])); 
+    var child=json[childkey];
+    if(child !== null && typeof child === 'object'){
+      console.log('child');
+      //helper method. json[childkey] has its own children
+      keypathHelper(childkey,childkey,child); 
     }
     else{
-      if($("#graphs > div").length < autographlimit){
-        addChart(childkey);
-      }
-      else{
-        addDisplay(childkey);
-      }
+      dsstrings.push(childkey);
     }
-  }   
-  return keys;
+  }
+}
+
+function keypathHelper(keypath,key,json){
+  var keys=Object.keys(json);
+  for(var i=0;i<keys.length;i++){
+    var childkey=keys[i];
+    var child=json[childkey];
+    var childkeypath=keypath+'&'+childkey;
+    if(child !== null && typeof child === 'object'){
+      keypathHelper(childkeypath,childkey,child); 
+    }
+    else{
+      dsstrings.push(childkeypath);
+    }
+  }
 }
 
 function distributeData(dat){
