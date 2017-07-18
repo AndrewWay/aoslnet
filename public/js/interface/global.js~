@@ -6,6 +6,7 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
+autographlimit=4;
 
 //strings for making data requests
 namesReq='bergs/names';
@@ -136,7 +137,7 @@ function extractDataKeys(json){
         addChart(childkey);
       }
       else{
-       // addDisplay();
+        addDisplay();
       }
     }
   }   

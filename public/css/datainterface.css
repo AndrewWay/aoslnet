@@ -35,16 +35,16 @@
   height:100%;
   width:100%;
 }
-#miscdata_table{
+#displaytable{
   table-layout: fixed;
   width: 200px;
 }
 
-#miscdata_table,th,td{
+#displaytable,th,td{
   width: 150px;
   color: #00ff00;
 }
-#miscdata{
+#displays{
   position: absolute;
   z-index: 3;
   left: 215px;
