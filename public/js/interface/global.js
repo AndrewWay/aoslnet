@@ -62,6 +62,12 @@ function updateOptions(optionID,options){
     }
 }
 
+function getDatum(arraylabel,index){
+  var arr = datamap.get(arraylabel);
+  var ret=arr[index];
+  return ret;
+}
+
 function changeYear(){
     console.log('changeYear() starting');
     var yearSelected = document.getElementById("selectYear").value;
@@ -130,6 +136,11 @@ function changeIceberg(){
 
     // updateMap(latitude,longitude);
     // setMapData();  
+    for(var i=0;i<graph_ids.length;i++){
+      var arraylabel=graph_ids[i].replace('graph_','');
+      var arr = datamap.get(arraylabel);
+      setplotData(graph_ids[i],arr);
+    }
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
@@ -176,7 +187,7 @@ function distributeData(dat){
     console.log('distributeData() start');
     setSize = dat.length;
     console.log("Measurement data set size: "+setSize);
-    cond=new Array(setSize);
+    time=new Array(setSize);
     for(i=0;i<dsstrings.length;i++){
       var tmparray=new Array(setSize);
       var keypath=dsstrings[i];    

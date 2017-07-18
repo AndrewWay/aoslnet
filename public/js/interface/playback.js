@@ -1,6 +1,6 @@
 //Data playback
 time_index=0;
-delay_factor=0.5;
+delay_factor=1;
 timebarid='timebar';
 playbtnid='playbtn';
 pausebtnid='pausebtn';
@@ -12,6 +12,7 @@ function manualsetTime(){
   set_time(newTime);  
   dispdata(get_time());
 }
+
 function play(){      
     document.getElementById(pausebtnid).disabled=false;
     document.getElementById(stopbtnid).disabled=false;
@@ -53,7 +54,6 @@ function stop(){
 }
 function setclock(t){
   var date = new Date(time[t]*1000);
-
   var hours = date.getHours();// Hours part from the timestamp
   var minutes = "0" + date.getMinutes();// Minutes part from the timestamp
   var seconds = "0" + date.getSeconds();// Seconds part from the timestamp
@@ -61,13 +61,6 @@ function setclock(t){
   // Will display time in 10:30:23 format
   var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   document.getElementById(clockid).innerHTML=formattedTime;
-}
-function updateSvel(sv){
-  document.getElementById(soundvelid).innerHTML=sv;
-}
-function updateAir(ap,at){
-  document.getElementById(airpressid).innerHTML=ap;
-  document.getElementById(airtempid).innerHTML=at;    
 }
 function set_time(t){
   time_index=t;
