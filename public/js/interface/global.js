@@ -6,7 +6,8 @@ var filepathIcebergModel="";
 var IcebergModelName="";
 var jsonIcberg ={};
 var mapInitialized=false;
-
+autographlimit=4;
+dsstrings=new Array(0);
 //strings for making data requests
 namesReq='bergs/names';
 yearsReq='bergs/years';
@@ -17,29 +18,8 @@ disp_size=20;
 playid=0;
 pics=[];
 time=[];
-
-//Geometric Data
-sdlat=[];
-sdlong=[];
-lat=[];
-long=[];
-centerlong=0;
-centerlat=0;
-
-//Oceanic data
-sal=[];
-svel=[];
-depth=[];
-temp=[];
-cond=[];
-press=[];
-
-//Atmospheric Data
-windDir=[];
-windSpd=[];
-airTemp=[];
-airPress=[];
-
+datakeys=new Map();
+datamap=new Map();
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
@@ -50,7 +30,6 @@ $(document).ready(function() {
     var bergList = getList(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh('');//Render 3DMesh with no data
-   // preselect();
 });
 
 function preselect(){
@@ -67,6 +46,7 @@ function preselect(){
     document.getElementById('selectIceberg').value=selectedID;  
   }
 }
+
 function updateOptions(optionID,options){
     var optList = document.getElementById(optionID); 
     //Remove existing options from option list    
@@ -80,6 +60,12 @@ function updateOptions(optionID,options){
         option.value= options[i];
         optList.add(option);
     }
+}
+
+function getDatum(arraylabel,index){
+  var arr = datamap.get(arraylabel);
+  var ret=arr[index];
+  return ret;
 }
 
 function changeYear(){
@@ -96,9 +82,6 @@ function changeIceberg(){
     var bergSelected = document.getElementById("selectIceberg").value;
     var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
 
-    var xdata=json[0].x;
-    var ydata=json[0].y;
-    var zdata=json[0].z;
     var height=json[0].height;
     var width=json[0].width;
     var volume=json[0].volume;
@@ -133,55 +116,97 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-    //updateMesh('');
+    //updateMesh(filepath);
     //updateDim(height,width,volume);
+    //displayWind(windSpd,windDir); 
+   //testkeys=extractDataKeys(json[0].Data[0]);
+    extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
-    //displayWind(windSpd,windDir);
-    updateMap(latitude,longitude);
-    setMapData();  
+    for(var i=0;i<dsstrings.length;i++){
+      var label=dsstrings[i];
+      if($("#graphs > div").length < autographlimit){
+        //create a graph
+        createDisplay('graph',label);
+      }
+      else{
+        //Create a monitor
+        createDisplay('monitor',label);
+      }
+    }
+
+    // updateMap(latitude,longitude);
+    // setMapData();  
+    for(var i=0;i<graph_ids.length;i++){
+      var arraylabel=graph_ids[i].replace('graph_','');
+      var arr = datamap.get(arraylabel);
+      setplotData(graph_ids[i],arr);
+    }
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
 
+function createDisplay(type,label){
+  if( type === 'graph'){
+    addChart(label);
+  }
+  else if(type === 'monitor'){
+    addDisplay(label);
+  }
+}
+
+function extractKeyPaths(json){
+  var keys=Object.keys(json);
+  for(var i=0;i<keys.length;i++){
+    var childkey=keys[i];
+    var child=json[childkey];
+    if(child !== null && typeof child === 'object'){
+      keypathHelper(childkey,childkey,child); 
+    }
+    else{
+      dsstrings.push(childkey);
+    }
+  }
+}
+
+function keypathHelper(keypath,key,json){
+  var keys=Object.keys(json);
+  for(var i=0;i<keys.length;i++){
+    var childkey=keys[i];
+    var child=json[childkey];
+    var childkeypath=keypath+'&'+childkey;
+    if(child !== null && typeof child === 'object'){
+      keypathHelper(childkeypath,childkey,child); 
+    }
+    else{
+      dsstrings.push(childkeypath);
+    }
+  }
+}
 
 function distributeData(dat){
     console.log('distributeData() start');
     setSize = dat.length;
     console.log("Measurement data set size: "+setSize);
-    cond=new Array(setSize);
-    press=new Array(setSize);
-    sal=new Array(setSize);
-    svel=new Array(setSize);
-    temp=new Array(setSize);
-    pics=new Array(setSize);
-    depth=new Array(setSize);
-    lat=new Array(setSize);
-    long=new Array(setSize);
-    sdlat=new Array(setSize);
-    sdlong=new Array(setSize);
     time=new Array(setSize);
-    windDir=new Array(setSize);
-    windSpd=new Array(setSize);
-    airPress=new Array(setSize);
-    airTemp=new Array(setSize);
-    for(i=0;i<setSize;i++){
-        cond[i]=dat[i].CTD.conductivity;        
-        press[i]=dat[i].CTD.pressure;        
-        sal[i]=dat[i].CTD.salinity;        
-        svel[i]=dat[i].CTD.soundVelocity;        
-        temp[i]=dat[i].CTD.temperature;        
-        pics[i]=dat[i].Picture;        
-        depth[i]=dat[i].depth;        
-        lat[i]=dat[i].latI0;        
-        long[i]=dat[i].longI0;        
-        time[i]=dat[i].timestamp;//Fix this. JSON objects have bad timestamp data
-        windDir[i]=dat[i].windDir;        
-        windSpd[i]=dat[i].windSpd;      
-        sdlat[i]=dat[i].latitudeSD;
-        sdlong[i]=dat[i].longitudeSD;  
-        airPress[i]=dat[i].pressure;
-        airTemp[i]=dat[i].temperature;    
+    for(i=0;i<dsstrings.length;i++){
+      var tmparray=new Array(setSize);
+      var keypath=dsstrings[i];    
+      for(j=0;j<setSize;j++){
+        var datum=dat[j];      
+        tmparray[j] = keytoValue(keypath,datum);
+      }
+      datamap.set(keypath,tmparray);
     }
-    setplotData(sal,temp,depth,time);
     console.log('distributeData() finished');
+}
+
+function keytoValue(keypath,json){
+  var keyarray=keypath.split("&");
+  for(var i=0;i<keyarray.length;i++){
+    var key=keyarray[i];  
+    if(json.hasOwnProperty(key)){
+      json=json[key];
+    }
+  }
+  return json;
 }
