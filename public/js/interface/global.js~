@@ -137,7 +137,7 @@ function extractDataKeys(json){
         addChart(childkey);
       }
       else{
-        addDisplay();
+        addDisplay(childkey);
       }
     }
   }   
