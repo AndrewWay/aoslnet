@@ -5,10 +5,6 @@ timebarid='timebar';
 playbtnid='playbtn';
 pausebtnid='pausebtn';
 stopbtnid='stopbtn';
-clockid='clock_display';
-soundvelid='sound_speed_display';
-airpressid='air_pressure_display';
-airtempid='air_temp_display';
 
 function manualsetTime(){
   var newTime=document.getElementById(timebarid).value;
@@ -35,19 +31,7 @@ function play(){
 
 function dispdata(t){
   redraw(t);
-  var ws=windSpd[t];
-  var wd=windDir[t];        
-  var p = pics[t];  
-  var ap=airPress[t];
-  var at=airTemp[t];
-  var sv=svel[t];      
-  updateWind(ws,wd);
-  updatePic(p);
-  console.log('helo?');
-  updateSDPosition(t);
-  updateSvel(sv);
-  updateAir(ap,at);
-  setclock(t);
+  redisplay(t);
 }
 
 function pause(){
