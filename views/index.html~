@@ -6,105 +6,26 @@
   <meta name="description" content="This website displqys data received by our vehicle in real Time." />
   <meta name="keywords" content="AOSL, SeaDragon, Icebergs, MUN" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <link rel="stylesheet" type="text/css" href="css/homepage.css" />
   <!-- modernizr enables HTML5 elements and feature detects -->
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
 </head>
 
 <body>
+  <img id='background' src='images/iceberg5.jpg'></img>
   <div id="main">		
-
     <header>
-	  <div id="strapline">
-	    <div id="welcome_slogan">
-	      <h3>Welcome To the AOSL delivery data website <span>v0.5</span></h3>
-	    </div><!--close welcome_slogan-->
-      </div><!--close strapline-->	  
-	  <nav>
-	    <div id="menubar">
-          <ul id="nav">
+	    <nav>
+	      <div id="menubar">
+          <ul class="nav">
             <li class="current"><a href="index.html">Home</a></li>
-            <li><a href="/map">Iceberg Map</a></li>
+            <li><a href="/icebergMap">Iceberg Map</a></li>
             <li><a href="/interface">Icebergs</a></li>
             <li><a href="http://www.aosl.ca">About Us</a></li>
           </ul>
-        </div><!--close menubar-->	
+        </div>
       </nav>
     </header>
     
-    <div id="slideshow_container">  
-	  <div class="slideshow">
-	    <ul class="slideshow">
-          <li class="show"><img width="940" height="250" src="images/home_1.jpg" alt="&quot;Sea Dragon before Deployment 2016 &quot;" /></li>
-          <li><img width="940" height="250" src="images/home_2.jpg" alt="&quot;Sea Dragon In Action 2016 &quot;" /></li>
-        </ul> 
-	  </div><!--close slideshow-->  	
-	</div><!--close slideshow_container-->   
-	
-	<div id="site_content">		
-	  
-	  <div class="sidebar_container">       
-		<div class="sidebar">
-          <div class="sidebar_item">
-            <h2>New Website</h2>
-            <p>Welcome to our new website. Please have a look around, any feedback is much appreciated.</p>
-          </div><!--close sidebar_item--> 
-        </div><!--close sidebar-->     		
-		<div class="sidebar">
-          <div class="sidebar_item">
-            <h2>Latest Update</h2>
-            <h3>March 2017</h3>
-            <p>Create the first version of the website.</p>         
-		  </div><!--close sidebar_item--> 
-        </div><!--close sidebar-->
-		<!--<div class="sidebar">
-          <div class="sidebar_item">
-            <h3>June 2016</h3>
-            <p></p>         
-		  </div><!--close sidebar_item--> 
-        <!--</div><!--close sidebar-->  		
-        <!--<div class="sidebar">
-          <div class="sidebar_item">
-            <h2>Contact</h2>
-            <p>Phone: +44 (0)1234 567891</p>
-            <p>Email: <a href="mailto:info@youremail.co.uk">info@youremail.co.uk</a></p>
-          </div><!--close sidebar_item--> 
-        <!--</div><!--close sidebar-->
-       </div><!--close sidebar_container-->	
-	   
-	  <div id="content">
-        <div class="content_item">
-		  <h1>Welcome To the Data Analysis Delivery system</h1> 
-          <p>This website is displaying the data recorded from Sea Dragon in real time. The vehicle find icergs, model them and send the data over to you.</p>   		
-		  <p>For more information or details, please contact us using the button provided above. </p>
-	    
-		  <!--<div class="content_container">
-		    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque cursus tempor enim. Aliquam facilisis neque non nunc posuere eget volutpat metus tincidunt.</p>
-		  	<div class="button_small">
-		      <a href="#">Read more</a>
-		    </div><!--close button_small-->
-		  <!--</div><!--close content_container-->
-          <!--<div class="content_container">
-		    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque cursus tempor enim. Aliquam facilisis neque non nunc posuere eget volutpat metus tincidunt.</p>          
-		  	<div class="button_small">
-		      <a href="#">Read more</a>
-		    </div><!--close button_small-->		  
-		  <!--</div><!--close content_container-->	
-		  
-		</div><!--close content_item-->
-      </div><!--close content-->   
-	</div><!--close site_content-->  	
-
-   <!-- <footer>
-	  <a href="index.html">Home</a> | <a href="icebergMap.html">Icebergs Map</a> | <a href="icebergSelector.html">Icebergs Selector</a> | <a href="http://www.aosl.ca">About Us</a><br/><br/>
-	   website template by <a href="http://www.freehtml5templates.co.uk">Free HTML5 Templates</a>
-    </footer>-->
-	
-  </div><!--close main-->
-  
-  <!-- javascript at the bottom for fast page loading -->
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/image_slide.js"></script>
-  
 </body>
 </html>

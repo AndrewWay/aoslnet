@@ -118,21 +118,9 @@ function changeIceberg(){
     }
     //updateMesh(filepath);
     //updateDim(height,width,volume);
-    //displayWind(windSpd,windDir); 
-   //testkeys=extractDataKeys(json[0].Data[0]);
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
-    for(var i=0;i<dsstrings.length;i++){
-      var label=dsstrings[i];
-      if($("#graphs > div").length < autographlimit){
-        //create a graph
-        createDisplay('graph',label);
-      }
-      else{
-        //Create a monitor
-        createDisplay('monitor',label);
-      }
-    }
+
 
     // updateMap(latitude,longitude);
     // setMapData();  
@@ -143,6 +131,20 @@ function changeIceberg(){
     }
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
+}
+
+function createAllDisplays(){
+  for(var i=0;i<dsstrings.length;i++){
+    var label=dsstrings[i];
+    if($("#graphs > div").length < autographlimit){
+      //create a graph
+      createDisplay('graph',label);
+    }
+    else{
+      //Create a monitor
+      createDisplay('monitor',label);
+    }
+  }
 }
 
 function createDisplay(type,label){

@@ -46,7 +46,7 @@
 
 <body>
 <div class="main">
-
+<img src='images/iceberg1.jpg'></img>
   <!-- MENU BAR -->  
   <div id="menu" class="page-segment">
     <div id="menubar">
@@ -68,7 +68,6 @@
   <!-- DATA DISPLAY -->
   <div id='displays'>
     <table id='displaytable'>
-     
     </table>
   </div>
 
