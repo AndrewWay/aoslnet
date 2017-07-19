@@ -121,9 +121,16 @@ function changeIceberg(){
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
     createAllDisplays();
+    setPosition(latitude,longitude,14);
+    setMarker(latitude,longitude);
+    var sdpath_lat=datamap.get('latitudeSD');
+    var sdpath_long=datamap.get('longitudeSD');
+    var ibpath_lat=datamap.get('latI0');
+    var ibpath_long=datamap.get('longI0');
+    console.log(sdpath_lat);
+    setSDPath(sdpath_lat,sdpath_long);
+    setIBPath(ibpath_lat,ibpath_long);
 
-    // updateMap(latitude,longitude);
-    // setMapData();  
     for(var i=0;i<graph_ids.length;i++){
       var arraylabel=graph_ids[i].replace('graph_','');
       var arr = datamap.get(arraylabel);
@@ -132,6 +139,8 @@ function changeIceberg(){
     updateTimeMax(json[0].Data.length);
     console.log('changeIceberg() finished');
 }
+
+
 
 function createAllDisplays(){
   for(var i=0;i<dsstrings.length;i++){
