@@ -128,9 +128,9 @@ function changeIceberg(){
     var ibpath_lat=datamap.get('latI0');
     var ibpath_long=datamap.get('longI0');
     console.log(sdpath_lat);
-    setSDPath(sdpath_lat,sdpath_long);
-    setIBPath(ibpath_lat,ibpath_long);
-
+    //setSDPath(sdpath_lat,sdpath_long);
+    //setIBPath(ibpath_lat,ibpath_long);
+    temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long){
     for(var i=0;i<graph_ids.length;i++){
       var arraylabel=graph_ids[i].replace('graph_','');
       var arr = datamap.get(arraylabel);
@@ -140,25 +140,7 @@ function changeIceberg(){
     console.log('changeIceberg() finished');
 }
 
-function setSDPath(latarr,longarr){
-  options=new google.maps.Polyline({
-    geodesic: true,
-    strokeColor: '#ede900',
-    strokeOpacity: 1.0,
-    strokeWeight: 2,
-  });
-  setPerimeter(latarr,longarr,options);
-}
-function setIBPath(longarr,latarr){
-  options=new google.maps.Polygon({
-    strokeColor: '#ffffff',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#3634d1',
-    fillOpacity: 0.35,
-  });
-  setPerimeter(latarr,longarr,options);
-}
+
 
 function createAllDisplays(){
   for(var i=0;i<dsstrings.length;i++){

@@ -128,9 +128,9 @@ function changeIceberg(){
     var ibpath_lat=datamap.get('latI0');
     var ibpath_long=datamap.get('longI0');
     console.log(sdpath_lat);
-    setSDPath(sdpath_lat,sdpath_long);
-    setIBPath(ibpath_lat,ibpath_long);
-
+    //setSDPath(sdpath_lat,sdpath_long);
+    //setIBPath(ibpath_lat,ibpath_long);
+    temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long);
     for(var i=0;i<graph_ids.length;i++){
       var arraylabel=graph_ids[i].replace('graph_','');
       var arr = datamap.get(arraylabel);
