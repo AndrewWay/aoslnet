@@ -40,7 +40,7 @@ $(document).ready(function() {
     var yearSelected = document.getElementById("selectYear").value;
     var bergList = getJSON(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
-    updateMesh('');//Render 3DMesh with no data
+   // updateMesh('');//Render 3DMesh with no data
 });
 
 /**
@@ -146,8 +146,11 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-    //updateMesh(filepath);
-    //updateDim(height,width,volume);
+      //Load the STL file
+    if(json.hasOwnProperty('stlfile')){
+      var filepath=json[stlfile];
+      updateMesh(filepath);
+    }
       //Check what data keys are available from the JSON
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
@@ -165,7 +168,6 @@ function changeIceberg(){
     AOSL_setSDCoords(sdpath_lat,sdpath_long);
     setSDPath(sdpath_lat,sdpath_long);
     setIBPath(ibpath_lat,ibpath_long);
-    //temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long);
     for(var i=0;i<graph_ids.length;i++){
       var arraylabel=graph_ids[i].replace('graph_','');
       var arr = datamap.get(arraylabel);
@@ -175,6 +177,12 @@ function changeIceberg(){
     console.log('changeIceberg() finished');
 }
 
+/*
+ * Check for AOSL specific data and create appropriate displays
+ */
+function AOSL_specific(){
+  //updateDim(height,width,volume);
+}
 
 /*
  * Create the numerical displays and graphs

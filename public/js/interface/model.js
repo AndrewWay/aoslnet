@@ -13,7 +13,7 @@ modelcontainerid='model';
  */
 function updateMesh(file){
   console.log('updateMesh() starting');
-  setfile('./data/r11i02.stl');
+  setfile(file);
   model();
   console.log('updateMesh() ending');
 }

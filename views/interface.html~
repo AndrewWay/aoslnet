@@ -100,7 +100,7 @@
     <select id="selectIceberg"></select>
     <button type="button" onclick="changeIceberg()">Load</button>
   </div>
-      <button type="button" onclick="setZoom()">ZOOM</button>
+      <button type="button" onclick="setZoom(1)">ZOOM</button>
 </div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>

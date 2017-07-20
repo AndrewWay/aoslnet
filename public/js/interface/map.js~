@@ -78,8 +78,8 @@ function updateSDPosition(t){
 function displaySDPosition(lat,lng){
     var centerlat=lat;
     var centerlng=lng;
-    var x=0.0001;
-    var y=0.0001;
+    var x=0.0002;
+    var y=0.0002;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
