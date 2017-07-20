@@ -27,7 +27,7 @@ function setMarker(Ilat,Ilong){
 
 function updateSDPosition(t){
   removeSDPosition();
-  displaySDPosition(t);
+  displaySDPosition(0,0);
 }
 function displaySDPosition(lat,lng){
     var centerlat=lat;
@@ -107,7 +107,7 @@ function temporarypath(clat,clong,sdlatarr,sdlongarr,iblatarr,iblongarr){
     }
   }
   ibperimeter=new google.maps.Polygon({
-    path: perim,
+    path: ibperim,
     strokeColor: '#ffffff',
     strokeOpacity: 0.8,
     strokeWeight: 2,

@@ -3,8 +3,9 @@ var router = express.Router();
 var fs  = require('fs');
 var StlReader = require('stl-reader');
 
-router.get('/test',function(req,res){
+router.get('/test/:filepath',function(req,res){
   console.log('request for stl file');
+  var fpath=req.params.filepath;
 fs.readFile('public/data/pr2_head_pan.stl',function (err, data) {
     var databuffer = toArrayBuffer(data);
     if (err) {
@@ -46,6 +47,15 @@ router.get('/data/:yr/:nm',function(req,res){
    var yr = req.params.yr;
    var nm = req.params.nm;
    yr=String(yr);
+   collection.find({name : nm,year : yr},(function(err, docs){
+       res.json(docs);            
+       db.close();
+   }));
+});
+router.get('/testrequest/:q',function(req,res){
+   var que = req.query.q;
+    console.log(db);
+   var collection = db.get('data');
    collection.find({name : nm,year : yr},(function(err, docs){
        res.json(docs);            
        db.close();

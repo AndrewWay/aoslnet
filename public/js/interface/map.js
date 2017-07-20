@@ -27,13 +27,13 @@ function setMarker(Ilat,Ilong){
 
 function updateSDPosition(t){
   removeSDPosition();
-  displaySDPosition(t);
+  displaySDPosition(0,0);
 }
 function displaySDPosition(lat,lng){
     var centerlat=lat;
     var centerlng=lng;
-    var x=0.0001;
-    var y=0.0001;
+    var x=0.1;
+    var y=0.1;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
