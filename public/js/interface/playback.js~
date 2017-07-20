@@ -6,12 +6,14 @@ playbtnid='playbtn';
 pausebtnid='pausebtn';
 stopbtnid='stopbtn';
 
+
 function manualsetTime(){
   var newTime=document.getElementById(timebarid).value;
   console.log("Manually setting time to: "+newTime);
   set_time(newTime);  
   dispdata(get_time());
 }
+
 function play(){      
     document.getElementById(pausebtnid).disabled=false;
     document.getElementById(stopbtnid).disabled=false;
@@ -32,6 +34,7 @@ function play(){
 function dispdata(t){
   redraw(t);
   redisplay(t);
+  
 }
 
 function pause(){

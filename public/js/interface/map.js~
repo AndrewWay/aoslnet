@@ -8,8 +8,14 @@ default_lat=60;
 default_long=-45;
 default_zoom=2;
 mapDiv_id='map';
+var AOSL_seadragon_latitude;
+var AOSL_seadragon_longitude;
 var map;
 
+function AOSL_setSDCoords(lat,long){
+  AOSL_seadragon_latitude=lat;
+  AOSL_seadragon_longitude=long;
+}
 /*
  * Run once Google Map performs callback AKA is ready
  */
@@ -57,8 +63,10 @@ function setMarker(lt,lg){
  * @param {Number} lat
  * @param {Number} long
  */
-function updateSDPosition(lat,long){
+function updateSDPosition(t){  
   removeSDPosition();
+  var lat=AOSL_seadragon_latitude[t];
+  var long=AOSL_seadragon_longitude[t];
   displaySDPosition(lat,long);
 }
 
@@ -70,8 +78,8 @@ function updateSDPosition(lat,long){
 function displaySDPosition(lat,lng){
     var centerlat=lat;
     var centerlng=lng;
-    var x=0.0003;
-    var y=0.0003;
+    var x=0.0001;
+    var y=0.0001;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
@@ -87,7 +95,7 @@ function displaySDPosition(lat,lng){
     tri.push({"lat" : cy,"lng" : cx});
     tri.push({"lat" : dy,"lng" : dx});
 
-    var sdpos = new google.maps.Polyline({
+    sdpos = new google.maps.Polyline({
     path: tri,
     geodesic: true,
     strokeColor: '#ff0000',

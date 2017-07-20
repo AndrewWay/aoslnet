@@ -3,6 +3,7 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
+//TODO Clean this whole file up
 
 var yearSelected="";
 var icebergSelected="";
@@ -28,7 +29,7 @@ datakeys=new Map();
 datamap=new Map();
 
 /**
- * Initiates execution of all JavaScript files
+ * Initiates execution of all functions for setting the page up
  */
 $(document).ready(function() { 
     document.getElementById("pausebtn").disabled=true;
@@ -158,9 +159,10 @@ function changeIceberg(){
     var ibpath_lat=datamap.get('latI0');
     var ibpath_long=datamap.get('longI0');
     console.log(sdpath_lat);
-    setZoom(14);
+    setZoom(15);
     setPosition(latitude,longitude);
     displaySDPosition(latitude,longitude);
+    AOSL_setSDCoords(sdpath_lat,sdpath_long);
     setSDPath(sdpath_lat,sdpath_long);
     setIBPath(ibpath_lat,ibpath_long);
     //temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long);
@@ -174,7 +176,9 @@ function changeIceberg(){
 }
 
 
-
+/*
+ * Create the numerical displays and graphs
+ */
 function createAllDisplays(){
   for(var i=0;i<dsstrings.length;i++){
     var label=dsstrings[i];
@@ -189,6 +193,11 @@ function createAllDisplays(){
   }
 }
 
+/*
+ * Add a new display
+ * param {String} type
+ * param {String} label
+ */
 function createDisplay(type,label){
   if( type === 'graph'){
     addChart(label);
@@ -198,6 +207,10 @@ function createDisplay(type,label){
   }
 }
 
+/*
+ * Recursively extract all keys from the received JSON file
+ * @param {String} json
+ */
 function extractKeyPaths(json){
   var keys=Object.keys(json);
   for(var i=0;i<keys.length;i++){
@@ -212,6 +225,12 @@ function extractKeyPaths(json){
   }
 }
 
+/*
+ * Recursive helper for extractKeyPaths
+ * @param {String} keypath
+ * @param {String} key
+ * @param {String} json
+ */
 function keypathHelper(keypath,key,json){
   var keys=Object.keys(json);
   for(var i=0;i<keys.length;i++){
@@ -227,6 +246,10 @@ function keypathHelper(keypath,key,json){
   }
 }
 
+/*
+ * Take the data array and distribute it into seperate arrays that are referenced in a map
+ * @param {Array} dat
+ */
 function distributeData(dat){
     console.log('distributeData() start');
     setSize = dat.length;
@@ -244,6 +267,10 @@ function distributeData(dat){
     console.log('distributeData() finished');
 }
 
+/*
+ * Take a JSON array and return the leaf value found at the end of keypath
+ * @param {String} keypath
+ */
 function keytoValue(keypath,json){
   var keyarray=keypath.split("&");
   for(var i=0;i<keyarray.length;i++){
