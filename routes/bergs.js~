@@ -1,7 +1,8 @@
-/*
- * Make 
+/**
+ * @file Iceberg Database Inquisitor
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
  */
-
 var express = require('express');
 var router = express.Router();
 var fs  = require('fs');
@@ -39,6 +40,7 @@ router.get('/names/:yr',function(req,res){
 /*
  * @api {get} /data/:yr/:nm Return the iceberg entry with name nm and year yr
  */
+// TODO: Set this function to accept any type of query usable by MongoDB
 router.get('/data/:yr/:nm',function(req,res){
    var db = req.db;
    var collection = db.get('data');

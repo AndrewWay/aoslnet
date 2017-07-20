@@ -1,7 +1,8 @@
-/*
- * Make 
+/**
+ * @file Iceberg Database Inquisitor
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
  */
-
 var express = require('express');
 var router = express.Router();
 var fs  = require('fs');

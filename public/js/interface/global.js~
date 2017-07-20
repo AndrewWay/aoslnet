@@ -37,7 +37,7 @@ $(document).ready(function() {
     var yearList = getList(yearsReq);
     updateOptions('selectYear',yearList);
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList(namesReq+'/'+yearSelected);
+    var bergList = getJSON(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh('');//Render 3DMesh with no data
 });
@@ -60,7 +60,7 @@ function preselect(){
   }
 }
 /**
- * Loads in a new list of dataset to choose from
+ * Loads in a new list of datasets to choose from
  * @param {String} optionID 
  * @param {String} options
  */
@@ -105,7 +105,7 @@ function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
-    var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
+    var json = getList(dataReq+'/'+yearSelected+'/'+bergSelected);  
 
     var height=json[0].height;
     var width=json[0].width;

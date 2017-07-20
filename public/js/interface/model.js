@@ -1,8 +1,16 @@
-//iceberg model
+/**
+ * @file 3D Model Control and Viewing
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
+ */
 
 currentfile='';
 modelcontainerid='model';
-resize_factor=0.25;
+
+/*
+ * Update the mesh by specifying a new 3D model file path
+ * @param {String} file
+ */
 function updateMesh(file){
   console.log('updateMesh() starting');
   setfile('./data/r11i02.stl');
@@ -10,10 +18,20 @@ function updateMesh(file){
   console.log('updateMesh() ending');
 }
 
+/*
+ * Set the current 3D model file
+ * @param {String} file
+ */
 function setfile(file){
   currentfile=file;
 }
 
+/*
+ * Update the display for the iceberg dimensions
+ * @param {Number} h
+ * @param {Number} w
+ * @param {Number} v
+ */
 function updateDim(h,w,v){
   console.log("updateDim() running");
   console.log("h: "+h+"w: "+w+"v: "+v);
@@ -27,7 +45,9 @@ function updateDim(h,w,v){
 }
 
 
-
+/*
+ * Display 3D model
+ */
 function model(){  
   if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
@@ -38,6 +58,9 @@ function model(){
   animate();
 }
 
+/*
+ * Create the scene. 
+ */
 function init() {
 
   /* SCENE */
@@ -45,11 +68,11 @@ function init() {
   scene = new THREE.Scene(); // Create the scene 
   scene.background = new THREE.Color( 0x222222 );
  
- /* RENDERER */
+  /* RENDERER */
 
 	renderer = new THREE.WebGLRenderer(); // Create the renderer
-	//renderer.setClearColor( scene.fog.color ); //Set the clear color ?
 	renderer.setPixelRatio( window.devicePixelRatio ); // tch
+
   /* DOM CONTAINER FOR RENDERER */
 
 	var container = document.getElementById( modelcontainerid ); //Assign the output to container
@@ -99,6 +122,9 @@ function init() {
 	window.addEventListener( 'resize', onWindowResize, false );
 }
 
+/*
+ * Event handler for window resizing
+ */
 function onWindowResize() {
   var container = document.getElementById( modelcontainerid ); //Assign the output to container
 	camera.aspect = $(container).width()/$(container).height();
@@ -106,6 +132,9 @@ function onWindowResize() {
 	renderer.setSize( $(container).width(), $(container).height());
 }
 
+/*
+ * Function for animating the scene
+ */
 function animate() {
   requestAnimationFrame( animate );
 	controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
@@ -113,6 +142,9 @@ function animate() {
 	render();
 }
 
+/*
+ * Render the scene with a specified camera
+ */
 function render() {
   renderer.render( scene, camera );
 }

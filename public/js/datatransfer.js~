@@ -1,3 +1,6 @@
+/*
+ * Get a JSON by specifying a URL to form a get request
+ */
 function getJSON(url){
     console.log('getJSON() starting');
     console.log('requesting data from:' + url);

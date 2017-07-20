@@ -34,10 +34,10 @@ $(document).ready(function() {
     document.getElementById("pausebtn").disabled=true;
     document.getElementById("stopbtn").disabled=true;
     console.log('document ready');
-    var yearList = getList(yearsReq);
+    var yearList = getJSON(yearsReq);
     updateOptions('selectYear',yearList);
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList(namesReq+'/'+yearSelected);
+    var bergList = getJSON(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);
     updateMesh('');//Render 3DMesh with no data
 });
@@ -96,7 +96,7 @@ function getDatum(arraylabel,index){
 function changeYear(){
     console.log('changeYear() starting');
     var yearSelected = document.getElementById("selectYear").value;
-    var bergList = getList(namesReq+'/'+yearSelected);
+    var bergList = getJSON(namesReq+'/'+yearSelected);
     updateOptions('selectIceberg',bergList);  
     console.log('changeYear() finished');
 }
