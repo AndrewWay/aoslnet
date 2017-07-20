@@ -91,7 +91,7 @@ function getDatum(arraylabel,index){
 }
 
 /*
- * Changes the 
+ * Changes the list of icebergs available to view
  */
 function changeYear(){
     console.log('changeYear() starting');
@@ -101,15 +101,19 @@ function changeYear(){
     console.log('changeYear() finished');
 }
 
+//TODO Break up this function
 function changeIceberg(){
     console.log('changeIceberg() starting');
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
     var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
 
+    //After data extracted, do special checks for AOSL specific data
+    //TODO if height, width, volume exist, create special monitors
     var height=json[0].height;
     var width=json[0].width;
     var volume=json[0].volume;
+    //TODO if longitude and latitude exist, create map. Have map invisible by default
     var longitude=json[0].longitude;
     var latitude=json[0].latitude;
     centerlong=longitude;
@@ -143,6 +147,7 @@ function changeIceberg(){
     }
     //updateMesh(filepath);
     //updateDim(height,width,volume);
+      //Check what data keys are available from the JSON
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
     createAllDisplays();
@@ -153,9 +158,12 @@ function changeIceberg(){
     var ibpath_lat=datamap.get('latI0');
     var ibpath_long=datamap.get('longI0');
     console.log(sdpath_lat);
-    //setSDPath(sdpath_lat,sdpath_long);
-    //setIBPath(ibpath_lat,ibpath_long);
-    temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long);
+    setZoom(14);
+    setPosition(latitude,longitude);
+    displaySDPosition(latitude,longitude);
+    setSDPath(sdpath_lat,sdpath_long);
+    setIBPath(ibpath_lat,ibpath_long);
+    //temporarypath(latitude,longitude,sdpath_lat,sdpath_long,ibpath_lat,ibpath_long);
     for(var i=0;i<graph_ids.length;i++){
       var arraylabel=graph_ids[i].replace('graph_','');
       var arr = datamap.get(arraylabel);

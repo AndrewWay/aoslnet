@@ -1,39 +1,77 @@
-//Google Map
+/**
+ * @file Google Map Control
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
+ */
+
 default_lat=60;
 default_long=-45;
 default_zoom=2;
+mapDiv_id='map';
 var map;
-//Google map
+
+/*
+ * Run once Google Map performs callback AKA is ready
+ */
 function mapReady() {
-  setPosition(default_lat,default_long,default_zoom);
+  map=new google.maps.Map(document.getElementById(mapDiv_id));
+  setPosition(default_lat,default_long);
+  setZoom(default_zoom);
 }
 
-function setPosition(Ilat,Ilong,zm) {
-    mapInitialized=true;
-    var uluru = {lat: Ilat, lng: Ilong};
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: zm,
-        center: uluru
-    });
+/*
+ * Set the zoom of the map
+ * @param {Number} z
+ * 
+ */
+function setZoom(z){
+  map.setZoom(z);
 }
 
-function setMarker(Ilat,Ilong){
-  var uluru = {lat: Ilat, lng: Ilong};
+/*
+ * Set the position of the map
+ * @param {Number} lt
+ * @param {Number} lg
+ * 
+ */
+function setPosition(lt,lg) {
+  var LatLngLiteral = {lat: lt, lng: lg};  
+  map.setCenter(LatLngLiteral);
+}
+
+/*
+ * Create and add a new marker
+ * @param {Number} lt
+ * @param {Number} lg
+ */
+function setMarker(lt,lg){
+  var LatLngLiteral = {lat: lt, lng: lg};
   var marker = new google.maps.Marker({
-    position: uluru,
+    position: LatLngLiteral,
     map: map
  });    
 }
 
-function updateSDPosition(t){
+/*
+ * update SeaDragon coordinates
+ * @param {Number} lat
+ * @param {Number} long
+ */
+function updateSDPosition(lat,long){
   removeSDPosition();
-  displaySDPosition(0,0);
+  displaySDPosition(lat,long);
 }
+
+/*
+ * Display the SeaDragon marker
+ * @param {Number} lat
+ * @param {Number} long
+ */
 function displaySDPosition(lat,lng){
     var centerlat=lat;
     var centerlng=lng;
-    var x=0.0001;
-    var y=0.0001;
+    var x=0.0003;
+    var y=0.0003;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
@@ -49,74 +87,25 @@ function displaySDPosition(lat,lng){
     tri.push({"lat" : cy,"lng" : cx});
     tri.push({"lat" : dy,"lng" : dx});
 
-    sdpos = new google.maps.Polyline({
+    var sdpos = new google.maps.Polyline({
     path: tri,
     geodesic: true,
     strokeColor: '#ff0000',
     strokeOpacity: 1.0,
-    strokeWeight: 2,
+    strokeWeight: 1,
     zIndex: 3
   });
   sdpos.setMap(map);
 }
 
+/*
+ * Remove SD shape from map
+ */
 function removeSDPosition(){
   sdpos.setMap(null);
 }
-function temporarypath(clat,clong,sdlatarr,sdlongarr,iblatarr,iblongarr){
 
-  mapInitialized=true;
-  zm=14;
-  var uluru = {lat: clat, lng: clong};
-  map = new google.maps.Map(document.getElementById('map'), {
-   zoom: zm,
-   center: uluru
-  });
-  var marker = new google.maps.Marker({
-    position: uluru,
-    map: map
-  });  
-//CREATE SD PATH 
-  var perim = [];
-  var i=0;
-  while(i < sdlatarr.length && i < sdlongarr.length){
-    if(typeof sdlatarr[i] === 'number'){
-      if(typeof sdlongarr[i] === 'number'){
-        perim.push({"lat" : sdlatarr[i],"lng" : sdlongarr[i]});       
-        i++;
-      }
-    }
-  }
-  sdperimeter=new google.maps.Polyline({
-    path: perim,
-    strokeColor: '#ff0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-  });
-  sdperimeter.setMap(map); 
 
-//CREATE ICEBERG PERIMETER
-  var ibperim = [];
-  i=0;
-  while(i < iblatarr.length && i < iblongarr.length){
-    if(typeof iblatarr[i] === 'number'){
-      if(typeof iblongarr[i] === 'number'){
-        ibperim.push({"lat" : iblatarr[i],"lng" : iblongarr[i]});       
-        i++;
-      }
-    }
-  }
-  ibperimeter=new google.maps.Polygon({
-    path: ibperim,
-    strokeColor: '#ffffff',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#3634d1',
-    fillOpacity: 0.35,
-  });
-  console.log('setting ib perimeter')
-  ibperimeter.setMap(map);   
-}
 function setSDPath(latarr,longarr){
   var perim = [];
   var i=0;
@@ -129,15 +118,16 @@ function setSDPath(latarr,longarr){
     }
   }
   sdperimeter=new google.maps.Polyline({
-    paths: perim,
-    strokeColor: '#ffffff',
+    path: perim,
+    strokeColor: '#f1f41d',
     strokeOpacity: 0.8,
     strokeWeight: 2,
   });
+  console.log(map);
   sdperimeter.setMap(map);  
 }
 
-function setIBPath(longarr,latarr){
+function setIBPath(latarr,longarr){
   var perim = [];
   var i=0;
   while(i < latarr.length && i < longarr.length){
