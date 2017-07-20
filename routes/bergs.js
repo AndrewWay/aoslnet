@@ -1,23 +1,15 @@
+/*
+ * Make 
+ */
+
 var express = require('express');
 var router = express.Router();
 var fs  = require('fs');
 var StlReader = require('stl-reader');
 
-router.get('/test/:filepath',function(req,res){
-  console.log('request for stl file');
-  var fpath=req.params.filepath;
-fs.readFile('public/data/pr2_head_pan.stl',function (err, data) {
-    var databuffer = toArrayBuffer(data);
-    if (err) {
-      return console.log(err);
-    }
-    console.log(typeof databuffer);
-    //console.log(res.vertices);
-    //console.log(res.normals);
-    res.json(databuffer);
-  });
-});
-
+/*
+ * @api {get} /years Return the list of available years
+ */
 router.get('/years',function(req,res){
     var db = req.db;
     var collection = db.get('data');
@@ -27,6 +19,9 @@ router.get('/years',function(req,res){
      }));
 });
 
+/*
+ * @api {get} /names/:yr Return the names of icebergs for a given year
+ */
 router.get('/names/:yr',function(req,res){
     var db = req.db;   
     var collection = db.get('data');
@@ -41,6 +36,10 @@ router.get('/names/:yr',function(req,res){
 
 });
 
+/*
+ * @api {get} /data/:yr/:nm Return the iceberg entry with name nm and year yr
+ */
+// TODO: Set this function to accept any type of query usable by MongoDB
 router.get('/data/:yr/:nm',function(req,res){
    var db = req.db;
    var collection = db.get('data');
@@ -52,29 +51,5 @@ router.get('/data/:yr/:nm',function(req,res){
        db.close();
    }));
 });
-router.get('/testrequest/:q',function(req,res){
-   var que = req.query.q;
-    console.log(db);
-   var collection = db.get('data');
-   collection.find({name : nm,year : yr},(function(err, docs){
-       res.json(docs);            
-       db.close();
-   }));
-});
-
-
-/*router.get('icebergpic/:year/:name',function(req,res) {
-  
-});*/
-
-function toArrayBuffer(buffer) {
-  var ab = new ArrayBuffer(buffer.length);
-  var view = new Uint8Array(ab);
-  for (var i = 0; i < buffer.length; ++i) {
-    view[i] = buffer[i];
-  }
-  return ab;
-}
-
 
 module.exports = router;
