@@ -65,9 +65,14 @@ function setMarker(lt,lg){
  */
 function updateSDPosition(t){  
   removeSDPosition();
-  var lat=AOSL_seadragon_latitude[t];
-  var long=AOSL_seadragon_longitude[t];
-  displaySDPosition(lat,long);
+  if ( t < AOSL_seadragon_latitude.length && t < AOSL_seadragon_longitude.length ){
+    var lat=AOSL_seadragon_latitude[t];
+    var long=AOSL_seadragon_longitude[t];
+    displaySDPosition(lat,long); 
+  }
+  else{
+    console.warn('Playback attempted to access array out of bounds')
+  }
 }
 
 /*
@@ -107,13 +112,20 @@ function displaySDPosition(lat,lng){
 }
 
 /*
- * Remove SD shape from map
+ * Remove SeaDragon symbol from map
  */
 function removeSDPosition(){
-  sdpos.setMap(null);
+  if( typeof(sdpos) !== 'undefined'){
+   sdpos.setMap(null);
+  }
+  else{
+    console.warn('Non-existent SeaDragon symbol attempting to be removed');
+  }
 }
 
-
+/*
+ * Draw the path the SeaDragon took during the survey
+ */
 function setSDPath(latarr,longarr){
   var perim = [];
   var i=0;

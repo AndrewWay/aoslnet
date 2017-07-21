@@ -3,7 +3,7 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
-//TODO Clean this whole file up
+
 
 var yearSelected="";
 var icebergSelected="";
@@ -11,7 +11,6 @@ var filepathIcebergsData = "";
 var filePathIcebergSelected="";
 var filepathIcebergModel="";
 var IcebergModelName="";
-var jsonIcberg ={};
 var mapInitialized=false;
 autographlimit=4;
 dsstrings=new Array(0);
@@ -44,7 +43,7 @@ $(document).ready(function() {
 });
 
 /**
- * Selects the iceberg data selected from global map
+ * Selects the iceberg data chosen from global map
  */
 function preselect(){
   var selectedID=sessionStorage.getItem('selectedID');
@@ -60,6 +59,7 @@ function preselect(){
     document.getElementById('selectIceberg').value=selectedID;  
   }
 }
+
 /**
  * Loads in a new list of datasets to choose from
  * @param {String} optionID 
@@ -79,6 +79,7 @@ function updateOptions(optionID,options){
         optList.add(option);
     }
 }
+
 /*
  * Returns the value in location index of array mapped to by arraylabel
  * @param {String} arraylabel
@@ -108,24 +109,49 @@ function changeIceberg(){
     var yearSelected = document.getElementById("selectYear").value;
     var bergSelected = document.getElementById("selectIceberg").value;
     var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
+    if(json.constructor == Array){
+      json = json[0];
+    }    
+    console.log(typeof json);
 
     //After data extracted, do special checks for AOSL specific data
     //TODO if height, width, volume exist, create special monitors
-    var height=json[0].height;
-    var width=json[0].width;
-    var volume=json[0].volume;
+    var height=json.height;
+    var width=json.width;
+    var volume=json.volume;
     //TODO if longitude and latitude exist, create map. Have map invisible by default
-    var longitude=json[0].longitude;
-    var latitude=json[0].latitude;
-    centerlong=longitude;
-    centerlat=latitude;
-    console.log("height: "+height);
-    console.log("width: "+width);
-    console.log("volume: "+volume);
-    console.log("longitude: "+longitude);
-    console.log("latitude: "+latitude);
-    console.log(typeof longitude);    
 
+
+      //Load the STL file
+    if(json.hasOwnProperty('stlpath')){
+      var filepath=json['stlpath'];
+      console.log('loading stl from '+filepath);     
+      updateMesh('data/'+filepath);
+    }
+
+      //Load data array
+    if(json.hasOwnProperty('Data') && json['Data'].length > 0){
+      extractKeyPaths(json['Data'][0]);//Only checks first element
+      distributeData(json['Data']);
+      createAllDisplays();
+      var sdpath_lat=datamap.get('latitudeSD');
+      var sdpath_long=datamap.get('longitudeSD');
+      var ibpath_lat=datamap.get('latI0');
+      var ibpath_long=datamap.get('longI0');
+      AOSL_setSDCoords(sdpath_lat,sdpath_long);
+      setSDPath(sdpath_lat,sdpath_long);
+      setIBPath(ibpath_lat,ibpath_long);
+      for(var i=0;i<graph_ids.length;i++){
+        var arraylabel=graph_ids[i].replace('graph_','');
+        var arr = datamap.get(arraylabel);
+        setplotData(graph_ids[i],arr);
+      }
+      updateTimeMax(json.Data.length);
+    }
+      //Load longitude and latitude of iceberg
+  if(json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')){
+    var longitude=json.longitude;
+    var latitude=json.latitude;
     if(typeof longitude === 'number'){
       if(!(longitude>= -180 && longitude <= 180)){
         console.log("longitude invalid: out of range.");
@@ -146,37 +172,13 @@ function changeIceberg(){
       console.log("latitude invalid: not of type 'number'")
       latitude=0;    
     }
-      //Load the STL file
-    if(json.hasOwnProperty('stlfile')){
-      var filepath=json[stlfile];
-      console.log('loading stl from '+filepath);     
-      // updateMesh(filepath);
-    }
-    //updateMesh('data/r11i02.stl');   
-     //Check what data keys are available from the JSON
-    extractKeyPaths(json[0].Data[0]);//Only checks first element
-    distributeData(json[0].Data);
-    createAllDisplays();
-    setPosition(latitude,longitude,14);
+    setPosition(latitude,longitude);
     setMarker(latitude,longitude);
-    var sdpath_lat=datamap.get('latitudeSD');
-    var sdpath_long=datamap.get('longitudeSD');
-    var ibpath_lat=datamap.get('latI0');
-    var ibpath_long=datamap.get('longI0');
-    console.log(sdpath_lat);
-    setZoom(15);
     setPosition(latitude,longitude);
     displaySDPosition(latitude,longitude);
-    AOSL_setSDCoords(sdpath_lat,sdpath_long);
-    setSDPath(sdpath_lat,sdpath_long);
-    setIBPath(ibpath_lat,ibpath_long);
-    for(var i=0;i<graph_ids.length;i++){
-      var arraylabel=graph_ids[i].replace('graph_','');
-      var arr = datamap.get(arraylabel);
-      setplotData(graph_ids[i],arr);
-    }
-    updateTimeMax(json[0].Data.length);
-    console.log('changeIceberg() finished');
+    setZoom(15);
+  }
+  console.log('changeIceberg() finished');
 }
 
 /*

@@ -33,13 +33,17 @@ main(){
   local tsd=$(processTSD $tsdpath)
   
   #POINT CLOUD DATA_____________
-  echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
-  read pcdpath  
-  if [ -f $pcdpath ];then
-    dos2unix $pcdpath #Ensure the data file is in unix format
-  fi
-  local pcd=$(processPCD $pcdpath)
+#  echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
+#  read pcdpath  
+#  if [ -f $pcdpath ];then
+#    dos2unix $pcdpath #Ensure the data file is in unix format
+#  fi
+#  local pcd=$(processPCD $pcdpath)
 
+  echo -e "${ICyan}Enter the name to the .stl file  ${Color_Off}"
+  read stlpath
+  local stl=$(getSTLPath $stlpath)
+  echo "STL PATH: $stl"
   #NAME_________________________
   local name=$(getName)  
   #YEAR_________________________
@@ -60,7 +64,7 @@ main(){
   read longitude
   local long=`jq -n '{longitude : '$longitude'}'`
   local lat=`jq -n '{latitude : '$latitude'}'`  
-  jsonraw="$name $year $lat $long $dima $pcd $tsd"
+  jsonraw="$name $year $lat $long $dima $stl $tsd"
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
@@ -133,6 +137,40 @@ processTSD(){
   echo "$ret"
 }
 
+getSTLPath(){
+  #Accepts path to .stl file
+  #Creates json string {stlpath : path/to/stl}
+  #Returns data JSON
+
+  local path=$1
+  local ret=""  
+  if [ "${path: -4}" == ".stl" ] && [ -f $path ];then #Check if the file is an existing json
+    ret=`jq -n '{ stlpath : "'$path'" }'`
+    echo "$ret"
+    cp $path data/models/stl/$path
+  else
+    echo ".stl filepath does not exist" >&2 #File not json: Data array set to empty
+    echo "Not adding .stl filepath JSON string to output" >&2
+    exit 1
+  fi
+}
+
+getXYZPath(){
+  #Accepts path to .xyz file
+  #Creates json string { xyzpath : path/to/xyz }
+  #Returns data JSON
+
+  local path=$1
+  local ret=""  
+  if [ "${path: -4}" == ".xyz" ] && [ -f $path ];then #Check if the file is an existing json
+    ret=`jq '{ xyzpath : '$path' }'`
+    echo "$ret"
+  else
+    echo ".xyz filepath does not exist" >&2 #File not json: Data array set to empty
+    echo "Not adding .xyz filepath JSON string to output" >&2
+    exit 1
+  fi
+}
 processPCD(){
   #TODO: Break this function up into smaller functions? Function is big and pretty complex
 

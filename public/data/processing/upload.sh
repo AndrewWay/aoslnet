@@ -24,15 +24,13 @@ main(){
 
   #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-  #read tsdpath
-  local tsdpath="../2017_11.json"  
+  read tsdpath
   local tsd=$(processTSD $tsdpath)
 
   #POINT CLOUD DATA_____________
-  echo -e "${ICyan}Enter the path to the file containing the point cloud data ${Color_Off}"
-  #read pcdpath
-  pcdpath="R11I01.txt"
-  local pcd=$(processPCD $pcdpath)
+  echo -e "${ICyan}Enter the path to the .stl file  ${Color_Off}"
+  read stlpath
+  local stl=$(getSTLpath $stlpath)
 
   #NAME_________________________
   local name=$(getName)  
@@ -48,7 +46,7 @@ main(){
   #read imagepath
   #storeimages $imagepath  
   jsonraw="$name $year $dima $pcd $tsd"
-  local json=`echo "$name $year $dima $pcd $tsd" | jq -s add` # The final combined JSON
+  local json=`echo "$name $year $dima $stl $tsd" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
   #less tmp.json
@@ -100,6 +98,39 @@ processTSD(){
   echo "$ret"
 }
 
+getSTLPath(){
+  #Accepts path to .stl file
+  #Creates json string {stlpath : path/to/stl}
+  #Returns data JSON
+
+  local path=$1
+  local ret=""  
+  if [ ${path: -4} == ".stl" && -f $path ];then #Check if the file is an existing json
+    ret=`jq -n '{ stlpath : '$path' }'`
+    echo "$ret"
+  else
+    echo ".stl filepath does not exist" >&2 #File not json: Data array set to empty
+    echo "Not adding .stl filepath JSON string to output" >&2
+    exit 1
+  fi
+}
+
+getXYZPath(){
+  #Accepts path to .xyz file
+  #Creates json string { xyzpath : path/to/xyz }
+  #Returns data JSON
+
+  local path=$1
+  local ret=""  
+  if [ ${path: -4} == ".xyz" && -f $path ];then #Check if the file is an existing json
+    ret=`jq -n '{ xyzpath : '$path' }'`
+    echo "$ret"
+  else
+    echo ".xyz filepath does not exist" >&2 #File not json: Data array set to empty
+    echo "Not adding .xyz filepath JSON string to output" >&2
+    exit 1
+  fi
+}
 processPCD(){
   #Accepts the path to a space separated or comma separated file 
   #Converts the file into 3 JSON-compatible arrays: x y and z
