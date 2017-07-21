@@ -149,9 +149,11 @@ function changeIceberg(){
       //Load the STL file
     if(json.hasOwnProperty('stlfile')){
       var filepath=json[stlfile];
-      updateMesh(filepath);
+      console.log('loading stl from '+filepath);     
+      // updateMesh(filepath);
     }
-      //Check what data keys are available from the JSON
+    //updateMesh('data/r11i02.stl');   
+     //Check what data keys are available from the JSON
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
     createAllDisplays();

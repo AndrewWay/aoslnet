@@ -7,12 +7,12 @@ year=[];
 iq=0;
 
 function setup() {
-    var yearList = getList('/bergs/years');
+    var yearList = getJSON('/bergs/years');
     console.log(yearList);    
     console.log("Hello?");
     for(i=0;i<yearList.length;i++){
       var yearSelected = parseInt(yearList[i]);
-      var bergList = getList('/bergs/names/'+yearSelected);
+      var bergList = getJSON('/bergs/names/'+yearSelected);
       console.log("Berglist "+bergList);
       for(j=0;j<bergList.length;j++){
         bergSelected = bergList[j]; //Get the name of the iceberg        
