@@ -152,7 +152,7 @@ function changeIceberg(){
       console.log('loading stl from '+filepath);     
       // updateMesh(filepath);
     }
-    //updateMesh('data/r11i02.stl');   
+    updateMesh('data/r11i02.stl');   
      //Check what data keys are available from the JSON
     extractKeyPaths(json[0].Data[0]);//Only checks first element
     distributeData(json[0].Data);
