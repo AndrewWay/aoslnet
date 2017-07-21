@@ -164,6 +164,11 @@ img.emoji {
   <div id="map" class="icebergmap">
 
   </div>
+  <div id="overview">
+    <h2>Iceberg Information</h2>
+    <p id="desc">Click a marker</p>  
+    <button type="button" onclick="view()">View</button>
+  </div>
 
 		<footer id="colophon" class="site-footer" role="contentinfo">
 			<div class="wrap">
