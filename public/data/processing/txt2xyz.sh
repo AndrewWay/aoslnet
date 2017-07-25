@@ -1,8 +1,11 @@
 #!/bin/bash
 re='^[-+]?[0-9]+\.?[0-9]*$' #regular expression to check if float
-colx=3
-coly=4
-colz=5
+
+#TODO Add in header detection 
+colx=2
+coly=3
+colz=4
+
 txtfile=$1
 if [ ! -f $txtfile ];then
 echo "$txtfile is not a file"
@@ -27,6 +30,7 @@ do
 echo -ne "$i/$length\r"
 line=`sed "${i}q;d" $txtfile`
 IFS=', ' read -ra values <<< "$line"
+
 x=${values[$colx]}
 y=${values[$coly]}
 z=${values[$colz]}

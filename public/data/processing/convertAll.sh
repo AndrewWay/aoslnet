@@ -1,6 +1,11 @@
 #!/bin/bash
 
 filelist="filelist.txt"
+if [ ! -f $filelist ];then
+echo "input file $filelist does not exist"
+echo "exiting..."
+exit 1
+fi
 
 length=`cat $filelist | wc -l`
 

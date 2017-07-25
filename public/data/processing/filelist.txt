@@ -1,0 +1,6 @@
+r11i02.Txt
+r11i03.Txt
+R12I03.Txt
+R12I05.Txt
+r12i08.Txt
+r12i10.Txt
