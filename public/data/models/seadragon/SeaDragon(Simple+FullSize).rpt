@@ -1,0 +1,68 @@
+*****************************************************************
+      SolidWorks Corporation - IGES Processor Status Report
+*****************************************************************
+=================================================================
+General Information
+=================================================================
+Sending System Product I.D.  : SeaDragon(Simple+FullSize).SLDPRT
+Receiving System Product I.D.: SeaDragon(Simple+FullSize).SLDPRT
+File Name                    : C:\Users\levi.BACHMEYERDELL02\Desktop\Levi\SeaDragon Scale Model\NewModel\SeaDragon(Simple+FullSize).IGS
+Sending System               : SolidWorks 2015
+Preprocessor Version         : SolidWorks 2015
+File Creation Date           : 170719.113343
+Model Creation Date          : 170719.113343
+Units                        : IN
+Model Space Scale            : 1
+Author                       : levi
+Organization                 : 
+
+
+=================================================================
+Entity Processing Information
+=================================================================
+ERROR:   DE# 36233, TYPE   128: Unable to create a bspline surface.
+ERROR:   DE# 36233, TYPE   128: Unable to create a bspline surface.
+
+
+=================================================================
+Precision analysis of IGES file:
+=================================================================
+  Most prevalent number of significant digits:              11
+  Highest number of significant digits:                     12
+  Average number of significant digits:                11.2395
+  Maximum distance to origin:                          317.565
+  Minimum distance to origin:                           8.8839
+  Effective number of significant digits:              11.9757
+
+
+=================================================================
+Entity Summary
+=================================================================
+-----------------------------------------------------------------
+Type Name                                         Count Converted
+---- ----                                         ----- ---------
+100  Arc                                           3868      3868
+102  Composite curve                               7792      7792
+110  Line                                         12617     12617
+120  Surface of revolution                         1183      1183
+124  Transformation matrix                         3375      3375
+126  Rational B-spline curve                      19957     19957
+128  Rational B-spline surface                     2079      2077
+142  Curve on a parametric surface                 3896      3896
+144  Trimmed parametric surface                    3262      3261
+314  Color definition                              3263      3263
+_________________________________________________________________
+
+
+=================================================================
+Result Summary
+=================================================================
+SolidWorks Feature Type                Count
+-----------------------                -----
+Solid feature(s)                       41
+Surface feature(s)                     0
+Curve/Sketch feature(s)                0
+--------------------------------------------
+Start time: Wednesday, July 19, 2017 11:34:00
+Finish time: Wednesday, July 19, 2017 11:34:55
+Processing time: 0 days, 00 hours, 00 mins, 55 secs

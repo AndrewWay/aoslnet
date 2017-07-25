@@ -1,0 +1,40 @@
+.main {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  margin: 0;
+  min-height: 100%;
+  min-width: 100%;
+  top: 0px;
+  left: 0px;
+}
+.inner {
+  position: absolute;
+}
+
+#menu {
+  border: 1px solid;
+  height: 15vh;
+  width: 100%;
+}
+#map {
+  border: 1px solid;
+  height: 70vh;
+  width: 100%;
+}
+#filters {
+  border: 1px solid;
+  height: 15vh;
+  width: 100%;
+}
+
+#overview{
+  position: absolute;
+  height: 35vh;
+  width: 15vw;
+  top: 35vh;
+  left: 10vw;
+  border: 1px solid black;
+  z-index: 2;
+  background-color: white;
+}
