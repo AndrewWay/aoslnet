@@ -2,175 +2,107 @@
 <html>
 
 <head>
-  <title>AOSL Data Delivery Website</title>
-  <meta name="description" content="This website displays data received by our vehicle in real Time." />
+  <title>Data Interface</title>
+
+  <!-- META DATA -->
+  <meta name="description" content="Real-time Iceberg data viewer" />
   <meta name="keywords" content="AOSL, SeaDragon, Icebergs, MUN" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <!-- modernizr enables HTML5 elements and feature detects -->
+  <!-- STYLING -->
+  <link rel="stylesheet" href="css/datainterface.css">
+
+  <!-- MODERNIZER ENABLES HTML5 -->
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
-  <!--Load the AJAX API-->
+  
+  <!-- MISC -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
-<script type="text/javascript" xlink:href="svg.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript" xlink:href="svg.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="js/stats.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+  <!-- THREE.JS -->
+  <script src="js/3d/three.js"></script>
+  <script src="js/STLLoader.js"></script>
+  <script src="js/3d/TrackballControls.js"></script>
+  <script src="js/3d/OrbitControls.js"></script>
+  <script src="js/3d/ConvexGeometry.js"></script>
+  <script src="js/3d/Detector.js"></script>
+
+
+  <!-- CLIENT-SIDE FUNCTIONALITY -->
   <script src="js/interface/global.js"></script>
-  <script src="js/interface/datatransfer.js"></script>
+  <script src="js/datatransfer.js"></script>
   <script src="js/interface/playback.js"></script>
   <script src="js/interface/model.js"></script>
   <script src="js/interface/map.js"></script>
-  <script src="js/interface/ctd.js"></script>
+  <script src="js/interface/datadisplay.js"></script>
   <script src="js/interface/airstats.js"></script>
   <script src="js/interface/pictures.js"></script>
+  <script src="js/interface/prettifier.js"></script>
 
 </head>
 
 <body>
-  <div id="main">		
-  <header>
-    <div id="strapline">
-	    <div id="welcome_slogan">
-	      <h3>Welcome To the AOSL delivery data website <span>v0.5</span></h3>
-	    </div>
-    </div>
-	  <nav>
-	    <div id="menubar">
-        <ul id="nav">
-          <li ><a href="/">Home</a></li>
-          <li><a href="/icebergMap">Iceberg Map</a></li>
-          <li class="current"><a href="/interface">Icebergs</a></li>
-          <li><a href="http://www.aosl.ca">About Us</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+<div class="main">
 
-  <div id="IcebergSelector"> 
-    Select the year of iceberg data:
+  <!-- MENU BAR -->  
+  <div id="menu" class="page-segment">
+    <div id="menubar">
+      <ul id="nav">
+        <li ><a href="/">Home</a></li>
+        <li class="current"><a href="/icebergMap">Iceberg Map</a></li>
+        <li><a href="/interface">Icebergs</a></li>
+        <li><a href="http://www.aosl.ca">About Us</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TODO Allow the user to append/remove graphs, or append/remove data display at run-time -->
+  <!-- TODO Dynamically detect what simulation data is available and create graphs and data monitors -->
+
+  <!-- GRAPHS -->
+  <div id="graphs"></div>
+
+  <!-- DATA DISPLAY -->
+  <div id='displays'>
+    <table id='displaytable'>
+    </table>
+  </div>
+
+  <!-- GOOGLE MAP -->
+  <div id="map"></div>
+
+  <!-- PICTURES -->
+  <div id="pics">
+    <img id="icedisp" src="images/notfound.png"></img>
+  </div>
+
+  <!-- ICEBERG MODEL -->  
+  <div id="model" class="page-segment"></div>
+  
+  <!-- TEMPORAL -->
+  <div id="temporal">
+    <div id="buttons">    
+      <button type="button" id="playbtn" onclick="play()">Play</button>
+      <button type="button" id="pausebtn" onclick="pause()">Pause</button>
+      <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+    </div>
+    <div id="timebarbox">
+      <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/> 
+    </div>
+  </div>
+
+  <!-- DATABASE DATA CONTROL AND QUERY -->
+  <div id="datacontrol" class="page-segment">
     <select id="selectYear" onchange="changeYear()"></select>
-    Select the ID/name of the iceberg:
     <select id="selectIceberg"></select>
     <button type="button" onclick="changeIceberg()">Load</button>
-	Download data:
-	<button type="button" onclick="download()">Download</button>
   </div>
-  <div>
-    Playback trial:
-	  <button type="button" id="playbtn" onclick="play()">Play</button>
-    <button type="button" id="pausebtn" onclick="pause()">Pause</button>
-    <button type="button" id="stopbtn" onclick="stop()">Stop</button>
-    <div>
-      <table>
-        <tr>
-          <th>Clock</th>
-          <th>Sound Velocity</th>
-          <th>Air Pressure</th>
-          <th>Air Temperature</th>
-        </tr>
-        <tr>
-          <td id="clock"></td>
-          <td id="soundvel"></td>
-          <td id="airpress"></td>
-          <td id="airtemp"></td>
-        </tr>
-      </table>
-    </div>
-    <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/>  
-  </div>
-	
-	<div id="site_content">		
-    <div class="left_sidebar_container">       
-	    <div class="sidebar">
-        <div id="iceberg_images">
-          <img class="data_plot" id="icedisp" src="images/notfound.png"></img>
-        </div>
-        <div class="data_plot" id="curve_chart1"></div>
-        <div class="data_plot" id="curve_chart2"></div>
-        <div class="data_plot" id="curve_chart3"></div>
-      </div>
-    </div>	
-    <div class="right_sidebar_container">       
-  		<div class="sidebar">
-        <div class="sidebar_item">
-          <h2 align='center'>Iceberg Data</h2>
-          <a>Dimensions : </a>
-          <div>
-            <table align="center" style="width:100%">
-              <tr>
-                <td>Height (m) : </td>
-                <td  id="icebergHeight">-</td>
-              </tr>
-              <tr>
-                <td>Width (m) : </td>
-                <td  id="icebergWidth">-</td>
-              </tr>
-              <tr>
-                <td>Volume (cubic m) : </td>
-                <td   id="icebergVolume">-</td>
-              </tr>
-            </table>
-          </div>
-          <a>True Wind Data : </a>
-          <div>
-            <table align="center" style="width:100%">
-              <tr>
-                <th></th>
-                <th>Wind Speed (m/s)</th> 
-                <th>Wind Direction (deg)</th>
-              </tr>
-              <tr>
-                <td>Min</td>
-                <td  id="minSpeedWind">-</td>
-                <td  id="minDirWind">-</td>
-              </tr>
-              <tr>
-                <td>Average</td>
-                <td  id="aveSpeedWind">-</td>
-                <td  id="aveDirWind">-</td>
-              </tr>
-              <tr>
-                <td>Max</td>
-                <td   id="maxSpeedWind">-</td>
-                <td   id="maxDirWind">-</td>
-              </tr>
-              <tr>
-                <td>Current</td>
-                <td   id="curSpeedWind">-</td>
-                <td   id="curDirWind">-</td>
-              </tr>
-            </table>
-          </div>
-          <a>Iceberg Location and Vehicle Path: </a>
-          <div id="map" style="width:100%;height:200px;" >
-          
-          </div>
-          <a>ADCP Water Current Profile</a>
-            <p>COMMENTED OUT UNTIL DEVELOPED</p>
-          <!--div id="ADCPprof" class="output_html rendered_html output_subarea output_execute_result">
-            <form>
-              Yaw: <input id="yawval" type="text" placeholder="Yaw" required>
-              Pitch: <input id="pitchval" type="text" placeholder="Pitch" required>
-              <input type="button" onclick="recalc()" value="Calc">
-            </form>
-            <script src="http://d3js.org/d3.v3.min.js"></script>
-            <script src="js/vectorfield3d.js"></script>
-          </div-->
-        </div><!--close right_sidebar_item--> 
-      </div><!--close sidebar-->     		
-    </div><!--close sidebar_container-->	
-	  <div id="content">
-    <div id="iceberg_holder">
-      <div id="iceberg_plot"></div>
-    </div>
-    </div>   
-  </div><!--close site_content-->  	
-</div><!--close main-->
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
+
 </body>
 </html>

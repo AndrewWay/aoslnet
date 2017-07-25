@@ -71,7 +71,7 @@ function addMarker(i){
   //Add a new google marker to the map
   marker.setMap(map); 
   google.maps.event.addListener(marker, 'click', function() {
-    document.getElementById('desc').innerHTML=nm+' was clicked';
+    document.getElementById('desc').innerHTML='NAME: '+nm+' YEAR: '+yr+' LATITUDE: '+lt+' LONGITUDE: '+lg+' DESCRIPTION: [sometext]';
     selectedID=nm;
     selectedYear=yr;
   });

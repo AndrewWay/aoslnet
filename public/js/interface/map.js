@@ -1,33 +1,90 @@
-//Google Map
+/**
+ * @file Google Map Control
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
+ */
 
+default_lat=60;
+default_long=-45;
+default_zoom=2;
+mapDiv_id='map';
+var AOSL_seadragon_latitude;
+var AOSL_seadragon_longitude;
+var map;
 
-//Google map
+function AOSL_setSDCoords(lat,long){
+  AOSL_seadragon_latitude=lat;
+  AOSL_seadragon_longitude=long;
+}
+/*
+ * Run once Google Map performs callback AKA is ready
+ */
 function mapReady() {
-  updateMap(0,0);
+  map=new google.maps.Map(document.getElementById(mapDiv_id));
+  setPosition(default_lat,default_long);
+  setZoom(default_zoom);
 }
 
-function updateMap(Ilat,Ilong) {
-    mapInitialized=true;
-    var uluru = {lat: Ilat, lng: Ilong};
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
-        center: uluru
-    });
-    var marker = new google.maps.Marker({
-        position: uluru,
-        map: map
-    });    
+/*
+ * Set the zoom of the map
+ * @param {Number} z
+ * 
+ */
+function setZoom(z){
+  map.setZoom(z);
 }
 
-function updateSDPosition(t){
+/*
+ * Set the position of the map
+ * @param {Number} lt
+ * @param {Number} lg
+ * 
+ */
+function setPosition(lt,lg) {
+  var LatLngLiteral = {lat: lt, lng: lg};  
+  map.setCenter(LatLngLiteral);
+}
+
+/*
+ * Create and add a new marker
+ * @param {Number} lt
+ * @param {Number} lg
+ */
+function setMarker(lt,lg){
+  var LatLngLiteral = {lat: lt, lng: lg};
+  var marker = new google.maps.Marker({
+    position: LatLngLiteral,
+    map: map
+ });    
+}
+
+/*
+ * update SeaDragon coordinates
+ * @param {Number} lat
+ * @param {Number} long
+ */
+function updateSDPosition(t){  
   removeSDPosition();
-  displaySDPosition(t);
+  if ( t < AOSL_seadragon_latitude.length && t < AOSL_seadragon_longitude.length ){
+    var lat=AOSL_seadragon_latitude[t];
+    var long=AOSL_seadragon_longitude[t];
+    displaySDPosition(lat,long); 
+  }
+  else{
+    console.warn('Playback attempted to access array out of bounds')
+  }
 }
-function displaySDPosition(t){
-    var centerlat=sdlat[t];
-    var centerlng=sdlong[t];
-    var x=0.0001;
-    var y=0.0001;
+
+/*
+ * Display the SeaDragon marker
+ * @param {Number} lat
+ * @param {Number} long
+ */
+function displaySDPosition(lat,lng){
+    var centerlat=lat;
+    var centerlng=lng;
+    var x=0.0002;
+    var y=0.0002;
     var tri=[];
     var ax=centerlng;
     var ay=centerlat+y;
@@ -48,108 +105,67 @@ function displaySDPosition(t){
     geodesic: true,
     strokeColor: '#ff0000',
     strokeOpacity: 1.0,
-    strokeWeight: 2,
+    strokeWeight: 1,
     zIndex: 3
   });
   sdpos.setMap(map);
 }
+
+/*
+ * Remove SeaDragon symbol from map
+ */
 function removeSDPosition(){
-  sdpos.setMap(null);
+  if( typeof(sdpos) !== 'undefined'){
+   sdpos.setMap(null);
+  }
+  else{
+    console.warn('Non-existent SeaDragon symbol attempting to be removed');
+  }
 }
 
-// Google Maps functions
-function setMapData() {
-    console.log("Setting Map data");
-    //Calculate average latitude and longitude
-    var centerLat = 0;
-    var centerLng = 0;
-    
-    var sdlg=sdlong;
-    var sdlt=sdlat;    
-    var ibplg=long;
-    var ibplt=lat;
-
-    var sdpath = [];
-    var ibperim = [];
-
-    //Create SeaDragon path list
-    var i=0;
-    while(i < sdlt.length && i < sdlg.length){
-      if(typeof sdlt[i] === 'number'){
-        if(typeof sdlg[i] === 'number'){
-          sdpath.push({"lat" : sdlt[i],"lng" : sdlg[i]});        
-          i++;
-        }
+/*
+ * Draw the path the SeaDragon took during the survey
+ */
+function setSDPath(latarr,longarr){
+  var perim = [];
+  var i=0;
+  while(i < latarr.length && i < longarr.length){
+    if(typeof latarr[i] === 'number'){
+      if(typeof longarr[i] === 'number'){
+        perim.push({"lat" : latarr[i],"lng" : longarr[i]});       
+        i++;
       }
     }
-    //TODO: Fix this whole process for centering the map. 
-    i=0;
-    //Create iceberg path list
-    while(i < ibplg.length && i < ibplt.length){
-      if(typeof ibplt[i] === 'number'){
-        if(typeof ibplg[i] === 'number'){
-          ibperim.push({"lat" : ibplt[i],"lng" : ibplg[i]});
-          //Calculate average perimeter longitude and latitude for map centering          
-          centerLng+=ibplg[i];
-          centerLat+=ibplt[i];  
-          i++;  
-        }
-      }    
-    }
- 
-    if (i > 0){
-      centerLng/=i;
-      centerLat/=i;
-    }
-    console.log("setMapData(): lat "+centerlat+" long "+centerlong);
-    //Init Map
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 3,
-    center: {lat: centerlat, lng: centerlong}, //Change this.
-    mapTypeId: google.maps.MapTypeId.TERRAIN //HYBRID
-  });
-    var uluru = {lat: centerlat, lng: centerlong};
-  var marker = new google.maps.Marker({
-   position: uluru,
-   map: map
-  });   
-
-  //TODO: put the seadragon and iceberg perimeter path creation into a separate function
-
-    //Set SeaDragon Path
-  var seaDragonPath = new google.maps.Polyline({
-    path: sdpath,
-    geodesic: true,
-    strokeColor: '#ede900',
-    strokeOpacity: 1.0,
+  }
+  sdperimeter=new google.maps.Polyline({
+    path: perim,
+    strokeColor: '#f1f41d',
+    strokeOpacity: 0.8,
     strokeWeight: 2,
   });
-  seaDragonPath.setMap(map);
+  console.log(map);
+  sdperimeter.setMap(map);  
+}
 
-    // Set Iceberg Perimeter
-  var IcebergPerimeter = new google.maps.Polygon({
-    paths: ibperim,
-    strokeColor: '#040060',
+function setIBPath(latarr,longarr){
+  var perim = [];
+  var i=0;
+  while(i < latarr.length && i < longarr.length){
+    if(typeof latarr[i] === 'number'){
+      if(typeof longarr[i] === 'number'){
+        perim.push({"lat" : latarr[i],"lng" : longarr[i]});       
+        i++;
+      }
+    }
+  }
+  ibperimeter=new google.maps.Polygon({
+    path: perim,
+    strokeColor: '#ffffff',
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: '#3634d1',
     fillOpacity: 0.35,
-   // zIndex : 1
   });
-  IcebergPerimeter.setMap(map);   
- 
-  //Set seadgragon position
-  displaySDPosition(0);
-    //Iceberg Drift Path TODO
-    /*if(jsonIcberg.IcebergDrift.length>0){
-      var IcebergDriftPath = new google.maps.Polyline({
-        path: jsonIcberg.IcebergDrift,
-        geodesic: true,
-        strokeColor: '#ff9900',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-      IcebergDriftPath.setMap(map);         
-    }*/
-    console.log("Map data set");
+  console.log('setting ib perimeter')
+  ibperimeter.setMap(map);   
 }

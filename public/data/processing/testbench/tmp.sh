@@ -1,5 +1,8 @@
 #!/bin/bash
+xindex=0
+line="-178  44.8    -10.6"
+IFS=' ,' read -r -a linearr <<< "$line"
+echo $linearr
+newx=${linearr[$xindex]}
 
-if [[ -38 =~ ^[-+]?[0-9]+\.?[0-9]*$ ]];then
-    echo "MAtch"
-fi
+echo "newx : $newx"

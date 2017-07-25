@@ -1,6 +1,16 @@
+/**
+ * @file Iceberg Database Inquisitor
+ * @author Andrew Way <arw405@mun.ca>
+ * @version 0.1
+ */
 var express = require('express');
 var router = express.Router();
+var fs  = require('fs');
+var StlReader = require('stl-reader');
 
+/*
+ * @api {get} /years Return the list of available years
+ */
 router.get('/years',function(req,res){
     var db = req.db;
     var collection = db.get('data');
@@ -10,6 +20,9 @@ router.get('/years',function(req,res){
      }));
 });
 
+/*
+ * @api {get} /names/:yr Return the names of icebergs for a given year
+ */
 router.get('/names/:yr',function(req,res){
     var db = req.db;   
     var collection = db.get('data');
@@ -24,6 +37,10 @@ router.get('/names/:yr',function(req,res){
 
 });
 
+/*
+ * @api {get} /data/:yr/:nm Return the iceberg entry with name nm and year yr
+ */
+// TODO: Set this function to accept any type of query usable by MongoDB
 router.get('/data/:yr/:nm',function(req,res){
    var db = req.db;
    var collection = db.get('data');
@@ -35,10 +52,5 @@ router.get('/data/:yr/:nm',function(req,res){
        db.close();
    }));
 });
-
-
-/*router.get('icebergpic/:year/:name',function(req,res) {
-  
-});*/
 
 module.exports = router;
