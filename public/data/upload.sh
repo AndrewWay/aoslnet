@@ -49,7 +49,7 @@ main(){
   echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
   read xyzpath
   local xyz=$(getXYZjson $xyzpath)  
-  echo "$xyz"
+
   #NAME_________________________
   local name=$(getName)  
   #YEAR_________________________
@@ -77,20 +77,6 @@ main(){
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
 
-}
-
-xyz2stl(){
-  #Accepts path/to/file.xyz
-  #generates file.stl using script.mlx
-  #returns relative path to file.stl
-  #adds file.stl to processing/processed/
-  local xyzpath=$1
-  local xyzfile=$(basename $xyzpath)
-  IFS='.' read -ra name <<< "$xyzfile"
-  local stlfile=${name[0]}.stl
-  meshlabserver -i "$PROC_XYZ_DIR$xyzfile" -o "$PROC_STL_DIR$stlfile" -o -m vc vn -s processing/poissonmesh.mlx
-  local stlpath="$PROC_STL_DIR$stlfile"
-  return "$stlpath"
 }
 
 getName(){

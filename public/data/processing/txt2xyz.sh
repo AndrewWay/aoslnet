@@ -7,6 +7,7 @@ coly=3
 colz=4
 
 txtfile=$1
+dest="processed/xyz/"
 if [ ! -f $txtfile ];then
 echo "$txtfile is not a file"
 echo "exiting..."
@@ -51,4 +52,4 @@ fi
 
 done
 echo "non-float, rejected points: $errs"
-mv $output processed/$output
+mv $output $dest$output
