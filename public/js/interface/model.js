@@ -44,6 +44,36 @@ function updateDim(h,w,v){
   console.log("updateDim() done");
 }
 
+/*
+ * Display 3D point cloud
+ */
+
+function addpoints() {
+ 
+    // grab data from the INPUT elements
+    var x = grab_float_data( "X" ) ;
+    var y = grab_float_data( "Y" ) ;
+    var z = grab_float_data( "Z" ) ;
+ 
+    // loop through the points and add them to the scene
+    for( var i=0 ; i < z.length ; i++ ) {
+ 
+        // geometry describes the shape
+        geometry = new THREE.SphereGeometry( 24, 16, 16 ) ;
+ 
+        // material describes the surface of the shape
+        material = new THREE.MeshLambertMaterial( { color:0x00CCFF } ) ;
+ 
+        // mesh maps the material onto the geometry to make an object  
+        mesh = new THREE.Mesh( geometry, material ) ;
+ 
+        // position the mesh in space
+        mesh.position.set( x[i], y[i], z[i] ) ;
+ 
+        // add the mesh to the scene
+        scene.add( mesh ) ;
+    }
+}
 
 /*
  * Display 3D model

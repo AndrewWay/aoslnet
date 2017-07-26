@@ -6,15 +6,9 @@
 
 set -e #Make script exit upon generating error of (almost) all commands. See man bash for more info
 
-#Change these headers to match those in your PCD files
-pcdheader_x='X_Value'
-pcdheader_y='Y_Value'
-pcdheader_z='Z_Value'
-
 imagestore="/home/away/workspace/aoslnet/site/public/images"
 
 #Script must be ran in public/data 
-
 PUBLIC_STL_DIR='models/stl/'
 PUBLIC_XYZ_DIR='models/xyz/'
 PROC_XYZ_DIR='processing/processed/'
@@ -48,7 +42,7 @@ main(){
   #XYZ FILE
   echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
   read xyzpath
-  local xyz=$(getXYZjson $xyzpath)  
+  local xyz=$(processPCD $xyzpath)  
 
   #NAME_________________________
   local name=$(getName)  
@@ -147,6 +141,7 @@ getSTLjson(){
     exit 1
   fi
 }
+
 getXYZjson(){
   #Accepts path to .xyz file
   #Creates json string { xyzpath : path/to/xyz }
@@ -171,54 +166,21 @@ getXYZjson(){
 processPCD(){
   #TODO: Break this function up into smaller functions? Function is big and pretty complex
 
-  #Accepts the path to a space separated or comma separated file 
+  #Accepts the path to a space separated or comma separated xyz file 
   #Converts the file into 3 JSON-compatible arrays: x y and z
   #Returns JSON with 3 arrays, for x, y and z coordinates of points
 
   local failcode=0
   local input=$1
-  local badh=-1
 
-  local xindex=$badh
-  local yindex=$badh
-  local zindex=$badh
+  local xindex=0
+  local yindex=1
+  local zindex=2
   if [ ! -f "$input" ];then
     echo -e "${Red}File \"$input\" does not exist. Setting PCD arrays to empty. ${Color_Off}" >&2
     local ret=`jq -n '{x : [] } + {y : [] } + {z : [] }'`
     echo "$ret"
     exit 1
-  fi
-  #Take the raw data file and determine what columns contain the x,y, and z data
-  local headers=`cat $input | head -n 1`
-  local headarrs=""
-  IFS=$', \t' read -r -a headarrs <<< "$headers"
-
-  #check which columns contain strings x y and z
-  for h in `seq 0 "${#headarrs[@]}"`
-  do
-    header=${headarrs[$h]}
-    if [[ "$header" == "$pcdheader_x" ]];then
-      xindex=$h
-    fi
-    if [[ "$header" =~ "$pcdheader_y" ]];then
-      yindex=$h
-    fi
-    if [[ "$header" =~ "$pcdheader_z" ]];then
-      zindex=$h
-    fi    
-  done
-  
-  if [ $xindex == $badh ];then
-    echo -e "${Red}$pcdheader_x heading not detected.${Color_Off}" >&2
-    failcode=1
-  fi
-  if [ $yindex == $badh ];then
-    echo -e "${Red}$pcdheader_y heading not detected.${Color_Off}" >&2
-    failcode=1
-  fi
-  if [ $zindex == $badh ];then
-    echo -e "${Red}$pcdheader_z heading not detected.${Color_Off}" >&2
-    failcode=1
   fi
 
   #Create the data arrays
@@ -230,25 +192,19 @@ processPCD(){
   
   local rejectedpoints=0 #counter for tracking how many points are not floats
   local rejectionstring=""
-  if [[ $failcode -eq 1 ]];then #If the script failed to find x y and z headers, set arrays to []
-    echo -e "${Red}processPCD failed to find correct headers in $input. Setting PCD arrays to []${Color_Off}" >&2   
-    xdat="[]"
-    ydat="[]"
-    zdat="[]" 
-  else #Else grab the x y z data from the input file and create the x y and z JSON arrays
-    echo -e "Now processing PCD..." >&2
-    for i in `seq 2 $length`
-    do
-      local rejectcode=0
-      local line=`cat $input | head -n $i | tail -n 1`
-      local linearr=""
-      IFS=$', \t' read -r -a linearr <<< "$line"
+  echo -e "Now processing PCD..." >&2
+  for i in `seq 2 $length`
+  do
+    local rejectcode=0
+    local line=`cat $input | head -n $i | tail -n 1`
+    local linearr=""
+    IFS=$', \t' read -r -a linearr <<< "$line"
 
-      local newx=${linearr[$xindex]}
-      local newy=${linearr[$yindex]}
-      local newz=${linearr[$zindex]}
-      #echo "newx: $newx" >&2
-  #Shorten this if statement
+    local newx=${linearr[$xindex]}
+    local newy=${linearr[$yindex]}
+    local newz=${linearr[$zindex]}
+    #echo "newx: |$newx|" >&2
+    #Shorten this if statement
     if [[ $newx =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newy =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newz =~ ^[-+]?[0-9]+\.?[0-9]*$ ]];then
       xdat=$xdat$newx,
       ydat=$ydat$newy,
@@ -257,19 +213,19 @@ processPCD(){
       rejectedpoints=$((rejectedpoints + 1))
       rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off}"
     fi
-      echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
-    done
-    echo -e "" >&2
-    local line=`cat $input | tail -n 1`
-    IFS=$', \t' read -r -a linearr <<< "$line"
-    newx=${linearr[$xindex]}
-    newy=${linearr[$yindex]}
-    newz=${linearr[$zindex]}
+    echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
+  done
 
-    xdat="$xdat$newx]"
-    ydat="$ydat$newy]"
-    zdat="$zdat$newz]"
-  fi
+  echo -e "" >&2
+  local line=`cat $input | tail -n 1`
+  IFS=$', \t' read -r -a linearr <<< "$line"
+  newx=${linearr[$xindex]}
+  newy=${linearr[$yindex]}
+  newz=${linearr[$zindex]}
+
+  xdat="$xdat$newx]"
+  ydat="$ydat$newy]"
+  zdat="$zdat$newz]"
   local xarr=`jq '{x : .}' <<< "$xdat"`
   local yarr=`jq '{y : .}' <<< "$ydat"`
   local zarr=`jq '{z : .}' <<< "$zdat"`
