@@ -84,8 +84,25 @@ function model(){
   var stats;
   var camera, controls, scene, renderer;
   init();
+  loadModel();
+  //loadPointCloud();
   render();
   animate();
+}
+
+function loadPointCloud(){
+  
+}
+
+function loadModel(){
+    /* GEOMETRY */
+  var loader = new THREE.STLLoader();
+  loader.load(currentfile, function ( geometry ) {
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+    var mesh = new THREE.Mesh( geometry, material );
+    mesh.material.side = THREE.DoubleSide;
+    scene.add( mesh );
+  });
 }
 
 /*
@@ -122,15 +139,7 @@ function init() {
 	controls.enableZoom = true;
   controls.addEventListener( 'change', render ); // remove when using animation loop
 	// enable animation loop when using damping or autorotation
-  /* GEOMETRY */
 
-  var loader = new THREE.STLLoader();
-  loader.load(currentfile, function ( geometry ) {
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-    var mesh = new THREE.Mesh( geometry, material );
-    mesh.material.side = THREE.DoubleSide;
-    scene.add( mesh );
-  });
 
 	/* LIGHTS */
 

@@ -44,6 +44,36 @@ function updateDim(h,w,v){
   console.log("updateDim() done");
 }
 
+/*
+ * Display 3D point cloud
+ */
+
+function addpoints() {
+ 
+    // grab data from the INPUT elements
+    var x = grab_float_data( "X" ) ;
+    var y = grab_float_data( "Y" ) ;
+    var z = grab_float_data( "Z" ) ;
+ 
+    // loop through the points and add them to the scene
+    for( var i=0 ; i < z.length ; i++ ) {
+ 
+        // geometry describes the shape
+        geometry = new THREE.SphereGeometry( 24, 16, 16 ) ;
+ 
+        // material describes the surface of the shape
+        material = new THREE.MeshLambertMaterial( { color:0x00CCFF } ) ;
+ 
+        // mesh maps the material onto the geometry to make an object  
+        mesh = new THREE.Mesh( geometry, material ) ;
+ 
+        // position the mesh in space
+        mesh.position.set( x[i], y[i], z[i] ) ;
+ 
+        // add the mesh to the scene
+        scene.add( mesh ) ;
+    }
+}
 
 /*
  * Display 3D model
@@ -54,8 +84,21 @@ function model(){
   var stats;
   var camera, controls, scene, renderer;
   init();
+  loadModel();
+  //loadPointCloud();
   render();
   animate();
+}
+
+function loadModel(){
+    /* GEOMETRY */
+  var loader = new THREE.STLLoader();
+  loader.load(currentfile, function ( geometry ) {
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+    var mesh = new THREE.Mesh( geometry, material );
+    mesh.material.side = THREE.DoubleSide;
+    scene.add( mesh );
+  });
 }
 
 /*
@@ -92,15 +135,7 @@ function init() {
 	controls.enableZoom = true;
   controls.addEventListener( 'change', render ); // remove when using animation loop
 	// enable animation loop when using damping or autorotation
-  /* GEOMETRY */
 
-  var loader = new THREE.STLLoader();
-  loader.load(currentfile, function ( geometry ) {
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-    var mesh = new THREE.Mesh( geometry, material );
-    mesh.material.side = THREE.DoubleSide;
-    scene.add( mesh );
-  });
 
 	/* LIGHTS */
 
@@ -140,33 +175,6 @@ function animate() {
 	controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 	stats.update();
 	render();
-}
-
-function addpoints() {
- 
-    // grab data from the INPUT elements
-    var x = grab_float_data( "X" ) ;
-    var y = grab_float_data( "Y" ) ;
-    var z = grab_float_data( "Z" ) ;
- 
-    // loop through the points and add them to the scene
-    for( var i=0 ; i < z.length ; i++ ) {
- 
-        // geometry describes the shape
-        geometry = new THREE.SphereGeometry( 24, 16, 16 ) ;
- 
-        // material describes the surface of the shape
-        material = new THREE.MeshLambertMaterial( { color:0x00CCFF } ) ;
- 
-        // mesh maps the material onto the geometry to make an object  
-        mesh = new THREE.Mesh( geometry, material ) ;
- 
-        // position the mesh in space
-        mesh.position.set( x[i], y[i], z[i] ) ;
- 
-        // add the mesh to the scene
-        scene.add( mesh ) ;
-    }
 }
 
 /*
