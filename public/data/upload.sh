@@ -1,28 +1,28 @@
 #!/bin/bash
 
-#Takes data from TSD and PCD sources and appends it to a JSON file that is compatible with MongoDB
-#Two input files: PCD and TSD (Point cloud data and time-stamped data.)
-#PCD: can be comma separated, space separated, or both. 
-#TSD: JSON. You can specify the name of the array that contains the time-stamped data
-#Both: The script will check either for a consistent year to be used in the uploaded JSON.
+#DATABASE UPLOAD SCRIPT
+#Centralizes data sources by forming a JSON object containing data arrays and filepaths to iceberg model files
+#To add a new JSON entry, simply create a new function that returns a JSON string and combine it with the final string
+
+set -e #Make script exit upon generating error of (almost) all commands. See man bash for more info
 
 #Change these headers to match those in your PCD files
 pcdheader_x='X_Value'
 pcdheader_y='Y_Value'
 pcdheader_z='Z_Value'
 
-#Knowledge base
-pcd_is_csv=0
-pcd_is_json=0
-tsd_is_csv=0
-tsd_is_json=0
-
 imagestore="/home/away/workspace/aoslnet/site/public/images"
+
+#Script must be ran in public/data 
+
+PUBLIC_STL_DIR='models/stl/'
+PUBLIC_XYZ_DIR='models/xyz/'
+PROC_XYZ_DIR='processing/processed/'
 
 vno=0.1
 
 main(){
-  
+
   echo -e "${BBlue}AOSL MongoDB Data Upload"
   echo -e "${UWhite}Version $vno"
   echo ""
@@ -40,10 +40,16 @@ main(){
 #  fi
 #  local pcd=$(processPCD $pcdpath)
 
+  #STL FILE #TODO get the filepath but wait until the very end to actually upload it
   echo -e "${ICyan}Enter the name to the .stl file  ${Color_Off}"
   read stlpath
-  local stl=$(getSTLPath $stlpath)
-
+  local stl=$(getSTLjson $stlpath)
+  
+  #XYZ FILE
+  echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
+  read xyzpath
+  local xyz=$(getXYZjson $xyzpath)  
+  echo "$xyz"
   #NAME_________________________
   local name=$(getName)  
   #YEAR_________________________
@@ -64,7 +70,7 @@ main(){
   read longitude
   local long=`jq -n '{longitude : '$longitude'}'`
   local lat=`jq -n '{latitude : '$latitude'}'`  
-  jsonraw="$name $year $lat $long $dima $stl $tsd"
+  jsonraw="$name $year $lat $long $dima $stl $xyz $tsd"
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
@@ -73,19 +79,18 @@ main(){
 
 }
 
-salvage(){
-  #Function left on backburner. Not neccessary
-  #Accepts a JSON
-  #Checks if the JSON has key given as first argument
-  #Returns the value associated with the key
-
-  local key=$1
-  local source=$2
-  
-  #Check if key exists
-
-  #Return null if doesn't exists, return value if exists
-
+xyz2stl(){
+  #Accepts path/to/file.xyz
+  #generates file.stl using script.mlx
+  #returns relative path to file.stl
+  #adds file.stl to processing/processed/
+  local xyzpath=$1
+  local xyzfile=$(basename $xyzpath)
+  IFS='.' read -ra name <<< "$xyzfile"
+  local stlfile=${name[0]}.stl
+  meshlabserver -i "$PROC_XYZ_DIR$xyzfile" -o "$PROC_STL_DIR$stlfile" -o -m vc vn -s processing/poissonmesh.mlx
+  local stlpath="$PROC_STL_DIR$stlfile"
+  return "$stlpath"
 }
 
 getName(){
@@ -137,41 +142,46 @@ processTSD(){
   echo "$ret"
 }
 
-getSTLPath(){
+getSTLjson(){
   #Accepts path to .stl file
   #Creates json string {stlpath : path/to/stl}
   #Returns data JSON
 
-  local file=$1
-  local path="data/models/stl/$file"
+  local stlpath=$1
+  local stlfile=$(basename $stlpath) 
+  local path="data/$PUBLIC_STL_DIR$stlfile"
   local ret=""  
-  if [ "${file: -4}" == ".stl" ] && [ -f $file ];then #Check if the file is an existing json
+  if [ "${stlfile: -4}" == ".stl" ] && [ -f $stlpath ];then #Check if the file is an existing .stl
     ret=`jq -n '{ stlpath : "'$path'" }'`
     echo "$ret"
-    mv $file models/stl/$file
+    cp $stlpath $PUBLIC_STL_DIR$stlfile
   else
-    echo ".stl filepath does not exist" >&2 #File not json: Data array set to empty
+    echo ".stl filepath does not exist" >&2 #File not stl
     echo "Not adding .stl filepath JSON string to output" >&2
     exit 1
   fi
 }
-
-getXYZPath(){
+getXYZjson(){
   #Accepts path to .xyz file
   #Creates json string { xyzpath : path/to/xyz }
   #Returns data JSON
 
-  local path=$1
+  local xyzpath=$1
+  local xyzfile=$(basename $xyzpath)
+  echo "xyz base name $xyzfile" >&2
+  local path="data/$PUBLIC_XYZ_DIR$xyzfile"
   local ret=""  
-  if [ "${path: -4}" == ".xyz" ] && [ -f $path ];then #Check if the file is an existing json
-    ret=`jq '{ xyzpath : '$path' }'`
+  if [ "${xyzfile: -4}" == ".xyz" ] && [ -f $xyzpath ];then #Check if the file is an existing json
+    ret=`jq -n '{ xyzpath : "'$path'" }'`
     echo "$ret"
+    cp $xyzpath $PUBLIC_XYZ_DIR$xyzfile
   else
-    echo ".xyz filepath does not exist" >&2 #File not json: Data array set to empty
+    echo ".xyz filepath does not exist" >&2 #File not xyz
     echo "Not adding .xyz filepath JSON string to output" >&2
     exit 1
   fi
 }
+
 processPCD(){
   #TODO: Break this function up into smaller functions? Function is big and pretty complex
 
