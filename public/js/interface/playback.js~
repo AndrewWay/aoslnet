@@ -5,7 +5,8 @@ timebarid='timebar';
 playbtnid='playbtn';
 pausebtnid='pausebtn';
 stopbtnid='stopbtn';
-
+sdx=[];
+sdy=[];
 
 function manualsetTime(){
   var newTime=document.getElementById(timebarid).value;
@@ -21,9 +22,10 @@ function play(){
     document.getElementById(timebarid).disabled=false;
     playid=setInterval(function(){
         var ti = get_time();//time[time_index];//Json objects have bad timestamp data
-        console.log('time: '+ti);        
+        console.log('time: '+ti+' sdx: '+sdx[ti]+' sdy: '+sdy[ti]);        
         dispdata(ti);
-        setTimeBar(ti);        
+        setTimeBar(ti);
+        setSDModelPosition(sdx[ti],sdy[ti],0);        
         set_time(ti+1);
         if(ti>time.length){
           clearInterval(playid);
@@ -31,10 +33,41 @@ function play(){
     },1000*delay_factor);
 }
 
+/*
+ * Convert SeaDragon latitude and longitude to point cloud local frame
+ */
+function setSD(x,y,gps_origin){
+  var xorigin=gps_origin[0];
+  var yorigin=gps_origin[1];
+  console.log(yorigin);
+  var xorigin_m=lat2m(xorigin);
+  var yorigin_m=long2m(yorigin);
+  console.log(yorigin_m);
+  console.log('Converting gps to local');
+  console.log(x);
+  console.log(y);
+      // Convert xy coordinates to metres and relative to local frame
+  for(i=0;i<x.length;i++){
+    x[i]=lat2m(x[i]) - xorigin_m;
+    y[i]=long2m(y[i]) - yorigin_m; 
+  }
+  console.log('SEA DRAGON X');
+  console.log(x);
+  console.log('SEA DRAGON Y');
+  console.log(y);
+}
+
+function lat2m(phi){
+  return 111132.92-559.82*Math.cos(2*phi)+1.175*Math.cos(4*phi)-0.0023*Math.cos(6*phi);
+}
+function long2m(theta){
+  return 111412.84*Math.cos(theta)-93.5*Math.cos(3*theta)+0.118*Math.cos(5*theta);
+}
+
 function dispdata(t){
   redraw(t);
   redisplay(t);
-  
+  updateSDPosition(t)
 }
 
 function pause(){

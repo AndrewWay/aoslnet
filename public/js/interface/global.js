@@ -204,11 +204,16 @@ function changeIceberg(){
 			setplotData(graph_ids[i],arr);
 		}
 		updateTimeMax(json.Data.length);
+	  setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
+	  loadSeaDragon();
 	}
-
+  setSDModelPosition(200,-20,0);
 	console.log('changeIceberg() finished');
 }
 
+/*
+ * Add toggle for displaying 3D Objects
+ */
 function addToggle(id,callback,name){
   var element = document.createElement("input");
   element.type="button";

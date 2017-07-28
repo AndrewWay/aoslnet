@@ -23,6 +23,7 @@ function updateMesh(){
 	console.log('updateMesh() ending');
 }
 
+
 /*
  * Set the current 3D model filepath on the public directory
  * @param {String} file
@@ -99,7 +100,15 @@ function loadPointCloud() {
 	pointcloud = new THREE.PointCloud(geometry,materials);
 	scene.add(pointcloud);
 }
-
+function setSDModelPosition(x,y,z){
+  SDModel.position.set(x, y, z);
+}
+function loadSeaDragon(){
+  var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+  var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+  SDModel = new THREE.Mesh( geometry, material );
+  scene.add( sphere );
+}
 /*
  * Load and add the mesh to the scene
  */
