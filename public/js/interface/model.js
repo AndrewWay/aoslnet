@@ -4,8 +4,10 @@
  * @version 0.1
  */
 
+var rotWorldMatrix;
 currentfile='';
 modelcontainerid='model';
+SeaDragonFilePath='data/models/seadragon/SeaDragon(Simple+FullSize).STL'
 xarr=[];
 yarr=[];
 zarr=[];
@@ -13,6 +15,7 @@ cam_z=500;
 meshtoggled=1;
 pointstoggled=1;
 var mesh;
+
 /*
  * Update the mesh by specifying a new 3D model file path
  * @param {String} file
@@ -42,6 +45,7 @@ function setPointCloud(x,y,z){
 	yarr=y;
 	zarr=z;
 }
+
 /*
  * Update the display for the iceberg dimensions
  * @param {Number} h
@@ -101,14 +105,26 @@ function loadPointCloud() {
 	scene.add(pointcloud);
 }
 function setSDModelPosition(x,y,z){
-  SDModel.position.set(x, y, z);
+	SDModel.position.set(x, y, z);
 }
+
+/*
+ * Load SeaDragon model
+ */
 function loadSeaDragon(){
-  var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-  var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-  SDModel = new THREE.Mesh( geometry, material );
-  scene.add( SDModel );
+	var loader = new THREE.STLLoader();
+	loader.load(SeaDragonFilePath, function ( geometry ) {
+    var material = new THREE.MeshPhongMaterial( { color: 0xffff00 } );
+    SDModel = new THREE.Mesh( geometry, material );
+    SDModel.material.side = THREE.DoubleSide;
+    scene.add( SDModel );
+    var xAxis = new THREE.Vector3(1,0,0);
+    rotationAngle=90*Math.PI/180;//Rotate by 90 degree
+    rotateAroundWorldAxis(SDModel, xAxis,rotationAngle); //TODO useful for changing orientation of SeaDragon according to heading 
+    setSDModelPosition(300,300,SDBottom);
+  });
 }
+
 /*
  * Load and add the mesh to the scene
  */
@@ -116,12 +132,39 @@ function loadModel(){
 	/* GEOMETRY */
 	var loader = new THREE.STLLoader();
 	loader.load(currentfile, function ( geometry ) {
-			var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-			mesh = new THREE.Mesh( geometry, material );
-			mesh.material.side = THREE.DoubleSide;
-			scene.add( mesh );
-			});
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+    mesh = new THREE.Mesh( geometry, material );
+    mesh.material.side = THREE.DoubleSide;
+    scene.add( mesh );
+  });
 }
+
+
+/*
+ *  Rotate an object around an arbitrary axis in object space
+ */
+var rotObjectMatrix;
+function rotateAroundObjectAxis(object, axis, radians) {
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    object.matrix.multiply(rotObjectMatrix);
+    object.rotation.setFromRotationMatrix(object.matrix);
+}
+
+/*
+ * Rotate an object around an arbitrary axis in world space    
+ */    
+function rotateAroundWorldAxis(object, axis, radians) {
+    rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.matrix);                // pre-multiply
+
+    object.matrix = rotWorldMatrix;
+    object.rotation.setFromRotationMatrix(object.matrix);
+}
+
+
+
 /*
  * Make mesh visible or invisible
  */
@@ -235,5 +278,6 @@ function animate() {
 function render() {
 	renderer.render( scene, camera );
 }
+
 
 

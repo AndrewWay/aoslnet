@@ -25,7 +25,7 @@ function play(){
         console.log('time: '+ti+' sdx: '+sdx[ti]+' sdy: '+sdy[ti]);        
         dispdata(ti);
         setTimeBar(ti);
-        setSDModelPosition(sdx[ti],sdy[ti],0);        
+        setSDModelPosition(sdx[ti],sdy[ti],SDBottom);        
         set_time(ti+1);
         if(ti>time.length){
           clearInterval(playid);
