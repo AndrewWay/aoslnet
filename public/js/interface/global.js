@@ -110,6 +110,7 @@ function changeIceberg(){
 	var yearSelected = document.getElementById("selectYear").value;
 	var bergSelected = document.getElementById("selectIceberg").value;
 	var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
+	createScene();
 	if(json.constructor == Array){
 		json = json[0];
 	}    
@@ -166,6 +167,8 @@ function changeIceberg(){
 		var filepath=json['stlpath'];
 		console.log('loading stl from '+filepath);     
 		setfile(filepath);
+		addToggle('meshtoggle','toggleMesh();','Toggle Mesh');
+	  loadModel();
 	}
     //Load the point cloud data
 	var xarray_check=json.hasOwnProperty('x');
@@ -173,14 +176,16 @@ function changeIceberg(){
 	var zarray_check=json.hasOwnProperty('z');  
 
 	if( xarray_check && yarray_check && zarray_check ){
-		console.log('ADDING THE POINTS TO MODEL ARRAYS');
 		var x = json['x'];
 		var y = json['y'];
 		var z = json['z'];
 		setPointCloud(x,y,z)
+		addToggle('pointstoggle','togglePoints();','Toggle Points');
+	  loadPointCloud();
 	}
-  model();//TODO load whatever exists, don't load if nothing exists
-  //if both exists, load the stl
+  render();
+	animate();
+  
 	  //Load timestamped data array
 	if(json.hasOwnProperty('Data') && json['Data'].length > 0){
 		extractKeyPaths(json['Data'][0]);//Only checks first element
@@ -204,6 +209,16 @@ function changeIceberg(){
 	console.log('changeIceberg() finished');
 }
 
+function addToggle(id,callback,name){
+  var element = document.createElement("input");
+  element.type="button";
+  element.name=name;
+  element.value=name;
+  element.onclick=callback;
+  element.setAttribute('onclick',  callback);
+  var toggleContainer=document.getElementById('pics');
+  toggleContainer.append(element);
+}
 /*
  * Check for AOSL specific data and create appropriate displays
  */
