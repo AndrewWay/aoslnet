@@ -8,6 +8,8 @@ stopbtnid='stopbtn';
 sdx=[];
 sdy=[];
 
+//TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
+
 function manualsetTime(){
   var newTime=document.getElementById(timebarid).value;
   console.log("Manually setting time to: "+newTime);
