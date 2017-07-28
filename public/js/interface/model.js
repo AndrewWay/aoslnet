@@ -74,6 +74,7 @@ function createScene(){
 	var stats;
 	var camera, controls, scene, renderer;
 	init();
+	loadWater();
 	render();
 	animate();
 }
