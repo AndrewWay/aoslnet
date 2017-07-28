@@ -6,26 +6,38 @@
 
 currentfile='';
 modelcontainerid='model';
-
+xarr=[];
+yarr=[];
+zarr=[];
+cam_z=100;
 /*
  * Update the mesh by specifying a new 3D model file path
  * @param {String} file
  */
-function updateMesh(file){
+function updateMesh(){
   console.log('updateMesh() starting');
-  setfile(file);
   model();
   console.log('updateMesh() ending');
 }
 
 /*
- * Set the current 3D model file
+ * Set the current 3D model filepath on the public directory
  * @param {String} file
  */
 function setfile(file){
   currentfile=file;
 }
 
+function setPointCloud(x,y,z){
+  console.log('setting the point cloud arrays in model.js');
+  console.log(x);
+  console.log(y);
+  console.log(z);
+
+  xarr=x;
+  yarr=y;
+  zarr=z;
+}
 /*
  * Update the display for the iceberg dimensions
  * @param {Number} h
@@ -44,36 +56,6 @@ function updateDim(h,w,v){
   console.log("updateDim() done");
 }
 
-/*
- * Display 3D point cloud
- */
-
-function addpoints() {
- 
-    // grab data from the INPUT elements
-    var x = grab_float_data( "X" ) ;
-    var y = grab_float_data( "Y" ) ;
-    var z = grab_float_data( "Z" ) ;
- 
-    // loop through the points and add them to the scene
-    for( var i=0 ; i < z.length ; i++ ) {
- 
-        // geometry describes the shape
-        geometry = new THREE.SphereGeometry( 24, 16, 16 ) ;
- 
-        // material describes the surface of the shape
-        material = new THREE.MeshLambertMaterial( { color:0x00CCFF } ) ;
- 
-        // mesh maps the material onto the geometry to make an object  
-        mesh = new THREE.Mesh( geometry, material ) ;
- 
-        // position the mesh in space
-        mesh.position.set( x[i], y[i], z[i] ) ;
- 
-        // add the mesh to the scene
-        scene.add( mesh ) ;
-    }
-}
 
 /*
  * Display 3D model
@@ -84,10 +66,43 @@ function model(){
   var stats;
   var camera, controls, scene, renderer;
   init();
-  loadModel();
-  //loadPointCloud();
+  //loadModel();
+  loadPointCloud();
   render();
   animate();
+}
+
+/*
+ * Load and display 3D point cloud
+ */
+function loadPointCloud() {
+  console.log('adding point cloud');
+    // grab data from the INPUT elements
+    var x = xarr ;
+    var y = yarr ;
+    var z = zarr ;
+    console.log(zarr);
+    console.log('Z LENGTHL: '+z.length);
+    // loop through the points and add them to the scene
+    for( var i=0 ; i < z.length ; i++ ) {
+        console.log(i);
+        // geometry describes the shape
+        geometry = new THREE.SphereGeometry( 10000, 16, 16 ) ;
+ 
+        // material describes the surface of the shape
+        var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+ 
+        // mesh maps the material onto the geometry to make an object  
+        var mesh = new THREE.Mesh( geometry, material ) ;
+ 
+        // position the mesh in space
+        mesh.position.set( x[i], y[i], z[i] ) ;
+        
+        mesh.material.side = THREE.DoubleSide; 
+
+        // add the mesh to the scene
+        scene.add( mesh ) ;
+    }
 }
 
 function loadModel(){
@@ -115,7 +130,6 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer(); // Create the renderer
 	renderer.setPixelRatio( window.devicePixelRatio ); // tch
-
   /* DOM CONTAINER FOR RENDERER */
 
 	var container = document.getElementById( modelcontainerid ); //Assign the output to container
@@ -123,9 +137,13 @@ function init() {
 	container.appendChild( renderer.domElement );
 
   /* CAMERA */
+    var VIEW_ANGLE = 75, 
+       ASPECT = $(container).width()/$(container).height(), 
+       NEAR = 0.1, FAR = 1000000;
+    camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
 
-	camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
-	camera.position.z = 500;
+	//camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
+	camera.position.z = cam_z;
 	camera.updateProjectionMatrix();
 	controls = new THREE.TrackballControls( camera,container);
   //controls = new THREE.OrbitControls(camera);  
