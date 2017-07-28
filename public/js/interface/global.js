@@ -179,7 +179,8 @@ function changeIceberg(){
 		var z = json['z'];
 		setPointCloud(x,y,z)
 	}
-
+  model();//TODO load whatever exists, don't load if nothing exists
+  //if both exists, load the stl
 	  //Load timestamped data array
 	if(json.hasOwnProperty('Data') && json['Data'].length > 0){
 		extractKeyPaths(json['Data'][0]);//Only checks first element

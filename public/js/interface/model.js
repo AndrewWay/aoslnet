@@ -81,16 +81,18 @@ function loadPointCloud() {
 	var x = xarr ;
 	var y = yarr ;
 	var z = zarr ;
-	console.log(zarr);
-	console.log('Z LENGTHL: '+z.length);
+  var geometry = new THREE.Geometry();
+  var materials;
 	// loop through the points and add them to the scene
 	for( var i=0 ; i < z.length ; i++ ) {
-		console.log(i);
 		// geometry describes the shape
-		geometry = new THREE.SphereGeometry( 10000, 16, 16 ) ;
-
+		var vertex = new THREE.Vector3();
+		vertex.x=x[i];
+    vertex.y=y[i];
+    vertex.z=z[i];
+    
 		// material describes the surface of the shape
-		var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+		/*var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 
 		// mesh maps the material onto the geometry to make an object  
 		var mesh = new THREE.Mesh( geometry, material ) ;
@@ -101,8 +103,14 @@ function loadPointCloud() {
 		mesh.material.side = THREE.DoubleSide; 
 
 		// add the mesh to the scene
-		scene.add( mesh ) ;
+		scene.add( mesh ) ;*/
+		geometry.vertices.push(vertex);
 	}
+	var size=4;
+	var color=[1,1,0.5];
+	materials = new THREE.PointCloudMaterial({size: size});
+	pointcloud = new THREE.PointCloud(geometry,materials);
+	scene.add(pointcloud);
 }
 
 function loadModel(){
