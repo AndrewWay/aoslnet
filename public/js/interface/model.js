@@ -9,7 +9,10 @@ modelcontainerid='model';
 xarr=[];
 yarr=[];
 zarr=[];
-cam_z=100;
+cam_z=500;
+meshtoggled=1;
+pointstoggled=1;
+var mesh;
 /*
  * Update the mesh by specifying a new 3D model file path
  * @param {String} file
@@ -60,14 +63,12 @@ function updateDim(h,w,v){
 /*
  * Display 3D model
  */
-function model(){  
+function createScene(){  
 	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 	var stats;
 	var camera, controls, scene, renderer;
 	init();
-	//loadModel();
-	loadPointCloud();
 	render();
 	animate();
 }
@@ -77,43 +78,67 @@ function model(){
  */
 function loadPointCloud() {
 	console.log('adding point cloud');
-	// grab data from the INPUT elements
+	// grab data from the input elements
 	var x = xarr ;
 	var y = yarr ;
 	var z = zarr ;
-	console.log(zarr);
-	console.log('Z LENGTHL: '+z.length);
+	var geometry = new THREE.Geometry();
+	var materials;
 	// loop through the points and add them to the scene
 	for( var i=0 ; i < z.length ; i++ ) {
-		console.log(i);
 		// geometry describes the shape
-		geometry = new THREE.SphereGeometry( 10000, 16, 16 ) ;
-
-		// material describes the surface of the shape
-		var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-
-		// mesh maps the material onto the geometry to make an object  
-		var mesh = new THREE.Mesh( geometry, material ) ;
-
-		// position the mesh in space
-		mesh.position.set( x[i], y[i], z[i] ) ;
-
-		mesh.material.side = THREE.DoubleSide; 
-
-		// add the mesh to the scene
-		scene.add( mesh ) ;
+		var vertex = new THREE.Vector3();
+		vertex.x=x[i];
+		vertex.y=y[i];
+		vertex.z=z[i];
+		geometry.vertices.push(vertex);
 	}
+	var size=4;
+	var color=[1,1,0.5];
+	materials = new THREE.PointCloudMaterial({size: size});
+	pointcloud = new THREE.PointCloud(geometry,materials);
+	scene.add(pointcloud);
 }
 
+/*
+ * Load and add the mesh to the scene
+ */
 function loadModel(){
 	/* GEOMETRY */
 	var loader = new THREE.STLLoader();
 	loader.load(currentfile, function ( geometry ) {
 			var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-			var mesh = new THREE.Mesh( geometry, material );
+			mesh = new THREE.Mesh( geometry, material );
 			mesh.material.side = THREE.DoubleSide;
 			scene.add( mesh );
 			});
+}
+/*
+ * Make mesh visible or invisible
+ */
+function toggleMesh(){
+	if (meshtoggled == 0){
+		mesh.visible=true;
+		meshtoggled=1;
+	}
+	else{
+		mesh.visible=false;
+		meshtoggled=0;
+	}
+}
+
+/*
+ * Make points visible or invisible
+ */
+function togglePoints(){
+	if (pointstoggled == 0){
+		pointcloud.visible=true;
+		pointstoggled=1;
+	}
+	else{
+		pointcloud.visible=false;
+		pointstoggled=0;
+	}
 }
 
 /*
@@ -201,4 +226,5 @@ function animate() {
 function render() {
 	renderer.render( scene, camera );
 }
+
 
