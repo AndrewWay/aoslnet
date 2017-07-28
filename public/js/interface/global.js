@@ -26,7 +26,7 @@ pics=[];
 time=[];
 datakeys=new Map();
 datamap=new Map();
-
+SDBottom=-170;
 /**
  * Initiates execution of all functions for setting the page up
  */
@@ -207,7 +207,6 @@ function changeIceberg(){
 	  setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
 	  loadSeaDragon();
 	}
-  setSDModelPosition(200,-20,0);
 	console.log('changeIceberg() finished');
 }
 
