@@ -35,12 +35,13 @@ function setfile(file){
 	currentfile=file;
 }
 
+/*
+ * Set the xyz point cloud data arrays
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} z
+ */
 function setPointCloud(x,y,z){
-	console.log('setting the point cloud arrays in model.js');
-	console.log(x);
-	console.log(y);
-	console.log(z);
-
 	xarr=x;
 	yarr=y;
 	zarr=z;
@@ -66,7 +67,7 @@ function updateDim(h,w,v){
 
 
 /*
- * Display 3D model
+ * Create the scene that contains all 3D objects
  */
 function createScene(){  
 	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -74,13 +75,12 @@ function createScene(){
 	var stats;
 	var camera, controls, scene, renderer;
 	init();
-	loadWater();
 	render();
 	animate();
 }
 
 /*
- * Load and display 3D point cloud
+ * Load and add 3D point cloud
  */
 function loadPointCloud() {
 	console.log('adding point cloud');
@@ -103,7 +103,10 @@ function loadPointCloud() {
 	var color=[1,1,0.5];
 	materials = new THREE.PointCloudMaterial({size: size});
 	pointcloud = new THREE.PointCloud(geometry,materials);
-	scene.add(pointcloud);
+	DEMO.ms_Scene.add(pointcloud);//scene.add(pointcloud);
+	    var Axis = new THREE.Vector3(1,0,0);
+    rotationAngle=-90*Math.PI/180;//Rotate by 90 degree
+    rotateAroundWorldAxis(pointcloud, Axis,rotationAngle);
 }
 function setSDModelPosition(x,y,z){
 	SDModel.position.set(x, y, z);
@@ -118,11 +121,11 @@ function loadSeaDragon(){
     var material = new THREE.MeshPhongMaterial( { color: 0xffff00 } );
     SDModel = new THREE.Mesh( geometry, material );
     SDModel.material.side = THREE.DoubleSide;
-    scene.add( SDModel );
-    var xAxis = new THREE.Vector3(1,0,0);
-    rotationAngle=90*Math.PI/180;//Rotate by 90 degree
-    rotateAroundWorldAxis(SDModel, xAxis,rotationAngle); //TODO useful for changing orientation of SeaDragon according to heading 
-    setSDModelPosition(300,300,SDBottom);
+    DEMO.ms_Scene.add(SDModel);//scene.add( SDModel );
+   // var xAxis = new THREE.Vector3(1,0,0);
+   // rotationAngle=90*Math.PI/180;//Rotate by 90 degree
+   //rotateAroundWorldAxis(SDModel, xAxis,rotationAngle); //TODO useful for changing orientation of SeaDragon according to heading 
+    setSDModelPosition(200,SDBottom,100);
   });
 }
 
@@ -136,7 +139,10 @@ function loadModel(){
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
     mesh = new THREE.Mesh( geometry, material );
     mesh.material.side = THREE.DoubleSide;
-    scene.add( mesh );
+    var Axis = new THREE.Vector3(1,0,0);
+    rotationAngle=-90*Math.PI/180;//Rotate by 90 degree
+    DEMO.ms_Scene.add( mesh );
+    rotateAroundWorldAxis(mesh, Axis,rotationAngle);
   });
 }
 
@@ -144,12 +150,12 @@ function loadModel(){
 /*
  *  Rotate an object around an arbitrary axis in object space
  */
-var rotObjectMatrix;
 function rotateAroundObjectAxis(object, axis, radians) {
-    rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-    object.matrix.multiply(rotObjectMatrix);
-    object.rotation.setFromRotationMatrix(object.matrix);
+  var rotObjectMatrix;
+  rotObjectMatrix = new THREE.Matrix4();
+  rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+  object.matrix.multiply(rotObjectMatrix);
+  object.rotation.setFromRotationMatrix(object.matrix);
 }
 
 /*
@@ -207,12 +213,17 @@ function init() {
 	/* RENDERER */
 
 	renderer = new THREE.WebGLRenderer(); // Create the renderer
+	renderer.setClearColor(0xc4c4c4);
 	renderer.setPixelRatio( window.devicePixelRatio ); // tch
 	/* DOM CONTAINER FOR RENDERER */
 
 	var container = document.getElementById( modelcontainerid ); //Assign the output to container
 	renderer.setSize($(container).width(), $(container).height());
 	container.appendChild( renderer.domElement );
+  
+  /* CLOCK */
+  
+  clock = new THREE.Clock();
 
 	/* CAMERA */
 	var VIEW_ANGLE = 75, 

@@ -26,7 +26,7 @@ pics=[];
 time=[];
 datakeys=new Map();
 datamap=new Map();
-SDBottom=-170;
+SDBottom=-160;
 /**
  * Initiates execution of all functions for setting the page up
  */
@@ -39,7 +39,7 @@ $(document).ready(function() {
 		var yearSelected = document.getElementById("selectYear").value;
 		var bergList = getJSON(namesReq+'/'+yearSelected);
 		updateOptions('selectIceberg',bergList);
-		// updateMesh('');//Render 3DMesh with no data
+	//	createScene();
 		});
 
 /**
@@ -105,17 +105,14 @@ function changeYear(){
 
 //TODO Break up this function
 function changeIceberg(){
-  
+
 	console.log('changeIceberg() starting');
 	var yearSelected = document.getElementById("selectYear").value;
 	var bergSelected = document.getElementById("selectIceberg").value;
 	var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
-	createScene();
 	if(json.constructor == Array){
 		json = json[0];
-	}    
-	console.log(typeof json);
-
+	}
 
 	if(json.hasOwnProperty('height')){
 		var height=json.height;  
@@ -155,22 +152,22 @@ function changeIceberg(){
 			console.log("latitude invalid: not of type 'number'")
 				latitude=0;    
 		}
-		setPosition(latitude,longitude);
-		setMarker(latitude,longitude);
-		setPosition(latitude,longitude);
-		displaySDPosition(latitude,longitude);
-		setZoom(15);
+		//setPosition(latitude,longitude);
+		//setMarker(latitude,longitude);
+		//setPosition(latitude,longitude);
+		//displaySDPosition(latitude,longitude);
+		//setZoom(15);
 	}
 
-	  //Load the STL file
+	//Load the STL file
 	if(json.hasOwnProperty('stlpath')){
 		var filepath=json['stlpath'];
 		console.log('loading stl from '+filepath);     
 		setfile(filepath);
 		addToggle('meshtoggle','toggleMesh();','Toggle Mesh');
-	  loadModel();
+		loadModel();
 	}
-    //Load the point cloud data
+	//Load the point cloud data
 	var xarray_check=json.hasOwnProperty('x');
 	var yarray_check=json.hasOwnProperty('y');
 	var zarray_check=json.hasOwnProperty('z');  
@@ -180,13 +177,11 @@ function changeIceberg(){
 		var y = json['y'];
 		var z = json['z'];
 		setPointCloud(x,y,z)
-		addToggle('pointstoggle','togglePoints();','Toggle Points');
-	  loadPointCloud();
+			addToggle('pointstoggle','togglePoints();','Toggle Points');
+	  	loadPointCloud();
 	}
-  render();
-	animate();
-  
-	  //Load timestamped data array
+
+	//Load timestamped data array
 	if(json.hasOwnProperty('Data') && json['Data'].length > 0){
 		extractKeyPaths(json['Data'][0]);//Only checks first element
 		distributeData(json['Data']);
@@ -196,17 +191,18 @@ function changeIceberg(){
 		var ibpath_lat=datamap.get('latI0');
 		var ibpath_long=datamap.get('longI0');
 		AOSL_setSDCoords(sdpath_lat,sdpath_long);
-		setSDPath(sdpath_lat,sdpath_long);
-		setIBPath(ibpath_lat,ibpath_long);
+		//setSDPath(sdpath_lat,sdpath_long);
+		//setIBPath(ibpath_lat,ibpath_long);
 		for(var i=0;i<graph_ids.length;i++){
 			var arraylabel=graph_ids[i].replace('graph_','');
 			var arr = datamap.get(arraylabel);
 			setplotData(graph_ids[i],arr);
 		}
 		updateTimeMax(json.Data.length);
-	  setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
-	  loadSeaDragon();
+		//setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
+		loadSeaDragon();
 	}
+
 	console.log('changeIceberg() finished');
 }
 
@@ -214,20 +210,14 @@ function changeIceberg(){
  * Add toggle for displaying 3D Objects
  */
 function addToggle(id,callback,name){
-  var element = document.createElement("input");
-  element.type="button";
-  element.name=name;
-  element.value=name;
-  element.onclick=callback;
-  element.setAttribute('onclick',  callback);
-  var toggleContainer=document.getElementById('pics');
-  toggleContainer.append(element);
-}
-/*
- * Check for AOSL specific data and create appropriate displays
- */
-function AOSL_specific(){
-	//updateDim(height,width,volume);
+	var element = document.createElement("input");
+	element.type="button";
+	element.name=name;
+	element.value=name;
+	element.onclick=callback;
+	element.setAttribute('onclick',  callback);
+	var toggleContainer=document.getElementById('pics');
+	toggleContainer.append(element);
 }
 
 /*
@@ -335,5 +325,7 @@ function keytoValue(keypath,json){
 	}
 	return json;
 }
+
+
 
 

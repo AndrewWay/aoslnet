@@ -20,6 +20,7 @@ function AOSL_setSDCoords(lat,long){
  * Run once Google Map performs callback AKA is ready
  */
 function mapReady() {
+  console.log('Map Blocked');
   map=new google.maps.Map(document.getElementById(mapDiv_id));
   setPosition(default_lat,default_long);
   setZoom(default_zoom);
