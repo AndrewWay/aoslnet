@@ -16,7 +16,7 @@ meshtoggled=1;
 pointstoggled=1;
 var mesh;
 
-/*
+/**
  * Update the mesh by specifying a new 3D model file path
  * @param {String} file
  */
@@ -27,7 +27,7 @@ function updateMesh(){
 }
 
 
-/*
+/**
  * Set the current 3D model filepath on the public directory
  * @param {String} file
  */
@@ -35,7 +35,7 @@ function setfile(file){
 	currentfile=file;
 }
 
-/*
+/**
  * Set the xyz point cloud data arrays
  * @param {Number} x
  * @param {Number} y
@@ -47,7 +47,7 @@ function setPointCloud(x,y,z){
 	zarr=z;
 }
 
-/*
+/**
  * Update the display for the iceberg dimensions
  * @param {Number} h
  * @param {Number} w
@@ -66,10 +66,10 @@ function updateDim(h,w,v){
 }
 
 
-/*
+/**
  * Create the scene that contains all 3D objects
  */
-function createScene(){  
+/*function createScene(){  
 	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 	var stats;
@@ -77,9 +77,9 @@ function createScene(){
 	init();
 	render();
 	animate();
-}
+}*/
 
-/*
+/**
  * Load and add 3D point cloud
  */
 function loadPointCloud() {
@@ -112,7 +112,7 @@ function setSDModelPosition(x,y,z){
 	SDModel.position.set(x, y, z);
 }
 
-/*
+/**
  * Load SeaDragon model
  */
 function loadSeaDragon(){
@@ -129,7 +129,7 @@ function loadSeaDragon(){
   });
 }
 
-/*
+/**
  * Load and add the mesh to the scene
  */
 function loadModel(){
@@ -147,7 +147,7 @@ function loadModel(){
 }
 
 
-/*
+/**
  *  Rotate an object around an arbitrary axis in object space
  */
 function rotateAroundObjectAxis(object, axis, radians) {
@@ -158,7 +158,7 @@ function rotateAroundObjectAxis(object, axis, radians) {
   object.rotation.setFromRotationMatrix(object.matrix);
 }
 
-/*
+/**
  * Rotate an object around an arbitrary axis in world space    
  */    
 function rotateAroundWorldAxis(object, axis, radians) {
@@ -172,7 +172,7 @@ function rotateAroundWorldAxis(object, axis, radians) {
 
 
 
-/*
+/**
  * Make mesh visible or invisible
  */
 function toggleMesh(){
@@ -186,7 +186,7 @@ function toggleMesh(){
 	}
 }
 
-/*
+/**
  * Make points visible or invisible
  */
 function togglePoints(){
@@ -200,7 +200,7 @@ function togglePoints(){
 	}
 }
 
-/*
+/**
  * Create the scene. 
  */
 function init() {
@@ -264,7 +264,7 @@ function init() {
 	window.addEventListener( 'resize', onWindowResize, false );
 }
 
-/*
+/**
  * Event handler for window resizing
  */
 function onWindowResize() {
@@ -274,7 +274,7 @@ function onWindowResize() {
 	renderer.setSize( $(container).width(), $(container).height());
 }
 
-/*
+/**
  * Function for animating the scene
  */
 function animate() {
@@ -284,7 +284,7 @@ function animate() {
 	render();
 }
 
-/*
+/**
  * Render the scene with a specified camera
  */
 function render() {

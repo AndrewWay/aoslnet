@@ -1,3 +1,4 @@
+	var container = document.getElementById('model');
 var WINDOW = {
 	ms_Width: 0,
 	ms_Height: 0,

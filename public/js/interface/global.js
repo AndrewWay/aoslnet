@@ -39,7 +39,7 @@ $(document).ready(function() {
 		var yearSelected = document.getElementById("selectYear").value;
 		var bergList = getJSON(namesReq+'/'+yearSelected);
 		updateOptions('selectIceberg',bergList);
-	//	createScene();
+		createScene();
 		});
 
 /**

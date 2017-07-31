@@ -19,7 +19,7 @@ function onDocumentMouseDown(event) {
     }                
 }
 
-$(function() {
+function createScene() {
 	WINDOW.initialize();
 
 	document.addEventListener('click', onDocumentMouseDown, false);
@@ -40,9 +40,9 @@ $(function() {
 	};
 	
 	DEMO.initialize('model', parameters);
-	
+	var container = document.getElementById('model');
 	WINDOW.resizeCallback = function(inWidth, inHeight) { DEMO.resize(inWidth, inHeight); };
-	DEMO.resize(WINDOW.ms_Width, WINDOW.ms_Height);
+	DEMO.resize($(container).width(),$(container).height());
 	
 	mainLoop();
-});
+}

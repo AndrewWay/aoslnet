@@ -1,3 +1,5 @@
+waterNormal_source='../assets/img/waternormals.jpg';
+
 var DEMO = {
 	ms_Canvas: null,
 	ms_Renderer: null,
@@ -21,13 +23,21 @@ var DEMO = {
 	
 	initialize: function initialize(inIdCanvas, inParameters) {
 		this.ms_Canvas = $('#'+inIdCanvas);
-		
+		var container=document.getElementById(inIdCanvas);
 		// Initialize Renderer, Camera, Projector and Scene
 		this.ms_Renderer = this.enable? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
 		this.ms_Canvas.html(this.ms_Renderer.domElement);
 		this.ms_Scene = new THREE.Scene();
 		
-		this.ms_Camera = new THREE.PerspectiveCamera(55.0, WINDOW.ms_Width / WINDOW.ms_Height, 0.5, 3000000);
+		
+			
+		var VIEW_ANGLE = 55.0, 
+	    ASPECT = $(container).width()/$(container).height(), 
+	    NEAR = 0.5, FAR = 3000000;
+	  this.ms_Camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+	
+	
+	//	this.ms_Camera = new THREE.PerspectiveCamera(55.0, WINDOW.ms_Width / WINDOW.ms_Height, 0.5, 3000000);
 		this.ms_Camera.position.set(0, Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
 		this.ms_Camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -48,7 +58,7 @@ var DEMO = {
 		// Create terrain - Don't need this
 		//this.loadTerrain(inParameters);
 		// Load textures		
-		var waterNormals = new THREE.ImageUtils.loadTexture('../assets/img/waternormals.jpg');
+		var waterNormals = new THREE.ImageUtils.loadTexture(waterNormal_source);
 		waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping; 
 		
 		// Load filesdnd texture
