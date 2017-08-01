@@ -24,10 +24,10 @@ function play(){
     document.getElementById(timebarid).disabled=false;
     playid=setInterval(function(){
         var ti = get_time();//time[time_index];//Json objects have bad timestamp data
-        console.log('time: '+ti+' sdx: '+sdx[ti]+' sdy: '+sdy[ti]);        
+       // console.log('time: '+ti+' sdx: '+sdx[ti]+' sdy: '+sdy[ti]);        
         dispdata(ti);
         setTimeBar(ti);
-        setSDModelPosition(sdx[ti],sdy[ti],SDBottom);        
+       // setSDModelPosition(sdx[ti],sdy[ti],SDBottom);        
         set_time(ti+1);
         if(ti>time.length){
           clearInterval(playid);
@@ -67,7 +67,7 @@ function long2m(theta){
 function dispdata(t){
   redraw(t);
   redisplay(t);
-  updateSDPosition(t)
+ // updateSDPosition(t)
 }
 
 function pause(){
