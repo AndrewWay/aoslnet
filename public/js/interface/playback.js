@@ -1,9 +1,9 @@
-//Data playback
-
+/** @namespace */
 var Simulation = function(){
 
 var time_index=0;
 var delay_factor=1;
+this.playid;
 this.timebarid='timebar';
 this.playbtnid='playbtn';
 this.pausebtnid='pausebtn';
@@ -18,14 +18,14 @@ this.sdy=[];
  */
 this.manualsetTime = function(){
   //TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
-  var newTime=document.getElementById(timebarid).value;
+  var newTime=document.getElementById(this.timebarid).value;
   console.log("Manually setting time to: "+newTime);
-  set_time(newTime);  
-  dispdata(this.get_time());
+  this.set_time(newTime);  
+  this.dispdata(this.get_time());
 };
 
 /**
- * 
+ * Iterate through trial data and update displays
  */
 this.play = function(){      
     document.getElementById(this.pausebtnid).disabled=false;
@@ -33,12 +33,12 @@ this.play = function(){
     document.getElementById(this.playbtnid).disabled=true;
     document.getElementById(this.timebarid).disabled=false;
     var parent = this;
-    playid=setInterval(function(){
+    this.playid=setInterval(function(){
         var ti = parent.get_time();//time[time_index];//Json objects have bad timestamp data
-        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
+//        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
         parent.dispdata(ti);
         parent.setTimeBar(ti);
-        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
+//        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
         parent.set_time(ti+1);
         if(ti>time.length){
           clearInterval(parent.playid);
@@ -48,6 +48,8 @@ this.play = function(){
 
 /*
  * Convert SeaDragon latitude and longitude to point cloud local frame
+ * @param {Array} x Latitude positions of SeaDragon
+ * @param {Array} y Longitude positions of SeaDragon
  */
 this.setSD = function(x,y,gps_origin){
   var xorigin=gps_origin[0];
@@ -76,13 +78,13 @@ this.pause = function(){
 
 this.stop = function(){
   clearInterval(this.playid);
-  set_time(0);
-  setTimeBar(this.get_time());
-  dispdata(this.get_time());
-  document.getElementById(timebarid).disabled=false;
-  document.getElementById(stopbtnid).disabled=true;
-  document.getElementById(pausebtnid).disabled=true;
-  document.getElementById(playbtnid).disabled=false;
+  this.set_time(0);
+  this.setTimeBar(this.get_time());
+  this.dispdata(this.get_time());
+  document.getElementById(this.timebarid).disabled=false;
+  document.getElementById(this.stopbtnid).disabled=true;
+  document.getElementById(this.pausebtnid).disabled=true;
+  document.getElementById(this.playbtnid).disabled=false;
 };
 
 this.updateTimeMax = function(t){
@@ -97,9 +99,14 @@ this.get_time = function(){
 this.dispdata = function(t){
   redraw(t);
   redisplay(t);
-  updateSDPosition(t)
+ // updateSDPosition(t)
+}
+this.setTimeBar = function(t){
+  document.getElementById(this.timebarid).value=t;
 };
-
+this.set_time = function(t){
+  time_index=t;
+};
 /* PRIVATE FUNCTIONS */
 
 var lat2m = function(phi){
@@ -118,11 +125,4 @@ var setclock = function(t){
   var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   document.getElementById(clockid).innerHTML=formattedTime;
 };
-var set_time = function(t){
-  time_index=t;
-};
-var setTimeBar = function(t){
-  document.getElementById(timebarid).value=t;
-};
-
 };
