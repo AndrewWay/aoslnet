@@ -227,12 +227,12 @@ img.emoji {
   <!-- TEMPORAL -->
   <div id="temporal">
     <div id="timebarbox">
-      <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/> 
+      <input type="range" id="timebar" min="0" max="0" value="0" oninput="sim.manualsetTime()"/> 
     </div>    
     <div id="buttons">    
-      <button type="button" id="playbtn" onclick="play()">Play</button>
-      <button type="button" id="pausebtn" onclick="pause()">Pause</button>
-      <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+      <button type="button" id="playbtn" onclick="sim.play()">Play</button>
+      <button type="button" id="pausebtn" onclick="sim.pause()">Pause</button>
+      <button type="button" id="stopbtn" onclick="sim.stop()">Stop</button>
     </div>
   </div>
 

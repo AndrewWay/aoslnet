@@ -198,8 +198,9 @@ function changeIceberg(){
 			var arr = datamap.get(arraylabel);
 			setplotData(graph_ids[i],arr);
 		}
-		updateTimeMax(json.Data.length);
-		//setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
+		sim = new Simulation();
+		sim.updateTimeMax(json.Data.length);
+		//Simulation.setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
 		loadSeaDragon();
 	}
 
