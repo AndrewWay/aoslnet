@@ -5,6 +5,7 @@
  */
 
 var sim = new Simulation();
+var test;
 var yearSelected="";
 var icebergSelected="";
 var filepathIcebergsData = "";
@@ -18,7 +19,8 @@ dsstrings=new Array(0);
 namesReq='bergs/names';
 yearsReq='bergs/years';
 dataReq='bergs/data';
-
+SeaDragonFilePath='data/models/seadragon/SeaDragon(Simple+FullSize).STL'
+modelcontainerid='model';
 tmax=0;
 disp_size=20;
 playid=0;
@@ -163,9 +165,9 @@ function changeIceberg(){
 	if(json.hasOwnProperty('stlpath')){
 		var filepath=json['stlpath'];
 		console.log('loading stl from '+filepath);     
-		setfile(filepath);
-		addToggle('meshtoggle','toggleMesh();','Toggle Mesh');
-		loadModel();
+	//	setfile(filepath);
+	//	addToggle('meshtoggle','toggleMesh();','Toggle Mesh');
+		//loadModel();
 	}
 	//Load the point cloud data
 	var xarray_check=json.hasOwnProperty('x');
@@ -176,9 +178,11 @@ function changeIceberg(){
 		var x = json['x'];
 		var y = json['y'];
 		var z = json['z'];
-		setPointCloud(x,y,z)
-			addToggle('pointstoggle','togglePoints();','Toggle Points');
-	  	loadPointCloud();
+		test = new PointCloud(x,y,z);
+		test.loadPointCloud();
+		//setPointCloud(x,y,z)
+		test.addToggle('pointstoggle','Toggle Points');
+	  //	loadPointCloud();
 	}
 
 	//Load timestamped data array
@@ -200,7 +204,7 @@ function changeIceberg(){
 		}
 		sim.updateTimeMax(json.Data.length);
 		//Simulation.setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
-		loadSeaDragon();
+		//loadSeaDragon();
 	}
 
 	console.log('changeIceberg() finished');
