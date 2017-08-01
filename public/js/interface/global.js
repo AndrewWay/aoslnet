@@ -181,7 +181,7 @@ function changeIceberg(){
 		test = new PointCloud(x,y,z);
 		test.loadPointCloud();
 		//setPointCloud(x,y,z)
-		test.addToggle('pointstoggle','Toggle Points');
+		addToggle('pointstoggle','test.toggle()','Toggle Points');
 	  //	loadPointCloud();
 	}
 

@@ -8,8 +8,7 @@ var Model = function(sourcePath){
   var rotWorldMatrix; 
   this.World = DEMO.ms_Scene;
   var sourceFile=sourcePath;
-  this.meshtoggled=1;
-  this.pointstoggled=1;
+  this.toggled=1;
   this.appearance = {color : 0xffffff};
   this.mesh;
 
@@ -87,7 +86,8 @@ var Model = function(sourcePath){
    * Make model visible or invisible
    */
   this.toggle = function(){
-    if (toggled == 0){
+    console.log('toggling');
+    if (this.toggled == 0){
       this.mesh.visible=true;
       this.toggled=1;
     }
