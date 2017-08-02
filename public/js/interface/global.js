@@ -159,7 +159,7 @@ function changeIceberg(){
     console.log('loading stl from '+filepath);     
     Iceberg = new Mesh(filepath);
     Iceberg.loadModel();
-    addToggle('meshtoggle','toggleMesh();','Toggle Mesh');
+    addToggle('meshtoggle','Iceberg.toggle();','Toggle Mesh');
   }
   //Load the point cloud data
   var xarray_check=json.hasOwnProperty('x');
