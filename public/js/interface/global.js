@@ -84,7 +84,25 @@ function updateOptions(optionID,options){
   }
 }
 
+/**
+* Load the data corresponding to the currently selected iceberg survey
+*/
+function changeIceberg(){
+  console.log('changeIceberg() starting');
+  var yearSelected = document.getElementById("selectYear").value;
+  var bergSelected = document.getElementById("selectIceberg").value;
+  var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
+  if(json.constructor == Array){
+    json = json[0];
+  }
+  dimensionDisplay(json);
+  gpsDisplay(json);
+  displayIceberg(json);
+  displayPointCloud(json);
+  loadData(json);
 
+  console.log('changeIceberg() finished');
+}
 
 /*
  * Changes the list of icebergs available to view
@@ -97,17 +115,7 @@ function changeYear(){
   console.log('changeYear() finished');
 }
 
-//TODO Break up this function
-function changeIceberg(){
-
-  console.log('changeIceberg() starting');
-  var yearSelected = document.getElementById("selectYear").value;
-  var bergSelected = document.getElementById("selectIceberg").value;
-  var json = getJSON(dataReq+'/'+yearSelected+'/'+bergSelected);  
-  if(json.constructor == Array){
-    json = json[0];
-  }
-
+function dimensionDisplay(json){
   if(json.hasOwnProperty('height')){
     var height=json.height;  
     //TODO add height monitor
@@ -120,7 +128,9 @@ function changeIceberg(){
     var volume=json.volume; 
     //TODO add volume monitor 
   }
+}
 
+function gpsDisplay(json){
   //TODO if longitude and latitude exist, create map. Have map invisible by default
   //Load longitude and latitude of iceberg
   if(json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')){
@@ -152,7 +162,9 @@ function changeIceberg(){
     //displaySDPosition(latitude,longitude);
     //setZoom(15);
   }
+}
 
+function displayIceberg(json){
   //Load the STL file
   if(json.hasOwnProperty('stlpath')){
     var filepath=json['stlpath'];
@@ -161,6 +173,9 @@ function changeIceberg(){
     Iceberg.loadModel();
     addToggle('meshtoggle','Iceberg.toggle();','Toggle Mesh');
   }
+}
+
+function displayPointCloud(json){
   //Load the point cloud data
   var xarray_check=json.hasOwnProperty('x');
   var yarray_check=json.hasOwnProperty('y');
@@ -175,6 +190,8 @@ function changeIceberg(){
     addToggle('pointstoggle','test.toggle()','Toggle Points');
   }
 
+}
+function loadData(json){
   //Load timestamped data array
   if(json.hasOwnProperty('Data') && json['Data'].length > 0){
     extractKeyPaths(json['Data'][0]);//Only checks first element
@@ -197,10 +214,7 @@ function changeIceberg(){
     SeaDragon = new Mesh(SeaDragonFilePath);
     SeaDragon.loadModel();
   }
-
-  console.log('changeIceberg() finished');
 }
-
 
 
 
