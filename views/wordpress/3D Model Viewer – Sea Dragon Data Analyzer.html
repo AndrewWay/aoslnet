@@ -24,19 +24,21 @@
   <script src="assets/libs/three/OrbitControls.js"></script>
   <script src="js/3d/ConvexGeometry.js"></script>
   <script src="js/3d/Detector.js"></script>
-
+  <script src="assets/js/demo.js"></script>
 
   <!-- CLIENT-SIDE FUNCTIONALITY -->
-  <script src="js/interface/global.js"></script>
   <script src="js/datatransfer.js"></script>
   <script src="js/interface/playback.js"></script>
   <script src="js/interface/model.js"></script>
   <script src="js/interface/map.js"></script>
   <script src="js/interface/datadisplay.js"></script>
-  <script src="js/interface/airstats.js"></script>
   <script src="js/interface/pictures.js"></script>
-  <script src="js/interface/prettifier.js"></script>
-
+  <script src="js/interface/DataPresentation.js"></script>
+  <script src="js/interface/DataDistribution.js"></script>
+  
+  <script src='js/interface/PointCloud.js'></script>
+  <script src='js/interface/Mesh.js'></script>
+  
 		<!-- External libraries -->
 		<script src="assets/libs/RequestAnimationFrame.js"></script>
 		<script src="assets/libs/FastBlur.js"></script>
@@ -54,9 +56,9 @@
 		
 		<!-- Demo files -->
 		<script src="assets/js/window.js"></script>
-		<script src="assets/js/demo.js"></script>
 		<script src="assets/js/main.js"></script>
 		
+		<script src="js/interface/global.js"></script>
 <script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
 <title>3D Model Viewer – Sea Dragon Data Analyzer</title>
 <link rel="dns-prefetch" href="https://s2.wp.com/">
@@ -227,12 +229,14 @@ img.emoji {
   <!-- TEMPORAL -->
   <div id="temporal">
     <div id="timebarbox">
-      <input type="range" id="timebar" min="0" max="0" value="0" oninput="manualsetTime()"/> 
+      <input type="range" id="timebar" min="0" max="0" value="0" oninput="sim.manualsetTime()"/> 
     </div>    
     <div id="buttons">    
-      <button type="button" id="playbtn" onclick="play()">Play</button>
-      <button type="button" id="pausebtn" onclick="pause()">Pause</button>
-      <button type="button" id="stopbtn" onclick="stop()">Stop</button>
+      <button type="button" id="playbtn" onclick="sim.play()">Play</button>
+      <button type="button" id="pausebtn" onclick="sim.pause()">Pause</button>
+      <button type="button" id="stopbtn" onclick="sim.stop()">Stop</button>
+      <button type="button" id=testbtn" onclick="test.test()">Stop</button>
+      
     </div>
   </div>
 

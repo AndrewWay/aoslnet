@@ -50,7 +50,7 @@ function addChart(dataname) {
     time_min=0;
     time_max=time_min+time_range;
     var dtab = new google.visualization.DataTable();
-    var label = jsUcfirst(dataname);
+    var label = UpperCaseFirst(dataname);
     //add data columns in chart data tables
     dtab.addColumn('number','t');
     dtab.addColumn('number',label);
