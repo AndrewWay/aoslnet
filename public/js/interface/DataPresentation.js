@@ -1,11 +1,10 @@
-/*
+/**
  * @file Data Presentation
  */
 
-/*
+/**
  * Add toggle for displaying 3D Objects
  */
-
 function addToggle(id, callback, name) {
   var element = document.createElement("input");
   element.type = "button";
@@ -17,10 +16,9 @@ function addToggle(id, callback, name) {
   toggleContainer.append(element);
 }
 
-/*
+/**
  * Create the numerical displays and graphs
  */
-
 function createAllDisplays() {
   for (var i = 0; i < dsstrings.length; i++) {
     var label = dsstrings[i];
@@ -35,12 +33,11 @@ function createAllDisplays() {
   }
 }
 
-/*
+/**
  * Add a new display
  * param {String} type
  * param {String} label
  */
-
 function createDisplay(type, label) {
   if (type === 'graph') {
     addChart(label);

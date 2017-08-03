@@ -7,6 +7,9 @@ google.charts.load('current', {
   'packages': ['corechart']
 });
 
+/**
+ * @constructor
+ */
 var DataChart = function(dataLabel,parentID){
   var hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16); // Assign a random color to the chart line
   this.vMargin =0.1;

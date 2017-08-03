@@ -16,7 +16,7 @@ function AOSL_setSDCoords(lat, long) {
   AOSL_seadragon_latitude = lat;
   AOSL_seadragon_longitude = long;
 }
-/*
+/**
  * Run once Google Map performs callback AKA is ready
  */
 
@@ -27,7 +27,7 @@ function mapReady() {
   setZoom(default_zoom);
 }
 
-/*
+/**
  * Set the zoom of the map
  * @param {Number} z
  * 
@@ -37,7 +37,7 @@ function setZoom(z) {
   map.setZoom(z);
 }
 
-/*
+/**
  * Set the position of the map
  * @param {Number} lt
  * @param {Number} lg
@@ -52,7 +52,7 @@ function setPosition(lt, lg) {
   map.setCenter(LatLngLiteral);
 }
 
-/*
+/**
  * Create and add a new marker
  * @param {Number} lt
  * @param {Number} lg
@@ -69,7 +69,7 @@ function setMarker(lt, lg) {
   });
 }
 
-/*
+/**
  * update SeaDragon coordinates
  * @param {Number} lat
  * @param {Number} long
@@ -87,7 +87,7 @@ function updateSDPosition(t) {
   }
 }
 
-/*
+/**
  * Display the SeaDragon marker
  * @param {Number} lat
  * @param {Number} long
@@ -136,10 +136,9 @@ function displaySDPosition(lat, lng) {
   sdpos.setMap(map);
 }
 
-/*
+/**
  * Remove SeaDragon symbol from map
  */
-
 function removeSDPosition() {
   if (typeof(sdpos) !== 'undefined') {
     sdpos.setMap(null);
@@ -149,10 +148,9 @@ function removeSDPosition() {
   }
 }
 
-/*
+/**
  * Draw the path the SeaDragon took during the survey
  */
-
 function setSDPath(latarr, longarr) {
   var perim = [];
   var i = 0;
@@ -177,6 +175,9 @@ function setSDPath(latarr, longarr) {
   sdperimeter.setMap(map);
 }
 
+/**
+ * Set iceberg perimeter polygon on Google Map
+ */
 function setIBPath(latarr, longarr) {
   var perim = [];
   var i = 0;

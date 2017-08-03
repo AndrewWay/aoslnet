@@ -1,3 +1,6 @@
+/**
+ * @constructor
+ */
 var PointCloud = function (x, y, z) {
 
   var PC = new Model();

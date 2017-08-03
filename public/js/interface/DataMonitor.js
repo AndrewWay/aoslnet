@@ -1,5 +1,7 @@
 /**
- * @file Data Monitor
+ * @constructor
+ * @param {string} dataName
+ * @param {string} parentID
  */
 var DataMonitor = function(dataName, parentID){
 

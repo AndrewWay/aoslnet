@@ -1,3 +1,6 @@
+/**
+ * @constructor
+ */
 var Mesh = function (sourceFile) {
   var M = new Model();
   M.file = sourceFile;
