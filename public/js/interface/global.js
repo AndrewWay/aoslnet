@@ -106,13 +106,15 @@ function changeIceberg() {
   sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
   for(var i=0; i<jsonKeyPaths.length; i++){
     var keyPath = jsonKeyPaths[i];
-    console.log('Adding chart: '+keyPath);
     var dataArray = jsonDataMap.get(keyPath);
-    var newChart = new DataChart(keyPath,'graphs');
-    newChart.setChartData(dataArray);
-    newChart.autoResizeAxes();
-    newChart.refresh();
-    sim.manageChart(newChart);
+    if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
+      console.log('Adding chart: '+keyPath);
+      var newChart = new DataChart(keyPath,'graphs');
+      newChart.setChartData(dataArray);
+      newChart.autoResizeAxes();
+      newChart.refresh();
+      sim.manageChart(newChart);
+    }
   }
   console.log('changeIceberg() finished');
 }

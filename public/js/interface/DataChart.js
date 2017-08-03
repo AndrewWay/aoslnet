@@ -99,7 +99,15 @@ var DataChart = function(dataLabel,parentID){
       this.dataTable.removeRow(0);
     }
     for (var i = 0; i < datarray.length; i++) {
-      this.dataTable.addRow([i, datarray[i]]);
+      if(typeof datarray[i] === 'number'){
+        this.dataTable.addRow([i, datarray[i]]);
+      } else if(typeof datarray[i] === 'string') {
+        console.warn('Attempted to add String to chart data');
+        this.dataTable.addRow([i, -1]);
+      } else {
+        console.warn('Attempted to add Object to chart data');
+        this.dataTable.addRow([i, -1]);
+      }
     }
   }
 
