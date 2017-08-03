@@ -16,12 +16,11 @@ var filepathIcebergModel = "";
 var IcebergModelName = "";
 var mapInitialized = false;
 autographlimit = 4;
-dsstrings = new Array(0);
 //strings for making data requests
 namesReq = 'bergs/names';
 yearsReq = 'bergs/years';
 dataReq = 'bergs/data';
-SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL'
+SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
 modelcontainerid = 'model';
 tmax = 0;
 disp_size = 20;
@@ -49,7 +48,6 @@ $(document).ready(function () {
 /**
  * Selects the iceberg data chosen from global map
  */
-
 function preselect() {
   var selectedID = sessionStorage.getItem('selectedID');
   var selectedYear = sessionStorage.getItem('selectedYear');
@@ -70,7 +68,6 @@ function preselect() {
  * @param {String} optionID 
  * @param {String} options
  */
-
 function updateOptions(optionID, options) {
   var optList = document.getElementById(optionID);
   //Remove existing options from option list    
@@ -89,7 +86,6 @@ function updateOptions(optionID, options) {
 /**
  * Load the data corresponding to the currently selected iceberg survey
  */
-
 function changeIceberg() {
   console.log('changeIceberg() starting');
   var yearSelected = document.getElementById("selectYear").value;
@@ -98,25 +94,32 @@ function changeIceberg() {
   if (json.constructor == Array) {
     json = json[0];
   }
+  console.log(json);
+  extractKeyPaths(json['Data'][0]); //Only checks first element
+  distributeData(json['Data']);
   //dimensionDisplay(json);
   //gpsDisplay(json);
   //displayIceberg(json);
   //displayPointCloud(json);
   //loadData(json);
-  var simdata = [1,2,3,4,5];
-  sim = new Simulation(simdata.length);
-  var testChart = new DataChart('TestData','graphs');
-  testChart.setChartData(simdata);
-  testChart.autoResizeAxes();
-  testChart.refresh();
-  sim.manageChart(testChart);
+  var setSize = json['Data'].length;
+  sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
+  for(var i=0; i<jsonKeyPaths.length; i++){
+    var keyPath = jsonKeyPaths[i];
+    console.log('Adding chart: '+keyPath);
+    var dataArray = jsonDataMap.get(keyPath);
+    var newChart = new DataChart(keyPath,'graphs');
+    newChart.setChartData(dataArray);
+    newChart.autoResizeAxes();
+    newChart.refresh();
+    sim.manageChart(newChart);
+  }
   console.log('changeIceberg() finished');
 }
 
 /*
  * Changes the list of icebergs available to view
  */
-
 function changeYear() {
   console.log('changeYear() starting');
   var yearSelected = document.getElementById("selectYear").value;
@@ -205,8 +208,7 @@ function displayPointCloud(json) {
 function loadData(json) {
   //Load timestamped data array
   if (json.hasOwnProperty('Data') && json['Data'].length > 0) {
-    extractKeyPaths(json['Data'][0]); //Only checks first element
-    distributeData(json['Data']);
+
     createAllDisplays();
     var sdpath_lat = datamap.get('latitudeSD');
     var sdpath_long = datamap.get('longitudeSD');

@@ -2,22 +2,25 @@
  * @file Data distribution
  */
 
+jsonKeyPaths = new Array(0); 
+jsonDataMap = new Map();
 
 /**
  * Recursively extract all keys from the received JSON file
  * @param {String} json
  */
-
 function extractKeyPaths(json) {
   var keys = Object.keys(json);
+  console.log('KEYS');
+  console.log(keys);
   for (var i = 0; i < keys.length; i++) {
     var childkey = keys[i];
     var child = json[childkey];
-    if (child !== null && typeof child === 'object') {
+    if (child !== null && typeof child === 'object') { // Check if the current object has a child
       keypathHelper(childkey, childkey, child);
     }
-    else {
-      dsstrings.push(childkey);
+    else { // If not, then its a "tree leaf". Add to the array of data labels
+      jsonKeyPaths.push(childkey);
     }
   }
 }
@@ -28,18 +31,17 @@ function extractKeyPaths(json) {
  * @param {String} key
  * @param {String} json
  */
-
 function keypathHelper(keypath, key, json) {
   var keys = Object.keys(json);
   for (var i = 0; i < keys.length; i++) {
     var childkey = keys[i];
     var child = json[childkey];
     var childkeypath = keypath + '&' + childkey;
-    if (child !== null && typeof child === 'object') {
+    if (child !== null && typeof child === 'object') { // Check if the current object has a child
       keypathHelper(childkeypath, childkey, child);
     }
-    else {
-      dsstrings.push(childkeypath);
+    else { // If not, then its a "tree leaf". Add to the array of data labels
+      jsonKeyPaths.push(childkeypath);
     }
   }
 }
@@ -48,20 +50,21 @@ function keypathHelper(keypath, key, json) {
  * Take the data array and distribute it into seperate arrays that are referenced in a map
  * @param {Array} dat
  */
-
 function distributeData(dat) {
   console.log('distributeData() start');
-  setSize = dat.length;
-  console.log("Measurement data set size: " + setSize);
-  time = new Array(setSize);
-  for (i = 0; i < dsstrings.length; i++) {
+  var setSize = dat.length;
+  for (i = 0; i < jsonKeyPaths.length; i++) {
     var tmparray = new Array(setSize);
-    var keypath = dsstrings[i];
+    var keypath = jsonKeyPaths[i];
     for (j = 0; j < setSize; j++) {
       var datum = dat[j];
       tmparray[j] = keytoValue(keypath, datum);
     }
-    datamap.set(keypath, tmparray);
+    jsonDataMap.set(keypath, tmparray); // Map each JSON key path to an array of its corresponding data
+    // e.g. 'CTD&temperature' is a key that maps to an array containing all temperature data from the CTD
+    // In the JSON array stored in the database, accessing each element of this same data would done as: var ctd_temp = json[i].CTD.temperature
+    //This data mapping method is used so the JavaScript can work with any JSON of any structure.
+    //In the future, if someone were to upload a JSON with a new, unanticipated data source, the JavaScript would still be able to extract it and display it
   }
   console.log('distributeData() finished');
 }
@@ -70,7 +73,6 @@ function distributeData(dat) {
  * Take a JSON array and return the leaf value found at the end of keypath
  * @param {String} keypath
  */
-
 function keytoValue(keypath, json) {
   var keyarray = keypath.split("&");
   for (var i = 0; i < keyarray.length; i++) {
@@ -82,16 +84,14 @@ function keytoValue(keypath, json) {
   return json;
 }
 
-
 /**
  * Returns the value in location index of array mapped to by arraylabel
  * @param {String} arraylabel
  * @param {Number} index
  * @return {Number} datum
  */
-
-function getDatum(arraylabel, index) {
-  var arr = datamap.get(arraylabel);
+function getDatum(jsonKeyPath, index) {
+  var arr = jsonDataMap.get(jsonKeyPath);
   var ret = arr[index];
   return ret;
 }

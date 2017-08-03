@@ -95,10 +95,10 @@ var DataChart = function(dataLabel,parentID){
    * @param {array} datarray Array that contains data set  
    */
   this.setChartData = function(datarray) {
-    for (i = 0; i < this.dataTable.getNumberOfRows(); i++) {
+    for (var i = 0; i < this.dataTable.getNumberOfRows(); i++) {
       this.dataTable.removeRow(0);
     }
-    for (i = 0; i < datarray.length; i++) {
+    for (var i = 0; i < datarray.length; i++) {
       this.dataTable.addRow([i, datarray[i]]);
     }
   }
