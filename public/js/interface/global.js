@@ -103,9 +103,10 @@ function changeIceberg() {
   //displayIceberg(json);
   //displayPointCloud(json);
   //loadData(json);
-  var testChart = new DataChart('TestData');
+  var testChart = new DataChart('TestData','graphs');
   testChart.setChartData([1,2,3,4,5]);
   testChart.autoResizeAxes();
+  testChart.refresh();
   console.log('changeIceberg() finished');
 }
 

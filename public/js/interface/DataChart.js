@@ -7,22 +7,23 @@ google.charts.load('current', {
   'packages': ['corechart']
 });
 
-var DataChart = function(dataLabel){
+var DataChart = function(dataLabel,parentID){
   var hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16); // Assign a random color to the chart line
   this.chartID = '';
+  this.parentDivID = parentID;
   this.xMin = 0;
   this.xRange = 30; // Default graph x range
   this.xMax = this.xMin + this.xRange;
   var chartLabel = beautifyLabel(dataLabel); // Uppercase the first letter of the dataset label
-  var dataTable = new google.visualization.DataTable(); // Contains chart xy data
-  dataTable.addColumn('number', 't');
-  dataTable.addColumn('number', chartLabel);
+  this.dataTable = new google.visualization.DataTable(); // Contains chart xy data
+  this.dataTable.addColumn('number', 't');
+  this.dataTable.addColumn('number', chartLabel);
   var chartDiv = document.createElement('div');
   this.chartID = 'graph_' + dataLabel;
   chartDiv.id = this.chartID;
   chartDiv.className = 'graph';
   document.getElementById(this.parentDivID).appendChild(chartDiv); 
-  this.chart = new google.visualization.LineChart(document.getElementById(chartID));
+  this.chart = new google.visualization.LineChart(document.getElementById(this.chartID));
  
   // Set chart options
   this.chartOptions = {
@@ -58,8 +59,15 @@ var DataChart = function(dataLabel){
       },
     }
   };
-
-  chart.draw(dataTable, chartOptions);
+  
+  /**
+   * Redraw the chart
+   */
+  this.refresh = function(){
+    this.chart.draw(this.dataTable, this.chartOptions);
+  }
+  
+  this.refresh();
 
   /**
    * Returns the HTML ID of the charts div
@@ -87,7 +95,7 @@ var DataChart = function(dataLabel){
    * @param {array} datarray Array that contains data set  
    */
   this.setChartData = function(datarray) {
-    for (i = 0; i < datatable.getNumberOfRows(); i++) {
+    for (i = 0; i < this.dataTable.getNumberOfRows(); i++) {
       this.dataTable.removeRow(0);
     }
     for (i = 0; i < datarray.length; i++) {
@@ -110,16 +118,9 @@ var DataChart = function(dataLabel){
   }
 
   /**
-   * Redraw the chart
-   */
-  this.refresh = function(){
-    this.chart.draw(this.dataTable, this.chartOptions);
-  }
-
-  /**
    * Delete the chart
    */
-  function deleteChart() {
+  this.deleteChart = function() {
 
   }
 }
