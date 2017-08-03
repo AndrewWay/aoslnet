@@ -9,6 +9,7 @@ google.charts.load('current', {
 
 var DataChart = function(dataLabel,parentID){
   var hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16); // Assign a random color to the chart line
+  this.vMargin =0.1;
   this.chartID = '';
   this.parentDivID = parentID;
   this.xMin = 0;
@@ -84,8 +85,8 @@ var DataChart = function(dataLabel,parentID){
   this.autoResizeAxes = function(chartID) {
     var copts = this.chartOptions;
     var dtab = this.dataTable;
-    var colmax = (1 + vMargin) * dtab.getColumnRange(1).max;
-    var colmin = (1 - vMargin) * dtab.getColumnRange(1).min;
+    var colmax = (1 + this.vMargin) * dtab.getColumnRange(1).max;
+    var colmin = (1 - this.vMargin) * dtab.getColumnRange(1).min;
     copts.vAxis.viewWindow.max = colmax;
     copts.vAxis.viewWindow.min = colmin;
   }

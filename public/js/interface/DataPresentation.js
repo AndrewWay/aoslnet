@@ -50,6 +50,10 @@ function createDisplay(type, label) {
   }
 }
 
+/**
+ * Capitalize the first letter of a string
+ * @param {string} string
+ */
 function beautifyLabel(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }

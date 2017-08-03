@@ -4,46 +4,47 @@
  * @version 0.1
  */
 
-var sim;
+var sim; // Simulation object
 var test;
-var SeaDragon;
-var Iceberg;
-var yearSelected = "";
-var icebergSelected = "";
-var filepathIcebergsData = "";
-var filePathIcebergSelected = "";
-var filepathIcebergModel = "";
+var SeaDragon; // SeaDragon object
+var Iceberg; // Iceberg object
+var yearSelected = ""; // Tracks the selected year
+var icebergSelected = ""; // Tracks the selected iceberg name
 var IcebergModelName = "";
-var mapInitialized = false;
-autographlimit = 4;
+
+var chartLimit = 2; // Maximum number of charts
+var monitorLimit = 4; // Maximum number of displays (charts + monitors)
+var chartQuantity = 0; // Tracks the number of charts
+var monitorQuantity = 0; // Tracks the number of monitors
+var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed
 //strings for making data requests
 namesReq = 'bergs/names';
 yearsReq = 'bergs/years';
 dataReq = 'bergs/data';
 SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
 modelcontainerid = 'model';
-tmax = 0;
+
+
 disp_size = 20;
-playid = 0;
-pics = [];
-time = [];
-datakeys = new Map();
-datamap = new Map();
 SDBottom = -160;
+
+
+//TODO make JSON a variable for this file
+
 /**
  * Initiates execution of all functions for setting the page up
  */
 $(document).ready(function () {
-  document.getElementById("pausebtn").disabled = true;
-  document.getElementById("stopbtn").disabled = true;
-  console.log('document ready');
-  var yearList = getJSON(yearsReq);
-  updateOptions('selectYear', yearList);
-  var yearSelected = document.getElementById("selectYear").value;
-  var bergList = getJSON(namesReq + '/' + yearSelected);
-  updateOptions('selectIceberg', bergList);
-  createScene();
-});
+    document.getElementById("pausebtn").disabled = true;
+    document.getElementById("stopbtn").disabled = true;
+    console.log('document ready');
+    var yearList = getJSON(yearsReq);
+    updateOptions('selectYear', yearList);
+    var yearSelected = document.getElementById("selectYear").value;
+    var bergList = getJSON(namesReq + '/' + yearSelected);
+    updateOptions('selectIceberg', bergList);
+    createScene();
+    });
 
 /**
  * Selects the iceberg data chosen from global map
@@ -97,28 +98,59 @@ function changeIceberg() {
   console.log(json);
   extractKeyPaths(json['Data'][0]); //Only checks first element
   distributeData(json['Data']);
-  //dimensionDisplay(json);
+  //displayDimensions(json);
   //gpsDisplay(json);
-  //displayIceberg(json);
-  //displayPointCloud(json);
-  //loadData(json);
+  displayIceberg(json);
+  displayPointCloud(json);
+  displaySeaDragon(json);
   var setSize = json['Data'].length;
   sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
-  for(var i=0; i<jsonKeyPaths.length; i++){
-    var keyPath = jsonKeyPaths[i];
+  createCharts();
+  createMonitors();
+  console.log('changeIceberg() finished');
+}
+
+
+/**
+ * 
+ */
+function createCharts(){
+  while(dataSourcesProcessed < jsonKeyPaths.length && chartQuantity < chartLimit){
+    var index = dataSourcesProcessed;
+    var keyPath = jsonKeyPaths[index];
     var dataArray = jsonDataMap.get(keyPath);
     if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
+      //Create a new chart
       console.log('Adding chart: '+keyPath);
       var newChart = new DataChart(keyPath,'graphs');
       newChart.setChartData(dataArray);
       newChart.autoResizeAxes();
       newChart.refresh();
       sim.manageChart(newChart);
+      chartQuantity++;
     }
+    dataSourcesProcessed++;
   }
-  console.log('changeIceberg() finished');
 }
-
+function createMonitors(){
+  while(dataSourcesProcessed < jsonKeyPaths.length && monitorQuantity < monitorLimit){
+    var index = dataSourcesProcessed;
+    var keyPath = jsonKeyPaths[index];
+    var dataArray = jsonDataMap.get(keyPath);
+    if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
+      var newMonitor = new DataMonitor(keyPath,'monitorTable');
+      console.log(dataArray);
+      newMonitor.setData(dataArray);
+      sim.manageMonitor(newMonitor);
+      monitorQuantity++;
+    }
+    dataSourcesProcessed++;
+  }
+}
+function displaySeaDragon(json){
+  SeaDragon = new Mesh(SeaDragonFilePath);
+  SeaDragon.loadModel();
+}
 /*
  * Changes the list of icebergs available to view
  */
@@ -130,7 +162,7 @@ function changeYear() {
   console.log('changeYear() finished');
 }
 
-function dimensionDisplay(json) {
+function displayDimensions(json) {
   if (json.hasOwnProperty('height')) {
     var height = json.height;
     //TODO add height monitor
@@ -159,7 +191,7 @@ function gpsDisplay(json) {
     }
     else {
       console.log("longitude invalid: not of type 'number'")
-      longitude = 0;
+        longitude = 0;
     }
     if (typeof latitude === 'number') {
       if (!(latitude >= -90 && latitude <= 90)) {
@@ -169,7 +201,7 @@ function gpsDisplay(json) {
     }
     else {
       console.log("latitude invalid: not of type 'number'")
-      latitude = 0;
+        latitude = 0;
     }
     //setPosition(latitude,longitude);
     //setMarker(latitude,longitude);
@@ -204,7 +236,6 @@ function displayPointCloud(json) {
     test.loadPointCloud();
     addToggle('pointstoggle', 'test.toggle()', 'Toggle Points');
   }
-
 }
 
 function loadData(json) {
@@ -230,3 +261,4 @@ function loadData(json) {
     SeaDragon.loadModel();
   }
 }
+

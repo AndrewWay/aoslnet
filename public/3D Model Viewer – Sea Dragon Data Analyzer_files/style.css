@@ -41,11 +41,11 @@
   width: 200px;
 }
 
-#displaytable,th,td{
+#monitorTable,th,td{
   width: 150px;
   color: #00ff00;
 }
-#displays{
+#monitors{
   position: absolute;
   z-index: 3;
   left: 215px;

@@ -2,8 +2,8 @@
  * @file Data distribution
  */
 
-jsonKeyPaths = new Array(0); 
-jsonDataMap = new Map();
+jsonKeyPaths = new Array(0); // Contains all the key paths of a JSON object
+jsonDataMap = new Map(); // Maps a JSON key path to a data array
 
 /**
  * Recursively extract all keys from the received JSON file
