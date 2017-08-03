@@ -98,12 +98,14 @@ function changeIceberg() {
   if (json.constructor == Array) {
     json = json[0];
   }
-  dimensionDisplay(json);
-  gpsDisplay(json);
-  displayIceberg(json);
-  displayPointCloud(json);
-  loadData(json);
-
+  //dimensionDisplay(json);
+  //gpsDisplay(json);
+  //displayIceberg(json);
+  //displayPointCloud(json);
+  //loadData(json);
+  var testChart = new DataChart('TestData');
+  testChart.setChartData([1,2,3,4,5]);
+  testChart.autoResizeAxes();
   console.log('changeIceberg() finished');
 }
 
