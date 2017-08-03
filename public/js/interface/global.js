@@ -4,7 +4,7 @@
  * @version 0.1
  */
 
-var sim = new Simulation();
+var sim;
 var test;
 var SeaDragon;
 var Iceberg;
@@ -103,10 +103,13 @@ function changeIceberg() {
   //displayIceberg(json);
   //displayPointCloud(json);
   //loadData(json);
+  var simdata = [1,2,3,4,5];
+  sim = new Simulation(simdata.length);
   var testChart = new DataChart('TestData','graphs');
-  testChart.setChartData([1,2,3,4,5]);
+  testChart.setChartData(simdata);
   testChart.autoResizeAxes();
   testChart.refresh();
+  sim.manageChart(testChart);
   console.log('changeIceberg() finished');
 }
 

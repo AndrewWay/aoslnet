@@ -1,8 +1,9 @@
 /** @namespace */
-var Simulation = function () {
+var Simulation = function (tmax) {
 
   var time_index = 0;
   var delay_factor = 1;
+  this.timeMax = tmax;
   this.playid;
   this.timebarid = 'timebar';
   this.playbtnid = 'playbtn';
@@ -10,9 +11,17 @@ var Simulation = function () {
   this.stopbtnid = 'stopbtn';
   this.sdx = [];
   this.sdy = [];
-
+  this.charts = new Array(0);
   /* PUBLIC FUNCTIONS */
-
+  
+  /*
+   * Set simulation object to manage chart
+   * @param {object} newChart The new chart to be tracked
+   */
+  this.manageChart = function(newChart){
+    this.charts.push(newChart);
+  }
+  
   /**
    * Set the time index based on the current value of the slider bar
    */
@@ -40,7 +49,7 @@ var Simulation = function () {
       parent.setTimeBar(ti);
       //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
       parent.set_time(ti + 1);
-      if (ti > time.length) {
+      if (ti > parent.timeMax) {
         clearInterval(parent.playid);
       }
     }, 1000 * parent.delay_factor);
@@ -116,8 +125,13 @@ var Simulation = function () {
    * @param {number} t Time index 
    */
   this.dispdata = function (t) {
-    redraw(t);
-    redisplay(t);
+    for(i = 0; i < this.charts.length; i++){
+      this.charts[i].shiftChart(t);  
+      this.charts[i].refresh();
+    }
+    /*for(i = 0; i < this.monitors.length; i++){
+      redraw(t);  
+    }*/
     // updateSDPosition(t)
   };
 

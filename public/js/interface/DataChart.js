@@ -112,8 +112,8 @@ var DataChart = function(dataLabel,parentID){
     this.xMin = this.xMax - this.xRange;
     var copts = this.chartOptions;
     var dtab = this.dataTable;
-    copts.hAxis.viewWindow.max = xMax;
-    copts.hAxis.viewWindow.min = xMin;
+    copts.hAxis.viewWindow.max = this.xMax;
+    copts.hAxis.viewWindow.min = this.xMin;
     this.refresh();
   }
 
