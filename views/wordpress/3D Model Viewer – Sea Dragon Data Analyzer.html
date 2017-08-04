@@ -24,8 +24,12 @@
   <script src="assets/libs/three/OrbitControls.js"></script>
   <script src="js/3d/ConvexGeometry.js"></script>
   <script src="js/3d/Detector.js"></script>
-  <script src="assets/js/demo.js"></script>
-
+  
+  <!-- Demo files -->
+  <script src="assets/js/window.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/demo.js"></script>
+		
   <!-- CLIENT-SIDE FUNCTIONALITY -->
   <script src="js/datatransfer.js"></script>
   <script src="js/interface/Simulation.js"></script>
@@ -55,10 +59,8 @@
 		<!-- Water shader -->
 		<script src="assets/water-material.js"></script>
 		
-		<!-- Demo files -->
-		<script src="assets/js/window.js"></script>
-		<script src="assets/js/main.js"></script>
 		<script src="js/interface/Main.js"></script>
+		<script src='js/interface/TestScript.js'></script>
 <script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
 <title>3D Model Viewer – Sea Dragon Data Analyzer</title>
 <link rel="dns-prefetch" href="https://s2.wp.com/">
@@ -235,8 +237,8 @@ img.emoji {
       <button type="button" id="playbtn" onclick="sim.play()">Play</button>
       <button type="button" id="pausebtn" onclick="sim.pause()">Pause</button>
       <button type="button" id="stopbtn" onclick="sim.stop()">Stop</button>
-      <button type="button" id=testbtn" onclick="test.test()">Stop</button>
-      
+      <button type="button" id=testbtn" onclick="prototestFunction()">Test</button>
+       <button type="button" id=testbtn" onclick="protoload()">Test2</button>
     </div>
   </div>
 

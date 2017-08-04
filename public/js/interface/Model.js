@@ -3,10 +3,11 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
-var Model = function (sourcePath) {
+var Model = function (sourcePath,Environment) {
+  console.log('creating ')
   var rotWorldMatrix;
-  this.World = DEMO.ms_Scene;
-  var sourceFile = sourcePath;
+  this.World = Environment.ms_Scene;
+  this.sourceFile = sourcePath;
   this.toggled = 1;
   this.appearance = {
     color: 0xffffff
@@ -190,4 +191,8 @@ var Model = function (sourcePath) {
   this.render = function () {
     renderer.render(scene, camera);
   }
+  this.protoTest = function(){
+    console.log('Model Prototype');
+  } 
 };
+

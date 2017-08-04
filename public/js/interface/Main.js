@@ -239,9 +239,9 @@ function displayIceberg(json) {
   if (json.hasOwnProperty('stlpath')) {
     var filepath = json['stlpath'];
     console.log('loading stl from ' + filepath);
-    Iceberg = new Mesh(filepath);
+    var IcebergModel = new Model('dir/testfile',DEMO);
+    Iceberg = Mesh(IcebergModel);
     Iceberg.loadModel();
-    Iceberg.setPosition(0,0,200);
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
   }
 }
