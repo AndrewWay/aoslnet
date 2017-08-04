@@ -40,8 +40,6 @@ function createScene() {
 	};
 	
 	DEMO.initialize('model', parameters);
-	console.log('CREATING SCENE');
-	console.log(DEMO.ms_Scene);
 	var container = document.getElementById('model');
 	WINDOW.resizeCallback = function(inWidth, inHeight) { DEMO.resize(inWidth, inHeight); };
 	DEMO.resize($(container).width(),$(container).height());

@@ -74,6 +74,12 @@ var Model = function (sourcePath,Environment) {
   }
 
   /**
+   * Set the yaw
+   */
+  this.setYaw(radians){
+    
+  }
+  /**
    * Rotate the model around an arbitrary axis in world space    
    */
   this.rotateAroundWorldAxis = function (object, axis, radians) {

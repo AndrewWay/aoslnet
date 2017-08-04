@@ -4,6 +4,10 @@
 function Mesh(Model){
   function MeshObject(){
     this.__proto__ = Model;
+    console.log('MODEL WORLD');
+    console.log(Model.World);
+    console.log('MESH WORLD');
+    console.log(this.World);
     /**
      * Set the current 3D model filepath on the public directory
      * @param {String} file
@@ -26,6 +30,7 @@ function Mesh(Model){
     this.loadModel = function () {
       var loader = new THREE.STLLoader();
       var MeshObject = this;
+      console.log('SOURCEFILE '+MeshObject.sourceFile);
       loader.load(MeshObject.sourceFile, function (geometry) {
           MeshObject.material = new THREE.MeshPhongMaterial(MeshObject.appearance);
           MeshObject.mesh = new THREE.Mesh(geometry, MeshObject.material);
