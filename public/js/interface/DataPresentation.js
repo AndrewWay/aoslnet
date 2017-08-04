@@ -18,7 +18,7 @@ function addToggle(id, callback, name) {
 
 /**
  * Capitalize the first letter of a string
- * @param {string} string
+ * @param {string} string The string to be beautified
  */
 function beautifyLabel(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);

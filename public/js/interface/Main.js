@@ -24,7 +24,6 @@ dataReq = 'bergs/data';
 SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
 modelcontainerid = 'model';
 
-
 disp_size = 20;
 SDBottom = -160;
 
@@ -96,17 +95,21 @@ function changeIceberg() {
     json = json[0];
   }
   console.log(json);
-  extractKeyPaths(json['Data'][0]); //Only checks first element
-  distributeData(json['Data']);
+  if(json.hasOwnProperty('Data') && json['Data'].length > 0){
+    extractKeyPaths(json['Data'][0]); //Only checks first element
+    distributeData(json['Data']); 
+    var setSize = json['Data'].length;
+    sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
+    createCharts();
+    createMonitors();
+  }
+
   //displayDimensions(json);
   //gpsDisplay(json);
   displayIceberg(json);
   displayPointCloud(json);
   displaySeaDragon(json);
-  var setSize = json['Data'].length;
-  sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
-  createCharts();
-  createMonitors();
+
   console.log('changeIceberg() finished');
 }
 
@@ -172,7 +175,7 @@ function changeYear() {
 
 /**
  * Displays the dimensions of the iceberg
- * @param {object} json
+ * @param {object} json The JSON that contains the dimensions
  */
 function displayDimensions(json) {
   if (json.hasOwnProperty('height')) {
@@ -238,6 +241,7 @@ function displayIceberg(json) {
     console.log('loading stl from ' + filepath);
     Iceberg = new Mesh(filepath);
     Iceberg.loadModel();
+    Iceberg.setPosition(0,0,200);
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
   }
 }
@@ -256,9 +260,11 @@ function displayPointCloud(json) {
     var x = json['x'];
     var y = json['y'];
     var z = json['z'];
-    test = new PointCloud(x, y, z);
-    test.loadPointCloud();
-    addToggle('pointstoggle', 'test.toggle()', 'Toggle Points');
+    if(x.length > 0 && y.length > 0 && z.length > 0){
+      test = new PointCloud(x, y, z);
+      test.loadPointCloud();
+      addToggle('pointstoggle', 'test.toggle()', 'Toggle Points'); 
+    }
   }
 }
 

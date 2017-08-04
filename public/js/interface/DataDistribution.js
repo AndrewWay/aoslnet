@@ -6,12 +6,10 @@ jsonDataMap = new Map(); // Maps a JSON key path to a data array
 
 /**
  * Recursively extract all keys from the received JSON file
- * @param {String} json
+ * @param {object} json
  */
 function extractKeyPaths(json) {
   var keys = Object.keys(json);
-  console.log('KEYS');
-  console.log(keys);
   for (var i = 0; i < keys.length; i++) {
     var childkey = keys[i];
     var child = json[childkey];
@@ -28,7 +26,7 @@ function extractKeyPaths(json) {
  * Recursive helper for extractKeyPaths
  * @param {String} keypath
  * @param {String} key
- * @param {String} json
+ * @param {object} json
  */
 function keypathHelper(keypath, key, json) {
   var keys = Object.keys(json);
