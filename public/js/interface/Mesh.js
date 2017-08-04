@@ -1,35 +1,56 @@
 /**
  * @constructor
  */
-var Mesh = function (sourceFile) {
-  var M = new Model();
-  M.file = sourceFile;
+function Mesh(Model){
+  function MeshObject(){
+    this.__proto__ = Model;
+    console.log('MODEL WORLD');
+    console.log(Model.World);
+    console.log('MESH WORLD');
+    console.log(this.World);
+    /**
+     * Set the current 3D model filepath on the public directory
+     * @param {String} file
+     */
+    this.setFile = function(file){
+      this.sourceFile = file;
+    }
 
-  /**
-   * Load and add the mesh to the scene
-   */
-  M.loadModel = function () {
-    var loader = new THREE.STLLoader();
-    var thisMesh = this.mesh;
-    loader.load(M.file, function (geometry) {
-        var material = new THREE.MeshPhongMaterial(M.appearance);
-        thisMesh = new THREE.Mesh(geometry, material);
-        thisMesh.material.side = THREE.DoubleSide;
-        var Axis = new THREE.Vector3(1, 0, 0);
-        M.rotationAngle = -90 * Math.PI / 180; //Rotate by 90 degree
-        M.World.add(thisMesh);
-        M.rotateAroundWorldAxis(thisMesh, Axis, M.rotationAngle);
-        });
+    /**
+     * Return the path to the source file
+     * @return {String} Path to source file
+     */
+    this.getFile = function(){
+      return this.sourceFile;
+    }
+
+    /**
+     * Load and add the mesh to the scene
+     */
+    this.loadModel = function () {
+      var loader = new THREE.STLLoader();
+      var MeshObject = this;
+      console.log('SOURCEFILE '+MeshObject.sourceFile);
+      loader.load(MeshObject.sourceFile, function (geometry) {
+          MeshObject.material = new THREE.MeshPhongMaterial(MeshObject.appearance);
+          MeshObject.mesh = new THREE.Mesh(geometry, MeshObject.material);
+          MeshObject.mesh.material.side = THREE.DoubleSide;
+          var Axis = new THREE.Vector3(1, 0, 0);
+          MeshObject.rotationAngle = -90 * Math.PI / 180; //Rotate by 90 degree
+          MeshObject.World.add(MeshObject.mesh);
+          MeshObject.rotateAroundWorldAxis(MeshObject.mesh, Axis, MeshObject.rotationAngle);
+          });
+
+    }
   }
+  return new MeshObject();
+}
 
-  /**
-   * Set the current 3D model filepath on the public directory
-   * @param {String} file
-   */
-  M.setfile = function (file) {
-    this.file = file;
-  };
 
-  return M;
-};
+
+
+
+
+
+
 
