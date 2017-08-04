@@ -17,37 +17,6 @@ function addToggle(id, callback, name) {
 }
 
 /**
- * Create the numerical displays and graphs
- */
-function createAllDisplays() {
-  for (var i = 0; i < dsstrings.length; i++) {
-    var label = dsstrings[i];
-    if ($("#graphs > div").length < autographlimit) {
-      //create a graph
-      createDisplay('graph', label);
-    }
-    else {
-      //Create a monitor
-      createDisplay('monitor', label);
-    }
-  }
-}
-
-/**
- * Add a new display
- * param {String} type
- * param {String} label
- */
-function createDisplay(type, label) {
-  if (type === 'graph') {
-    addChart(label);
-  }
-  else if (type === 'monitor') {
-    addDisplay(label);
-  }
-}
-
-/**
  * Capitalize the first letter of a string
  * @param {string} string
  */
