@@ -3,13 +3,14 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
-var Map = function(parentDivID){
+var GoogleMap = function(parentDivID){
   var default_lat = 60;
   var default_long = -45;
   var default_zoom = 2;
+  this.parentDivID = parentDivID;
   var AOSL_seadragon_latitude;
   var AOSL_seadragon_longitude;
-  var map = new google.maps.Map(document.getElementById(mapDiv_id));
+  var map = new google.maps.Map(document.getElementById(this.parentDivID));
   var SDMarker;
 
 

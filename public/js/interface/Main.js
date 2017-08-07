@@ -122,7 +122,9 @@ function changeIceberg() {
 
   console.log('changeIceberg() finished');
 }
-
+function createMap(){
+  map = new GoogleMap('map');
+}
 
 /**
  * Creates charts for data sources
