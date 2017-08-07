@@ -3,11 +3,11 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
-var Model = function (sourcePath,Environment) {
+var Model = function (Environment) {
   console.log('creating ')
   var rotWorldMatrix;
   this.World = Environment.ms_Scene;
-  this.sourceFile = sourcePath;
+
   this.toggled = 1;
   this.appearance = {
     color: 0xffffff
@@ -74,11 +74,29 @@ var Model = function (sourcePath,Environment) {
   }
 
   /**
+   * Set the pitch
+   */
+  this.setPitch = function(radians){
+    var Axis = new THREE.Vector3(1, 0, 0);
+    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
+  }
+  
+  /**
+   * Set the roll
+   */
+  this.setRoll = function(radians){
+    var Axis = new THREE.Vector3(0, 1, 0);
+    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
+  }
+  
+  /**
    * Set the yaw
    */
-  this.setYaw(radians){
-    
+  this.setYaw = function(radians){
+    var Axis = new THREE.Vector3(0, 0, 1);
+    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
   }
+  
   /**
    * Rotate the model around an arbitrary axis in world space    
    */

@@ -26,14 +26,19 @@ modelcontainerid = 'model';
 
 disp_size = 20;
 SDBottom = -160;
-
+var SD2;
 function testfunction(){
   
-  Iceberg.setPosition(100,100,500);
+  SD2 = Mesh(SeaDragonFilePath);
+  SD2.loadModel();
+
+
 }
-
-//TODO make JSON a variable for this file
-
+function testfunction2(){
+  SD2.setPosition(SDBottom,SDBottom,SDBottom);
+  SD2.setYaw(1.5708);
+  SD2.setPitch(1.5708);
+}
 /**
  * Initiates execution of all functions for setting the page up
  */
@@ -162,8 +167,7 @@ function createMonitors(){
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
-  var SeaDragonModel = new Model(SeaDragonFilePath,DEMO);
-  SeaDragon = Mesh(SeaDragonModel);
+  SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.loadModel();
 }
 
@@ -245,8 +249,7 @@ function displayIceberg(json) {
     var filepath = json['stlpath'];
     console.log('loading stl from ' + filepath);
     console.log(DEMO);
-    var IcebergModel = new Model('data/models/stl/r11i02.stl',DEMO);
-    Iceberg = Mesh(IcebergModel);
+    Iceberg = Mesh('data/models/stl/r11i02.stl');
     Iceberg.loadModel();
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
   }
@@ -269,8 +272,7 @@ function displayPointCloud(json) {
     if(x.length > 0 && y.length > 0 && z.length > 0){
       console.log('creating point cloud model');
       console.log(DEMO);
-      var PointCloudModel=new Model('',DEMO);
-      IcebergPointCloud = PointCloud(PointCloudModel,x, y, z);
+      IcebergPointCloud = PointCloud(x, y, z);
       IcebergPointCloud.loadPointCloud();
       addToggle('pointstoggle', 'IcebergPointCloud.toggle()', 'Toggle Points'); 
     }

@@ -1,9 +1,10 @@
 /**
  * @constructor
  */
-function Mesh(Model){
+function Mesh(sourceFile){
   function MeshObject(){
-    this.__proto__ = Model;
+    this.sourceFile = sourceFile;
+    this.__proto__ = new Model(DEMO);
     console.log('MODEL WORLD');
     console.log(Model.World);
     console.log('MESH WORLD');
