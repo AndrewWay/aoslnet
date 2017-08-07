@@ -8,6 +8,7 @@ var sim; // Simulation object
 var IcebergPointCloud; // Iceberg point cloud object
 var SeaDragon; // SeaDragon object
 var Iceberg; // Iceberg object
+var map;
 var yearSelected = ""; // Tracks the selected year
 var icebergSelected = ""; // Tracks the selected iceberg name
 var IcebergModelName = "";
@@ -114,7 +115,7 @@ function changeIceberg() {
   }
 
   //displayDimensions(json);
-  //gpsDisplay(json);
+  displayMap(json);
   displayIceberg(json);
   displayPointCloud(json);
   displaySeaDragon(json);
@@ -169,6 +170,8 @@ function createMonitors(){
 function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.loadModel();
+  SeaDragon.setPosition(SDBottom,SDBottom,SDBottom);
+  SeaDragon.setPitch(1.5708);
 }
 
 /**
@@ -205,37 +208,41 @@ function displayDimensions(json) {
  * Display markers and polygons on Google Map
  * @param {object} json
  */
-function gpsDisplay(json) {
+function displayMap(json) {
   //TODO if longitude and latitude exist, create map. Have map invisible by default
   //Load longitude and latitude of iceberg
   if (json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')) {
     var longitude = json.longitude;
     var latitude = json.latitude;
+    var displayMapBool = 1;
     if (typeof longitude === 'number') {
       if (!(longitude >= -180 && longitude <= 180)) {
         console.log("longitude invalid: out of range.");
-        longitude = 0;
+        displayMapBool = 0;
       }
     }
     else {
       console.log("longitude invalid: not of type 'number'")
-        longitude = 0;
+        displayMapBool = 0;
     }
     if (typeof latitude === 'number') {
       if (!(latitude >= -90 && latitude <= 90)) {
         console.log("latitude invalid: out of range.");
-        latitude = 0;
+        displayMapBool = 0;
       }
     }
     else {
       console.log("latitude invalid: not of type 'number'")
-        latitude = 0;
+        displayMapBool = 0;
     }
-    //setPosition(latitude,longitude);
-    //setMarker(latitude,longitude);
-    //setPosition(latitude,longitude);
-    //displaySDPosition(latitude,longitude);
-    //setZoom(15);
+    if(displayMapBool == 1){
+      map = new Map();
+      map.setPosition(latitude,longitude);
+      map.setMarker(latitude,longitude);
+      map.setPosition(latitude,longitude);
+      map.displaySDPosition(latitude,longitude);
+      map.setZoom(15);
+    }
   }
 }
 

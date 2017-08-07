@@ -5,10 +5,6 @@ function Mesh(sourceFile){
   function MeshObject(){
     this.sourceFile = sourceFile;
     this.__proto__ = new Model(DEMO);
-    console.log('MODEL WORLD');
-    console.log(Model.World);
-    console.log('MESH WORLD');
-    console.log(this.World);
     /**
      * Set the current 3D model filepath on the public directory
      * @param {String} file
