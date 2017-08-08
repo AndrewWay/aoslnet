@@ -31,6 +31,12 @@ var Model = function (Environment) {
       console.log('Accessing model position array out of bounds');
     }
   }
+    
+  this.setPositionData(xArray,yArray,zArray){
+    xposition = xArray;
+    yposition = xArray;
+    zposition = zArray;
+  }
   /**
    * set the hex color property of appearance
    * @param {string} hexColor Color in hex

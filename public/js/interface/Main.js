@@ -217,11 +217,39 @@ function displayIcebergMarker(){
 }
 
 /**
+ * TODO Fix this function
+ *
+ * Convert SeaDragon latitude and longitude to point cloud local frame
+ * @param {Array} x Latitude positions of Model
+ * @param {Array} y Longitude positions of Model
+ * @param {Array} z Depth positions of Model
+ * @param {Array} gps_origin Origin in the world frame in GPS coordinates
+ */
+function setModelPosition(model,x, y, z, gps_origin) {
+  var xorigin = gps_origin[0];
+  var yorigin = gps_origin[1];
+  console.log(yorigin);
+  var xorigin_m = lat2m(xorigin);
+  var yorigin_m = long2m(yorigin);
+  console.log(yorigin_m);
+  console.log('Converting gps to local');
+  console.log(x);
+  console.log(y);
+  // Convert xy coordinates to metres and relative to local frame
+  for (i = 0; i < x.length; i++) {
+    x[i] = lat2m(x[i]) - xorigin_m;
+    y[i] = long2m(y[i]) - yorigin_m;
+  }
+  model.setPositionData(x,y,z);
+};
+
+/**
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.setColor('#ffff00');
+  setModelPosition(SeaDragon,jsonDataMap.get(longitudeName))
   SeaDragon.loadModel(0);
 }
 /**
@@ -229,27 +257,27 @@ function displaySeaDragon(json){
  */
 function displaySeaDragonMarker(json){
   console.log('Displaying SeaDragon Marker');
- // if(jsonDataMap.has(orientationName)){
-    if(jsonDataMap.has(latitudeName)){
-      if(jsonDataMap.has(longitudeName)){
-        var latitudeArray = jsonDataMap.get(latitudeName);
-        var longitudeArray = jsonDataMap.get(longitudeName);
-        var orientationArray = jsonDataMap.get(orientationName);
-        seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
-        seaDragonMarker.displayPath();
-        sim.manage(seaDragonMarker);   
-      }
-      else{
-        console.log('No SeaDragon longitude array');
-      }
+  // if(jsonDataMap.has(orientationName)){
+  if(jsonDataMap.has(latitudeName)){
+    if(jsonDataMap.has(longitudeName)){
+      var latitudeArray = jsonDataMap.get(latitudeName);
+      var longitudeArray = jsonDataMap.get(longitudeName);
+      var orientationArray = jsonDataMap.get(orientationName);
+      seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
+      seaDragonMarker.displayPath();
+      sim.manage(seaDragonMarker);   
     }
     else{
-      console.log('No SeaDragon latitude array');
+      console.log('No SeaDragon longitude array');
     }
- /* }
+  }
   else{
-    console.log('No SeaDragon orientations array');
-  } */
+    console.log('No SeaDragon latitude array');
+  }
+  /* }
+     else{
+     console.log('No SeaDragon orientations array');
+     } */
 }
 /**
  * Changes the list of icebergs available to view
@@ -377,5 +405,6 @@ function loadData(json) {
     SeaDragon.loadModel();
   }
 }
+
 
 

@@ -78,31 +78,6 @@ var Simulation = function (tmax) {
   };
 
   /**
-   * Convert SeaDragon latitude and longitude to point cloud local frame
-   * @param {Array} x Latitude positions of SeaDragon
-   * @param {Array} y Longitude positions of SeaDragon
-   * @param {Array} gps_origin Origin in the world frame in GPS coordinates
-   */
-  this.setSD = function (x, y, gps_origin) {
-    var xorigin = gps_origin[0];
-    var yorigin = gps_origin[1];
-    console.log(yorigin);
-    var xorigin_m = lat2m(xorigin);
-    var yorigin_m = long2m(yorigin);
-    console.log(yorigin_m);
-    console.log('Converting gps to local');
-    console.log(x);
-    console.log(y);
-    // Convert xy coordinates to metres and relative to local frame
-    for (i = 0; i < x.length; i++) {
-      x[i] = lat2m(x[i]) - xorigin_m;
-      y[i] = long2m(y[i]) - yorigin_m;
-    }
-    sdx = x;
-    sdy = y;
-  };
-
-  /**
    * Pause playback 
    */
   this.pause = function () {
