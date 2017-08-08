@@ -6,8 +6,8 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
   function TriangleObject(){
     this.__proto__ = new Marker(parentMap,latitudeArray,longitudeArray);
 
-    var x = 2;
-    var y = 2;
+    var x = 0.0002;
+    var y = 0.0002;
     var icon;
     var marker;
     var iconColor = '#ffffff';

@@ -100,6 +100,7 @@ strokeWeight: 2,});
   
   
   this.setPath(); 
+  this.setPosition(0);
 }
 
 

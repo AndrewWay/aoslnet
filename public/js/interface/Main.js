@@ -4,11 +4,17 @@
  * @version 0.1
  */
 
+var latitudeName = 'latitudeSD';
+var longitudeName = 'longitudeSD';
+var orientationName = 'orientationSD';
+
 var sim; // Simulation object
 var IcebergPointCloud; // Iceberg point cloud object
 var SeaDragon; // SeaDragon object
 var Iceberg; // Iceberg object
 var map;
+var surveyMarker; // Marker to indicate location of survey
+var seaDragonMarker;
 var yearSelected = ""; // Tracks the selected year
 var icebergSelected = ""; // Tracks the selected iceberg name
 var IcebergModelName = "";
@@ -118,6 +124,7 @@ function changeIceberg() {
     extractKeyPaths(json['Data'][0]); //Only checks first element
     distributeData(json['Data']); 
     var setSize = json['Data'].length;
+    console.log('SETSIZE: '+setSize);
     sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
     createCharts();
     createMonitors();
@@ -132,7 +139,8 @@ function changeIceberg() {
   console.log('changeIceberg() finished');
 }
 function createMap(){
-  map = new GoogleMap('map');
+  console.log('Google Map ready to be created');
+  //map = new GoogleMap('map');
 }
 
 /**
@@ -186,7 +194,27 @@ function displaySeaDragon(json){
  * Create and display SeaDragon Marker
  */
 function displaySeaDragonMarker(json){
-  
+  console.log('Displaying SeaDragon Marker');
+  if(jsonDataMap.has(orientationName)){
+    if(jsonDataMap.has(latitudeName)){
+      if(jsonDataMap.has(longitudeName)){
+        var latitudeArray = jsonDataMap.get(latitudeName);
+        var longitudeArray = jsonDataMap.get(longitudeName);
+        var orientationArray = jsonDataMap.get(orientationName);
+        seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
+        sim.manage(seaDragonMarker);   
+      }
+      else{
+        console.log('No SeaDragon longitude array');
+      }
+    }
+    else{
+      console.log('No SeaDragon latitude array');
+    }
+  }
+  else{
+    console.log('No SeaDragon orientations array');
+  }
 }
 /**
  * Changes the list of icebergs available to view
@@ -252,6 +280,9 @@ function displayMap(json) {
     if(displayMapBool == 1){
       map = new GoogleMap('map');
       map.setCenter(latitude,longitude);
+      surveyMarker = new Marker(map.getMap(),[latitude],[longitude]);
+      surveyMarker.display();
+      displaySeaDragonMarker();
     //  map.setMarker(latitude,longitude);
     //  map.displaySDPosition(latitude,longitude);
       map.setZoom(15);

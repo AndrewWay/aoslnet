@@ -41,8 +41,6 @@ var Model = function (Environment) {
    * @param {Number} v
    */
   this.updateDim = function (h, w, v) {
-    console.log("updateDim() running");
-    console.log("h: " + h + "w: " + w + "v: " + v);
     var hTd = document.getElementById("icebergHeight");
     var wTd = document.getElementById("icebergWidth");
     var vTd = document.getElementById("icebergVolume");

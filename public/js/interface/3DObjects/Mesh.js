@@ -27,7 +27,6 @@ function Mesh(sourceFile){
     this.loadModel = function () {
       var loader = new THREE.STLLoader();
       var MeshObject = this;
-      console.log('SOURCEFILE '+MeshObject.sourceFile);
       loader.load(MeshObject.sourceFile, function (geometry) {
           MeshObject.material = new THREE.MeshPhongMaterial(MeshObject.appearance);
           MeshObject.mesh = new THREE.Mesh(geometry, MeshObject.material);
