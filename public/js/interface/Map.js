@@ -13,13 +13,22 @@ var GoogleMap = function(parentDivID){
   var map = new google.maps.Map(document.getElementById(this.parentDivID));
   var SDMarker;
 
-
+  this.getMap = function(){
+    return map;
+  }
+  this.reset = function(){
+    this.setZoom(default_zoom);
+    this.setCenter(default_lat,default_long);
+    //TODO
+    // Remove all markers
+    //Remove all polygons 
+  }
   /**
    * Set the zoom of the map
    * @param {Number} z
    * 
    */
-  this.setMapZoom = function(z) {
+  this.setZoom = function(z) {
     map.setZoom(z);
   }
 
@@ -29,7 +38,7 @@ var GoogleMap = function(parentDivID){
    * @param {Number} lg
    * 
    */
-  this.setMapCenter = function(lt, lg) {
+  this.setCenter = function(lt, lg) {
     var LatLngLiteral = {
 lat: lt,
      lng: lg
@@ -38,8 +47,8 @@ lat: lt,
   }
 
   // Set to default position and zoom
-  this.setMapCenter(default_lat, default_long);
-  this.setMapZoom(default_zoom);
+  this.setCenter(default_lat, default_long);
+  this.setZoom(default_zoom);
 
 
 /**

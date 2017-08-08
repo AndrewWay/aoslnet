@@ -17,7 +17,7 @@ var chartLimit = 2; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
-var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed
+var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
 //strings for making data requests
 namesReq = 'bergs/names';
 yearsReq = 'bergs/years';
@@ -27,18 +27,25 @@ modelcontainerid = 'model';
 
 disp_size = 20;
 SDBottom = -160;
-var SD2;
+var MarkerTest;
+
 function testfunction(){
+  console.log('Test function 1');
+  var long = [-45,-44,-43,-42,-20];
+  var lat = [60,65,70,75,80];
+  var or = [1,0,40,30,-20];
   
-  SD2 = Mesh(SeaDragonFilePath);
-  SD2.loadModel();
-
-
+  var gmap = map.getMap();
+  MarkerTest = new TriangleMarker(gmap,lat,long,or);
+  map.reset();
+  MarkerTest.setPosition(1);
+  MarkerTest.display();
 }
 function testfunction2(){
-  SD2.setPosition(SDBottom,SDBottom,SDBottom);
-  SD2.setYaw(1.5708);
-  SD2.setPitch(1.5708);
+  console.log('Test function 2');
+  MarkerTest.setIconColor('#bd5151');
+  MarkerTest.refreshIcon();
+  MarkerTest.addPath();
 }
 /**
  * Initiates execution of all functions for setting the page up
@@ -172,8 +179,6 @@ function createMonitors(){
 function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.loadModel();
-  SeaDragon.setPosition(SDBottom,SDBottom,SDBottom);
-  SeaDragon.setPitch(1.5708);
 }
 
 /**
@@ -238,11 +243,10 @@ function displayMap(json) {
         displayMapBool = 0;
     }
     if(displayMapBool == 1){
-      map = new Map();
-      map.setPosition(latitude,longitude);
-      map.setMarker(latitude,longitude);
-      map.setPosition(latitude,longitude);
-      map.displaySDPosition(latitude,longitude);
+      map = new GoogleMap('map');
+      map.setCenter(latitude,longitude);
+    //  map.setMarker(latitude,longitude);
+    //  map.displaySDPosition(latitude,longitude);
       map.setZoom(15);
     }
   }
