@@ -6,26 +6,48 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
   function TriangleObject(){
     this.__proto__ = new Marker(parentMap,latitudeArray,longitudeArray);
 
-    var x = 20;
-    var y = 20;
+    var x = 2;
+    var y = 2;
     var icon;
-    var centerlat = this.getLatitude(0);
-    var centerlng = this.getLongitude(0);
     var marker;
     var iconColor = '#ffffff';
-    
-    
-    this.orArray = orientationArray;
-    var iconProps = {
-      ax : centerlng,
-      ay : centerlat + y,
-      bx : centerlng - x,
-      by : centerlat - y,
-      cx : centerlng + x,
-      cy : centerlat - y,
-      dx : centerlng,
-      dy : centerlat + y,
+    var iconProps;
+    var currentLat;
+    var currentLong;
+    /**
+     * Interface function to be compatible with Simulation object
+     */
+    this.play = function(index){
+      this.setPosition(index);
+      this.setOrientation(index);
+      this.refreshIcon();
     }
+    /**
+     * 
+     */
+    this.setOrientation = function(index){
+      //Some math involving orientation heading to determine x and y
+      //TODO
+      var currentLat = this.getLatitude(index);
+      var currentLong = this.getLongitude(index);
+      
+      iconProps = {
+ax : currentLong,
+     ay : currentLat + y,
+     bx : currentLong - x,
+     by : currentLat - y,
+     cx : currentLong + x,
+     cy : currentLat - y,
+     dx : currentLong,
+     dy : currentLat + y,
+      }
+    }
+    /*this.setPosition = function(index){
+      currentLat = this.getLatitude(index);
+      currentLong = this.getLongitude(index);
+    }*/
+    this.orArray = orientationArray;
+
     this.setIconColor = function(hexColor){
       iconColor = hexColor;
     }
@@ -70,9 +92,14 @@ zIndex: 3
 marker.setMap(this.parentMap);
 this.setMarker(marker);
 }
+
+this.setPosition(0);
+this.setOrientation(0);
+this.display();
 }
 return new TriangleObject();
 
 }
+
 
 

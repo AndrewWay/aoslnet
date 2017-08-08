@@ -28,7 +28,7 @@ modelcontainerid = 'model';
 disp_size = 20;
 SDBottom = -160;
 var MarkerTest;
-
+var test_i = 0;
 function testfunction(){
   console.log('Test function 1');
   var long = [-45,-44,-43,-42,-20];
@@ -37,15 +37,17 @@ function testfunction(){
   
   var gmap = map.getMap();
   MarkerTest = new TriangleMarker(gmap,lat,long,or);
-  map.reset();
-  MarkerTest.setPosition(1);
-  MarkerTest.display();
-}
-function testfunction2(){
-  console.log('Test function 2');
   MarkerTest.setIconColor('#bd5151');
   MarkerTest.refreshIcon();
   MarkerTest.addPath();
+}
+function testfunction2(){
+  console.log('Test function 2');
+  MarkerTest.play(test_i);
+  test_i++;
+  if(test_i == 4){
+    test_i = 0;
+  }
 }
 /**
  * Initiates execution of all functions for setting the page up
@@ -180,7 +182,12 @@ function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.loadModel();
 }
-
+/**
+ * Create and display SeaDragon Marker
+ */
+function displaySeaDragonMarker(json){
+  
+}
 /**
  * Changes the list of icebergs available to view
  */

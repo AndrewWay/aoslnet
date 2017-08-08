@@ -42,7 +42,7 @@ var Marker = function(parent,latitudeArray,longitudeArray){
     return longArray[index];
   }
   /**
-   * Set marker position
+   * Set current position
    */
    this.setPosition = function(index){
      var Lat = latArray[index];
