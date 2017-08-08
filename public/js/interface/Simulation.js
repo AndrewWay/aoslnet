@@ -120,6 +120,7 @@ var Simulation = function (tmax) {
     this.set_time(0);
     this.setTimeBar(this.get_time());
     this.dispdata(this.get_time());
+    this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
     document.getElementById(this.pausebtnid).disabled = true;

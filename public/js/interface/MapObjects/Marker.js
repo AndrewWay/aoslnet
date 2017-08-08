@@ -89,7 +89,7 @@ var Marker = function(parent,latitudeArray,longitudeArray){
   /**
    * Add path to map
    */
-  this.addPath = function(){
+  this.displayPath = function(){
     path = new google.maps.Polyline({
 path: pathData,
 strokeColor: pathColor,
