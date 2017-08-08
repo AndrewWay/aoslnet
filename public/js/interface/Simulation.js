@@ -10,9 +10,9 @@ var Simulation = function (tmax) {
    */
   this.updateTimeMax = function (t) {
     this.timeMax = t;
-    document.getElementById(this.timebarid).max = this.tmax;
+    document.getElementById(this.timebarid).max = this.timeMax;
   };
-  this.updateTimeMax(tmax);
+  this.updateTimeMax(tmax - 1);
   this.playid;
   this.playbtnid = 'playbtn';
   this.pausebtnid = 'pausebtn';
@@ -51,6 +51,7 @@ var Simulation = function (tmax) {
     console.log("Manually setting time to: " + newTime);
     this.set_time(newTime);
     this.dispdata(this.get_time());
+    this.playEntities(newTime);
   };
 
   /**
@@ -70,7 +71,7 @@ var Simulation = function (tmax) {
       parent.playEntities(ti);
       //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
       parent.set_time(ti + 1);
-      if (ti > parent.timeMax) {
+      if (ti >= parent.timeMax) {
         clearInterval(parent.playid);
       }
     }, 1000 * parent.delay_factor);
