@@ -4,14 +4,15 @@ var Simulation = function (tmax) {
   var time_index = 0;
   var delay_factor = 1;
   this.timebarid = 'timebar';
+  this.timeMax = 0;
     /**
    * Update the maximum value the time bar can have
    */
   this.updateTimeMax = function (t) {
-    this.tmax = t;
-    document.getElementById(this.timebarid).max = this.tmax;
+    this.timeMax = t;
+    document.getElementById(this.timebarid).max = this.timeMax;
   };
-  this.updateTimeMax(tmax);
+  this.updateTimeMax(tmax - 1);
   this.playid;
   this.playbtnid = 'playbtn';
   this.pausebtnid = 'pausebtn';
@@ -20,8 +21,17 @@ var Simulation = function (tmax) {
   this.sdy = [];
   this.charts = new Array(0);
   this.monitors = new Array(0);
+  this.managedEntities = new Array(0);
   /* PUBLIC FUNCTIONS */
   
+  this.playEntities = function(index){
+    for(var i = 0; i < this.managedEntities.length; i++){
+      this.managedEntities[i].play(index);
+    }
+  }
+  this.manage = function(newEntity){
+    this.managedEntities.push(newEntity);
+  }
   /**
    * Set simulation object to manage chart
    * @param {object} newChart The new chart to be tracked
@@ -41,6 +51,7 @@ var Simulation = function (tmax) {
     console.log("Manually setting time to: " + newTime);
     this.set_time(newTime);
     this.dispdata(this.get_time());
+    this.playEntities(newTime);
   };
 
   /**
@@ -57,9 +68,10 @@ var Simulation = function (tmax) {
       //        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
       parent.dispdata(ti);
       parent.setTimeBar(ti);
+      parent.playEntities(ti);
       //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
       parent.set_time(ti + 1);
-      if (ti > parent.timeMax) {
+      if (ti >= parent.timeMax) {
         clearInterval(parent.playid);
       }
     }, 1000 * parent.delay_factor);
@@ -108,6 +120,7 @@ var Simulation = function (tmax) {
     this.set_time(0);
     this.setTimeBar(this.get_time());
     this.dispdata(this.get_time());
+    this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
     document.getElementById(this.pausebtnid).disabled = true;

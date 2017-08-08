@@ -4,10 +4,19 @@
  * @version 0.1
  */
 
+var latitudeName = 'latitudeSD';
+var longitudeName = 'longitudeSD';
+var orientationName = 'orientationSD';
+var icebergLatitudeName = 'latI0';
+var icebergLongitudeName = 'longI0';
+
 var sim; // Simulation object
 var IcebergPointCloud; // Iceberg point cloud object
 var SeaDragon; // SeaDragon object
 var Iceberg; // Iceberg object
+var map;
+var surveyMarker; // Marker to indicate location of survey
+var seaDragonMarker;
 var yearSelected = ""; // Tracks the selected year
 var icebergSelected = ""; // Tracks the selected iceberg name
 var IcebergModelName = "";
@@ -16,7 +25,7 @@ var chartLimit = 2; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
-var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed
+var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
 //strings for making data requests
 namesReq = 'bergs/names';
 yearsReq = 'bergs/years';
@@ -26,21 +35,35 @@ modelcontainerid = 'model';
 
 disp_size = 20;
 SDBottom = -160;
-
+var MarkerTest;
+var test_i = 0;
 function testfunction(){
-  
-  Iceberg.setPosition(100,100,500);
+  console.log('Test function 1');
+  var long = [-45,-44,-43,-42,-20];
+  var lat = [60,65,70,75,80];
+  var or = [1,0,40,30,-20];
+
+  var gmap = map.getMap();
+  MarkerTest = new TriangleMarker(gmap,lat,long,or);
+  MarkerTest.setIconColor('#bd5151');
+  MarkerTest.refreshIcon();
+  MarkerTest.addPath();
 }
-
-//TODO make JSON a variable for this file
-
+function testfunction2(){
+  console.log('Test function 2');
+  MarkerTest.play(test_i);
+  test_i++;
+  if(test_i == 4){
+    test_i = 0;
+  }
+}
 /**
  * Initiates execution of all functions for setting the page up
  */
 $(document).ready(function () {
     document.getElementById("pausebtn").disabled = true;
     document.getElementById("stopbtn").disabled = true;
-    console.log('document ready');
+    console.log('Document ready');
     var yearList = getJSON(yearsReq);
     updateOptions('selectYear', yearList);
     var yearSelected = document.getElementById("selectYear").value;
@@ -103,20 +126,24 @@ function changeIceberg() {
     extractKeyPaths(json['Data'][0]); //Only checks first element
     distributeData(json['Data']); 
     var setSize = json['Data'].length;
+    console.log('SETSIZE: '+setSize);
     sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
     createCharts();
     createMonitors();
   }
 
   //displayDimensions(json);
-  //gpsDisplay(json);
+  displayMap(json);
   displayIceberg(json);
   displayPointCloud(json);
   displaySeaDragon(json);
 
   console.log('changeIceberg() finished');
 }
-
+function createMap(){
+  console.log('Google Map ready to be created');
+  //map = new GoogleMap('map');
+}
 
 /**
  * Creates charts for data sources
@@ -149,7 +176,6 @@ function createMonitors(){
     var dataArray = jsonDataMap.get(keyPath);
     if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
       var newMonitor = new DataMonitor(keyPath,'monitorTable');
-      console.log(dataArray);
       newMonitor.setData(dataArray);
       sim.manageMonitor(newMonitor);
       monitorQuantity++;
@@ -162,11 +188,36 @@ function createMonitors(){
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
-  var SeaDragonModel = new Model(SeaDragonFilePath,DEMO);
-  SeaDragon = Mesh(SeaDragonModel);
+  SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.loadModel();
 }
-
+/**
+ * Create and display SeaDragon Marker
+ */
+function displaySeaDragonMarker(json){
+  console.log('Displaying SeaDragon Marker');
+ // if(jsonDataMap.has(orientationName)){
+    if(jsonDataMap.has(latitudeName)){
+      if(jsonDataMap.has(longitudeName)){
+        var latitudeArray = jsonDataMap.get(latitudeName);
+        var longitudeArray = jsonDataMap.get(longitudeName);
+        var orientationArray = jsonDataMap.get(orientationName);
+        seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
+        seaDragonMarker.displayPath();
+        sim.manage(seaDragonMarker);   
+      }
+      else{
+        console.log('No SeaDragon longitude array');
+      }
+    }
+    else{
+      console.log('No SeaDragon latitude array');
+    }
+ /* }
+  else{
+    console.log('No SeaDragon orientations array');
+  } */
+}
 /**
  * Changes the list of icebergs available to view
  */
@@ -201,37 +252,44 @@ function displayDimensions(json) {
  * Display markers and polygons on Google Map
  * @param {object} json
  */
-function gpsDisplay(json) {
+function displayMap(json) {
   //TODO if longitude and latitude exist, create map. Have map invisible by default
   //Load longitude and latitude of iceberg
   if (json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')) {
     var longitude = json.longitude;
     var latitude = json.latitude;
+    var displayMapBool = 1;
     if (typeof longitude === 'number') {
       if (!(longitude >= -180 && longitude <= 180)) {
         console.log("longitude invalid: out of range.");
-        longitude = 0;
+        displayMapBool = 0;
       }
     }
     else {
       console.log("longitude invalid: not of type 'number'")
-        longitude = 0;
+        displayMapBool = 0;
     }
     if (typeof latitude === 'number') {
       if (!(latitude >= -90 && latitude <= 90)) {
         console.log("latitude invalid: out of range.");
-        latitude = 0;
+        displayMapBool = 0;
       }
     }
     else {
       console.log("latitude invalid: not of type 'number'")
-        latitude = 0;
+        displayMapBool = 0;
     }
-    //setPosition(latitude,longitude);
-    //setMarker(latitude,longitude);
-    //setPosition(latitude,longitude);
-    //displaySDPosition(latitude,longitude);
-    //setZoom(15);
+    if(displayMapBool == 1){
+      map = new GoogleMap('map');
+      map.setCenter(latitude,longitude);
+      surveyMarker = new Marker(map.getMap(),[latitude],[longitude]);
+      surveyMarker.display();
+      displaySeaDragonMarker();
+      displayIcebergMarker();
+      //  map.setMarker(latitude,longitude);
+      //  map.displaySDPosition(latitude,longitude);
+      map.setZoom(15);
+    }
   }
 }
 
@@ -244,14 +302,29 @@ function displayIceberg(json) {
   if (json.hasOwnProperty('stlpath')) {
     var filepath = json['stlpath'];
     console.log('loading stl from ' + filepath);
-    console.log(DEMO);
-    var IcebergModel = new Model('data/models/stl/r11i02.stl',DEMO);
-    Iceberg = Mesh(IcebergModel);
+    Iceberg = Mesh('data/models/stl/r11i02.stl');
     Iceberg.loadModel();
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
   }
 }
 
+function displayIcebergMarker(){
+  if(jsonDataMap.has(icebergLatitudeName)){
+    if(jsonDataMap.has(icebergLongitudeName)){
+      var latitudeArray = jsonDataMap.get(icebergLatitudeName);
+      var longitudeArray = jsonDataMap.get(icebergLongitudeName);
+      icebergMarker = IrregularMarker(map.getMap(),latitudeArray,longitudeArray);  
+      icebergMarker.displayPath();
+      sim.manage(icebergMarker);   
+    }
+    else{
+      console.log('No SeaDragon longitude array');
+    }
+  }
+  else{
+    console.log('No SeaDragon latitude array');
+  }
+}
 /**
  * Display point cloud
  * @param {object} json
@@ -269,8 +342,7 @@ function displayPointCloud(json) {
     if(x.length > 0 && y.length > 0 && z.length > 0){
       console.log('creating point cloud model');
       console.log(DEMO);
-      var PointCloudModel=new Model('',DEMO);
-      IcebergPointCloud = PointCloud(PointCloudModel,x, y, z);
+      IcebergPointCloud = PointCloud(x, y, z);
       IcebergPointCloud.loadPointCloud();
       addToggle('pointstoggle', 'IcebergPointCloud.toggle()', 'Toggle Points'); 
     }
@@ -303,4 +375,5 @@ function loadData(json) {
     SeaDragon.loadModel();
   }
 }
+
 

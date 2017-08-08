@@ -1,13 +1,10 @@
 /**
  * @constructor
  */
-var PointCloud = function (Model,x,y,z) {
+var PointCloud = function (x,y,z) {
   function PointCloudObject(){
-    this.__proto__ = Model;//new Model('',DEMO);
-    console.log('MODEL WORLD');
-    console.log(Model.World);
-    console.log('PCD WORLD');
-    console.log(this.World);
+    this.__proto__ = new Model(DEMO);
+
     this.pcd_x = x;
     this.pcd_y = y;
     this.pcd_z = z;
