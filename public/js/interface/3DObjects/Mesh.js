@@ -24,15 +24,16 @@ function Mesh(sourceFile){
     /**
      * Load and add the mesh to the scene
      */
-    this.loadModel = function () {
+    this.loadModel = function (rotationAngle) {
       var loader = new THREE.STLLoader();
       var MeshObject = this;
       loader.load(MeshObject.sourceFile, function (geometry) {
           MeshObject.material = new THREE.MeshPhongMaterial(MeshObject.appearance);
+          MeshObject.material.shading = THREE.SmoothShading;
           MeshObject.mesh = new THREE.Mesh(geometry, MeshObject.material);
           MeshObject.mesh.material.side = THREE.DoubleSide;
           var Axis = new THREE.Vector3(1, 0, 0);
-          MeshObject.rotationAngle = -90 * Math.PI / 180; //Rotate by 90 degree
+          MeshObject.rotationAngle = rotationAngle; //Rotate by 90 degree
           MeshObject.World.add(MeshObject.mesh);
           MeshObject.rotateAroundWorldAxis(MeshObject.mesh, Axis, MeshObject.rotationAngle);
           });

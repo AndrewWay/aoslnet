@@ -5,23 +5,38 @@
  */
 var Model = function (Environment) {
   console.log('creating ')
-  var rotWorldMatrix;
+    var rotWorldMatrix;
   this.World = Environment.ms_Scene;
 
   this.toggled = 1;
-  this.appearance = {
-    color: 0xffffff
-  };
+  this.appearance = {color: 0xffffff };
   this.mesh;
-
+  var xposition = [];
+  var yposition = [];
+  var zposition = [];
+  /**
+   * 
+   */
+  this.play = function(index){
+    var xcheck = index < xposition.length;
+    var ycheck = index < yposition.length;
+    var zcheck = index < zposition.length;
+    if(xcheck && ycheck && zcheck){
+      var newx = xposition[index];
+      var newy = yposition[index];
+      var newz = zposition[index];
+      this.setPosition(newx,newy,newz);
+    }
+    else{
+      console.log('Accessing model position array out of bounds');
+    }
+  }
   /**
    * set the hex color property of appearance
    * @param {string} hexColor Color in hex
    */
   this.setColor = function (hexColor) {
-    this.appearance.color = {
-      color: hexColor
-    };
+    this.appearance.color = hexColor;
   }
 
   /**
@@ -75,26 +90,29 @@ var Model = function (Environment) {
    * Set the pitch
    */
   this.setPitch = function(radians){
+    var mesh = this.mesh;
     var Axis = new THREE.Vector3(1, 0, 0);
-    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(mesh,Axis,radians); 
   }
-  
+
   /**
    * Set the roll
    */
   this.setRoll = function(radians){
+    var mesh = this.mesh;
     var Axis = new THREE.Vector3(0, 1, 0);
-    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(mesh,Axis,radians); 
   }
-  
+
   /**
    * Set the yaw
    */
   this.setYaw = function(radians){
+    var mesh = this.mesh;
     var Axis = new THREE.Vector3(0, 0, 1);
-    this.rotateAroundWorldAxis(this.mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(mesh,Axis,radians); 
   }
-  
+
   /**
    * Rotate the model around an arbitrary axis in world space    
    */
@@ -150,9 +168,9 @@ var Model = function (Environment) {
 
     /* CAMERA */
     var VIEW_ANGLE = 75,
-      ASPECT = $(container).width() / $(container).height(),
-      NEAR = 0.1,
-      FAR = 1000000;
+        ASPECT = $(container).width() / $(container).height(),
+        NEAR = 0.1,
+        FAR = 1000000;
     camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 
     //camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
@@ -217,4 +235,5 @@ var Model = function (Environment) {
     console.log('Model Prototype');
   } 
 };
+
 

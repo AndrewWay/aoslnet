@@ -133,11 +133,10 @@ function changeIceberg() {
   }
 
   //displayDimensions(json);
+  displaySeaDragon(json);
   displayMap(json);
   displayIceberg(json);
   displayPointCloud(json);
-  displaySeaDragon(json);
-
   console.log('changeIceberg() finished');
 }
 function createMap(){
@@ -183,13 +182,47 @@ function createMonitors(){
     dataSourcesProcessed++;
   }
 }
+/**
+ * Display iceberg mesh
+ * @param {object} json
+ */
+function displayIceberg(json) {
+  //Load the STL file
+  if (json.hasOwnProperty('stlpath')) {
+    var filepath = json['stlpath'];
+    console.log('loading stl from ' + filepath);
+    Iceberg = Mesh('data/models/stl/r11i02.stl');
+    Iceberg.setColor('#ffffff');
+    Iceberg.loadModel(-1.5708); //TODO Don't pass rotation as argument. make sure models are in consistent frame
+    addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
+  }
+}
+
+function displayIcebergMarker(){
+  if(jsonDataMap.has(icebergLatitudeName)){
+    if(jsonDataMap.has(icebergLongitudeName)){
+      var latitudeArray = jsonDataMap.get(icebergLatitudeName);
+      var longitudeArray = jsonDataMap.get(icebergLongitudeName);
+      icebergMarker = IrregularMarker(map.getMap(),latitudeArray,longitudeArray);  
+      icebergMarker.displayPath();
+      sim.manage(icebergMarker);   
+    }
+    else{
+      console.log('No SeaDragon longitude array');
+    }
+  }
+  else{
+    console.log('No SeaDragon latitude array');
+  }
+}
 
 /**
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
-  SeaDragon.loadModel();
+  SeaDragon.setColor('#ffff00');
+  SeaDragon.loadModel(0);
 }
 /**
  * Create and display SeaDragon Marker
@@ -293,38 +326,7 @@ function displayMap(json) {
   }
 }
 
-/**
- * Display iceberg mesh
- * @param {object} json
- */
-function displayIceberg(json) {
-  //Load the STL file
-  if (json.hasOwnProperty('stlpath')) {
-    var filepath = json['stlpath'];
-    console.log('loading stl from ' + filepath);
-    Iceberg = Mesh('data/models/stl/r11i02.stl');
-    Iceberg.loadModel();
-    addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
-  }
-}
 
-function displayIcebergMarker(){
-  if(jsonDataMap.has(icebergLatitudeName)){
-    if(jsonDataMap.has(icebergLongitudeName)){
-      var latitudeArray = jsonDataMap.get(icebergLatitudeName);
-      var longitudeArray = jsonDataMap.get(icebergLongitudeName);
-      icebergMarker = IrregularMarker(map.getMap(),latitudeArray,longitudeArray);  
-      icebergMarker.displayPath();
-      sim.manage(icebergMarker);   
-    }
-    else{
-      console.log('No SeaDragon longitude array');
-    }
-  }
-  else{
-    console.log('No SeaDragon latitude array');
-  }
-}
 /**
  * Display point cloud
  * @param {object} json

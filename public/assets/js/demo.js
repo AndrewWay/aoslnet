@@ -51,9 +51,12 @@ var DEMO = {
 		this.ms_Controls.maxPolarAngle = Math.PI * 0.495;
 	
 		// Add light
-		var directionalLight = new THREE.DirectionalLight(0xffff55, 1);
+		var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		directionalLight.position.set(-600, 300, 600);
 		this.ms_Scene.add(directionalLight);
+		var ambientLight = new THREE.AmbientLight('#666666');
+		ambientLight.position.set(0,500,0);
+		this.ms_Scene.add(ambientLight);
 		
 		// Create terrain - Don't need this
 		//this.loadTerrain(inParameters);
