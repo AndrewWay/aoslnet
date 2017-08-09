@@ -32,10 +32,13 @@ var Model = function (Environment) {
     }
   }
     
-  this.setPositionData(xArray,yArray,zArray){
-    xposition = xArray;
-    yposition = xArray;
-    zposition = zArray;
+  this.setPositionData = function(positionData){
+    xposition = positionData.x;
+    yposition = positionData.y;
+    zposition = positionData.z;
+    console.log(xposition.length);
+    console.log(yposition.length);
+    console.log(zposition.length);
   }
   /**
    * set the hex color property of appearance

@@ -1,6 +1,8 @@
 {
     "icebergID" : "Joey",
     "year" : "2017",
+    "longitudeOrigin" : -52.8781827,
+    "latitudeOrigin" : 47.6259262,
     "Data" : [
       {
          "CTD" : {

@@ -3,6 +3,7 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
+var PI = 3.14159265359;
 
 var latitudeName = 'latitudeSD';
 var longitudeName = 'longitudeSD';
@@ -21,7 +22,7 @@ var yearSelected = ""; // Tracks the selected year
 var icebergSelected = ""; // Tracks the selected iceberg name
 var IcebergModelName = "";
 
-var chartLimit = 2; // Maximum number of charts
+var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
@@ -34,7 +35,7 @@ SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
 modelcontainerid = 'model';
 
 disp_size = 20;
-SDBottom = -160;
+var SDBottom = -160;
 var MarkerTest;
 var test_i = 0;
 function testfunction(){
@@ -244,40 +245,122 @@ function setModelPosition(model,x, y, z, gps_origin) {
 };
 
 function gpsToLocal(gpsData){
-  var x = gps.x;
-  var y = gps.y;
-  var z = gps.z;
+  var lat = gpsData.lat;
+  var long = gpsData.long;
+  var alt = gpsData.alt;
+
+  var gpsOrigin = gpsData.origin;
+  var latOrigin = gpsData.origin.lat;
+  var longOrigin = gpsData.origin.long;
+  var altOrigin = gpsData.origin.alt;
+
+  var localData = {};
+  localData.origin = {};
+  localData.origin.x = lat2m(latOrigin);
+  localData.origin.y = long2m(longOrigin);
+  localData.origin.z = altOrigin;
   
-  var gpsOrigin = gps.origin;
-  var xOrigin = gps.origin.x;
-  var yOrigin = gps.origin.y;
-  var zOrigin = gps.origin.z;
   
-  var localData;
-  localData.origin.x = lat2m(xOrigin);
-  localData.origin.y = long2m(yOrigin);
-  
-  for (i = 0; i < x.length; i++) {
-    x[i] = lat2m(x[i] - xOrigin);
-    y[i] = long2m(y[i] - yOrigin);
-    z[i] = z[i] - zOrigin;
+  var minArraySize = 0;
+  if(lat.length < long.length){
+    minArraySize = lat.length;
   }
-  localData.x = x;
-  localData.y = y;
-  localData.z = z;
+  else{
+    minArraySize = long.length;
+  }
+  if(alt.length < minArraySize ){
+    minArraySize = alt.length;
+  }
   
+  for (i = 0; i < minArraySize; i++) {
+    lat[i] = lat2m(lat[i]) - localData.origin.x;
+    long[i] = long2m(long[i]) - localData.origin.y;
+    alt[i] = alt[i] - localData.origin.z;
+  }
+  localData.x = long;
+  localData.y = alt;
+  localData.z = lat;
+
   return localData;
 }
+/**
+ * Convert latitude degrees to metres
+ * @param {number} latitude degrees
+ * @returns {number} Latitude degrees in metres
+ */
+var lat2m = function (phi) {
+  phi = phi * PI / 180;
+  return 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
+};
+
+/**
+ * Convert longitude degrees to metres
+ * @param {number} longitude degrees
+ * @returns {number} Longitude degrees in metres
+ */
+var long2m = function (theta) {
+  theta = theta * PI / 180;
+  return 111412.84 * Math.cos(theta) - 93.5 * Math.cos(3 * theta) + 0.118 * Math.cos(5 * theta);
+};
+
 /**
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
-  SeaDragon = Mesh(SeaDragonFilePath);
-  SeaDragon.setColor('#ffff00');
-  
-  setModelPosition(SeaDragon,jsonDataMap.get(longitudeName))
-  SeaDragon.loadModel(0);
+  // if(jsonDataMap.has(orientationName)){
+  if(jsonDataMap.has(latitudeName) && jsonDataMap.get(latitudeName).length > 0){
+    if(jsonDataMap.has(longitudeName) && jsonDataMap.get(longitudeName).length > 0){
+      if(json.hasOwnProperty('latitude')){
+        if(json.hasOwnProperty('longitude')){
+
+          SeaDragon = Mesh(SeaDragonFilePath);
+          SeaDragon.setColor('#ffff00');
+          var latitudeArray = jsonDataMap.get(latitudeName);
+          console.log('LATARRAYLENGTH: '+latitudeArray.length);
+          var longitudeArray = jsonDataMap.get(longitudeName);
+          var orientationArray = jsonDataMap.get(orientationName); //TODO Account for orientation
+          var gps = {};
+          gps.lat = latitudeArray;
+          gps.long = longitudeArray;
+          var altitudeArray = [];
+          for(var i = 0; i < latitudeArray.length; i++){
+            altitudeArray.push(SDBottom);
+          }
+          gps.alt = altitudeArray;
+          gps.origin = {};
+          gps.origin.lat = json['latitude'];
+          gps.origin.long = json['longitude'];
+          gps.origin.alt = 0;
+          var localPositionData = gpsToLocal(gps);
+          console.log(localPositionData.x);
+          console.log(localPositionData.y);
+          console.log(localPositionData.z);
+          
+          SeaDragon.setPositionData(localPositionData);
+          SeaDragon.loadModel(0);
+          sim.manage(SeaDragon);
+        }
+        else{
+          console.log('No longitude origin provided');
+        }
+      }
+      else{
+        console.log('No latitude origin provided');
+      }
+    }
+    else{
+      console.log('No SeaDragon longitude array');
+    }
+  }
+  else{
+    console.log('No SeaDragon latitude array');
+  }
+  /* }
+     else{
+     console.log('No SeaDragon orientations array');
+     } */
 }
+
 /**
  * Create and display SeaDragon Marker
  */
@@ -431,6 +514,8 @@ function loadData(json) {
     SeaDragon.loadModel();
   }
 }
+
+
 
 
 
