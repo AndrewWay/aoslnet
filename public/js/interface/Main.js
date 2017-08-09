@@ -243,12 +243,38 @@ function setModelPosition(model,x, y, z, gps_origin) {
   model.setPositionData(x,y,z);
 };
 
+function gpsToLocal(gpsData){
+  var x = gps.x;
+  var y = gps.y;
+  var z = gps.z;
+  
+  var gpsOrigin = gps.origin;
+  var xOrigin = gps.origin.x;
+  var yOrigin = gps.origin.y;
+  var zOrigin = gps.origin.z;
+  
+  var localData;
+  localData.origin.x = lat2m(xOrigin);
+  localData.origin.y = long2m(yOrigin);
+  
+  for (i = 0; i < x.length; i++) {
+    x[i] = lat2m(x[i] - xOrigin);
+    y[i] = long2m(y[i] - yOrigin);
+    z[i] = z[i] - zOrigin;
+  }
+  localData.x = x;
+  localData.y = y;
+  localData.z = z;
+  
+  return localData;
+}
 /**
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
   SeaDragon = Mesh(SeaDragonFilePath);
   SeaDragon.setColor('#ffff00');
+  
   setModelPosition(SeaDragon,jsonDataMap.get(longitudeName))
   SeaDragon.loadModel(0);
 }
