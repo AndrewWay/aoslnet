@@ -192,7 +192,7 @@ function displayIceberg(json) {
   if (json.hasOwnProperty('stlpath')) {
     var filepath = json['stlpath'];
     console.log('loading stl from ' + filepath);
-    Iceberg = Mesh('data/models/stl/r11i02.stl');
+    Iceberg = Mesh(filepath);
     Iceberg.setColor('#ffffff');
     Iceberg.loadModel(-1.5708); //TODO Don't pass rotation as argument. make sure models are in consistent frame
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
