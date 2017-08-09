@@ -54,7 +54,7 @@ var DEMO = {
 		var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		directionalLight.position.set(-600, 300, 600);
 		this.ms_Scene.add(directionalLight);
-		var ambientLight = new THREE.AmbientLight('#666666');
+		var ambientLight = new THREE.AmbientLight('#555555');
 		ambientLight.position.set(0,500,0);
 		this.ms_Scene.add(ambientLight);
 		

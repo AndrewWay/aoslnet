@@ -48,7 +48,6 @@ var Simulation = function (tmax) {
   this.manualsetTime = function () {
     //TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
     var newTime = document.getElementById(this.timebarid).value;
-    console.log("Manually setting time to: " + newTime);
     this.set_time(newTime);
     this.dispdata(this.get_time());
     this.playEntities(newTime);
@@ -142,24 +141,6 @@ var Simulation = function (tmax) {
 
 
   /* PRIVATE FUNCTIONS */
-
-  /**
-   * Convert latitude degrees to metres
-   * @param {number} latitude degrees
-   * @returns {number} Latitude degrees in metres
-   */
-  var lat2m = function (phi) {
-    return 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
-  };
-
-  /**
-   * Convert longitude degrees to metres
-   * @param {number} longitude degrees
-   * @returns {number} Longitude degrees in metres
-   */
-  var long2m = function (theta) {
-    return 111412.84 * Math.cos(theta) - 93.5 * Math.cos(3 * theta) + 0.118 * Math.cos(5 * theta);
-  };
 
   /**
    * Update the clock with the time associated with time index t
