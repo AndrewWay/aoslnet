@@ -256,8 +256,11 @@ function gpsToLocal(gpsData){
 
   var localData = {};
   localData.origin = {};
-  localData.origin.x = lat2m(latOrigin);
-  localData.origin.y = long2m(longOrigin);
+  localData.origin.x = long2x(latOrigin,longOrigin);
+  localData.origin.y = lat2y(latOrigin);
+  console.log('ORIGINS');
+  console.log(localData.origin.x);
+  console.log(localData.origin.y);
   localData.origin.z = altOrigin;
   
   
@@ -273,8 +276,8 @@ function gpsToLocal(gpsData){
   }
   
   for (i = 0; i < minArraySize; i++) {
-    lat[i] = lat2m(lat[i]) - localData.origin.x;
-    long[i] = long2m(long[i]) - localData.origin.y;
+    long[i] = long2x(lat[i],long[i]) - localData.origin.x;
+    lat[i] = lat2y(lat[i]) - localData.origin.y;
     alt[i] = alt[i] - localData.origin.z;
   }
   localData.x = long;
@@ -288,9 +291,10 @@ function gpsToLocal(gpsData){
  * @param {number} latitude degrees
  * @returns {number} Latitude degrees in metres
  */
-var lat2m = function (phi) {
-  phi = phi * PI / 180;
-  return 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
+var long2x = function (lat,long) {
+  lat = lat * PI / 180;
+  return 111120*long*Math.cos(lat);
+  //return 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
 };
 
 /**
@@ -298,9 +302,10 @@ var lat2m = function (phi) {
  * @param {number} longitude degrees
  * @returns {number} Longitude degrees in metres
  */
-var long2m = function (theta) {
-  theta = theta * PI / 180;
-  return 111412.84 * Math.cos(theta) - 93.5 * Math.cos(3 * theta) + 0.118 * Math.cos(5 * theta);
+var lat2y = function (lat) {
+ // theta = theta * PI / 180;
+  return 111120*lat;
+  //return 111412.84 * Math.cos(theta) - 93.5 * Math.cos(3 * theta) + 0.118 * Math.cos(5 * theta);
 };
 
 /**
