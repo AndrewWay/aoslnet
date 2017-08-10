@@ -31,7 +31,7 @@ var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data 
 namesReq = 'bergs/names';
 yearsReq = 'bergs/years';
 dataReq = 'bergs/data';
-SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
+SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
 modelcontainerid = 'model';
 
 disp_size = 20;
@@ -75,20 +75,10 @@ $(document).ready(function () {
 
 /**
  * Selects the iceberg data chosen from global map
+ * 
  */
 function preselect() {
-  var selectedID = sessionStorage.getItem('selectedID');
-  var selectedYear = sessionStorage.getItem('selectedYear');
-  //TODO: Clean up the if condition. Too long. 
-  //TODO: Use regular expressions to detect valid names and years
-  if (selectedID == 'null' || selectedID == '' || selectedYear == '' || selectedYear == 'null') {
-    console.log("No pre-selected iceberg");
-  }
-  else {
-    console.log("pre-selected iceberg: " + selectedYear + " " + selectedID);
-    document.getElementById('selectYear').value = selectedYear;
-    document.getElementById('selectIceberg').value = selectedID;
-  }
+
 }
 
 /**
@@ -220,7 +210,7 @@ function displayIcebergMarker(){
 /**
  * TODO Fix this function
  *
- * Convert SeaDragon latitude and longitude to point cloud local frame
+ * Convert latitude and longitude to local frame units
  * @param {Array} x Latitude positions of Model
  * @param {Array} y Longitude positions of Model
  * @param {Array} z Depth positions of Model
@@ -492,35 +482,6 @@ function displayPointCloud(json) {
     }
   }
 }
-
-/**
- * Obsolete function
- */
-function loadData(json) {
-  //Load timestamped data array
-  if (json.hasOwnProperty('Data') && json['Data'].length > 0) {
-
-    createAllDisplays();
-    var sdpath_lat = datamap.get('latitudeSD');
-    var sdpath_long = datamap.get('longitudeSD');
-    var ibpath_lat = datamap.get('latI0');
-    var ibpath_long = datamap.get('longI0');
-    AOSL_setSDCoords(sdpath_lat, sdpath_long);
-    //setSDPath(sdpath_lat,sdpath_long);
-    //setIBPath(ibpath_lat,ibpath_long);
-    for (var i = 0; i < graph_ids.length; i++) {
-      var arraylabel = graph_ids[i].replace('graph_', '');
-      var arr = datamap.get(arraylabel);
-      setplotData(graph_ids[i], arr);
-    }
-    sim.updateTimeMax(json.Data.length);
-    //Simulation.setSD(sdpath_lat,sdpath_long,[latitude,longitude]);
-    SeaDragon = new Mesh(SeaDragonFilePath);
-    SeaDragon.loadModel();
-  }
-}
-
-
 
 
 

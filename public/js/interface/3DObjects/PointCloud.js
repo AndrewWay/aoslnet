@@ -29,7 +29,7 @@ var PointCloud = function (x,y,z) {
         vertex.z = this.pcd_z[i];
         geometry.vertices.push(vertex);
       }
-      var size = 4;
+      var size = 0.5;
       var color = [1, 1, 0.5];
       var materials = new THREE.PointCloudMaterial({size: size});
       this.mesh = new THREE.PointCloud(geometry, materials);
