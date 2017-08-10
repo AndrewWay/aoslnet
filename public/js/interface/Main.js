@@ -3,47 +3,63 @@
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */
+ 
+/* CONSTANTS */
 var PI = 3.14159265359;
 
+/* AOSL JSON LABEL NAMES */
 var latitudeName = 'latitudeSD';
 var longitudeName = 'longitudeSD';
 var orientationName = 'orientationSD';
 var icebergLatitudeName = 'latI0';
 var icebergLongitudeName = 'longI0';
 
+/* SIMULATION OBJECTS */
 var sim; // Simulation object
+
+/* 3D MODEL OBJECTS */
 var IcebergPointCloud; // Iceberg point cloud object
 var SeaDragon; // SeaDragon object
 var Iceberg; // Iceberg object
+
+/* MAP OBJECTS */
 var map;
 var surveyMarker; // Marker to indicate location of survey
 var seaDragonMarker;
-var yearSelected = ""; // Tracks the selected year
-var icebergSelected = ""; // Tracks the selected iceberg name
 
+/* HTML IDs */
 var icebergNameOptionsID = "selectName";
 var icebergYearOptionsID = "selectYear";
+var modelcontainerid = 'model';
 
+/* INTERFACE PARAMETERS */
 var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
-var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
-//strings for making data requests
+var SDBottom = -4;
+
+/* REQUEST URLs */
 var namesReq = 'bergs/names';
 var yearsReq = 'bergs/years';
 var dataReq = 'bergs/data';
-var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
-var modelcontainerid = 'model';
 
-disp_size = 20;
-var SDBottom = -4;
+/* FILEPATHS */
+var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
+
+/* MISC */
+var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
+//strings for making data requests
+
+/* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
+
 function testfunction(){
 //Fill with stuff you want to test after clicked test button
 
 }
+
 function testfunction2(){
 //Fill with stuff you want to test after clicking test2 button
   
@@ -62,6 +78,10 @@ $(document).ready(function () {
     updateOptions(icebergNameOptionsID, bergList);
     createScene();
     });
+
+function displayRig(){
+  
+}
 
 /**
  * Selects the iceberg data chosen from global map
@@ -490,6 +510,3 @@ function displayPointCloud(json) {
     }
   }
 }
-
-
-
