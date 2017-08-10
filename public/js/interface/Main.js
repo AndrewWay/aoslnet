@@ -20,7 +20,9 @@ var surveyMarker; // Marker to indicate location of survey
 var seaDragonMarker;
 var yearSelected = ""; // Tracks the selected year
 var icebergSelected = ""; // Tracks the selected iceberg name
-var IcebergModelName = "";
+
+var icebergNameOptionsID = "selectName";
+var icebergYearOptionsID = "selectYear";
 
 var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
@@ -28,35 +30,23 @@ var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
 //strings for making data requests
-namesReq = 'bergs/names';
-yearsReq = 'bergs/years';
-dataReq = 'bergs/data';
-SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
-modelcontainerid = 'model';
+var namesReq = 'bergs/names';
+var yearsReq = 'bergs/years';
+var dataReq = 'bergs/data';
+var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
+var modelcontainerid = 'model';
 
 disp_size = 20;
-var SDBottom = -160;
+var SDBottom = -4;
 var MarkerTest;
 var test_i = 0;
 function testfunction(){
-  console.log('Test function 1');
-  var long = [-45,-44,-43,-42,-20];
-  var lat = [60,65,70,75,80];
-  var or = [1,0,40,30,-20];
+//Fill with stuff you want to test after clicked test button
 
-  var gmap = map.getMap();
-  MarkerTest = new TriangleMarker(gmap,lat,long,or);
-  MarkerTest.setIconColor('#bd5151');
-  MarkerTest.refreshIcon();
-  MarkerTest.addPath();
 }
 function testfunction2(){
-  console.log('Test function 2');
-  MarkerTest.play(test_i);
-  test_i++;
-  if(test_i == 4){
-    test_i = 0;
-  }
+//Fill with stuff you want to test after clicking test2 button
+  
 }
 /**
  * Initiates execution of all functions for setting the page up
@@ -67,15 +57,16 @@ $(document).ready(function () {
     console.log('Document ready');
     var yearList = getJSON(yearsReq);
     updateOptions('selectYear', yearList);
-    var yearSelected = document.getElementById("selectYear").value;
+    var yearSelected = document.getElementById(icebergYearOptionsID).value;
     var bergList = getJSON(namesReq + '/' + yearSelected);
-    updateOptions('selectIceberg', bergList);
+    updateOptions(icebergNameOptionsID, bergList);
     createScene();
     });
 
 /**
  * Selects the iceberg data chosen from global map
- * 
+ * Maybe check if cookie exists
+ * If so, call correct functions to load iceberg survey corresponding to data found in cookie
  */
 function preselect() {
 
@@ -102,12 +93,29 @@ function updateOptions(optionID, options) {
 }
 
 /**
- * Load the data corresponding to the currently selected iceberg survey
+ * Get the value of the selected year
  */
-function changeIceberg() {
+ function getSelectedYear(){
+   return document.getElementById(icebergYearOptionsID).value;
+ }
+ 
+/**
+ * Get the value of the selected year
+ */
+ function getSelectedName(){
+   return document.getElementById(icebergNameOptionsID).value;
+ }
+ 
+ 
+/**
+ * Load the data corresponding to the currently selected iceberg survey
+ * @param {String} The year of the iceberg
+ * @param {String} The name of the iceberg
+ */
+function changeIceberg(yearSelected,bergSelected) {
   console.log('changeIceberg() starting');
-  var yearSelected = document.getElementById("selectYear").value;
-  var bergSelected = document.getElementById("selectIceberg").value;
+  //var yearSelected = document.getElementById(icebergYearOptionsID).value;
+  //var bergSelected = document.getElementById("selectIceberg").value;
   var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected);
   if (json.constructor == Array) {
     json = json[0];
@@ -388,7 +396,7 @@ function displaySeaDragonMarker(json){
  */
 function changeYear() {
   console.log('changeYear() starting');
-  var yearSelected = document.getElementById("selectYear").value;
+  var yearSelected = document.getElementById(icebergYearOptionsID).value;
   var bergList = getJSON(namesReq + '/' + yearSelected);
   updateOptions('selectIceberg', bergList);
   console.log('changeYear() finished');
