@@ -21,6 +21,7 @@ var sim; // Simulation object
 var IcebergPointCloud; // Iceberg point cloud object
 var SeaDragon; // SeaDragon object
 var Iceberg; // Iceberg object
+var oilRig; // Oilrig object
 
 /* MAP OBJECTS */
 var map;
@@ -46,23 +47,43 @@ var dataReq = 'bergs/data';
 
 /* FILEPATHS */
 var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
-
+var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 /* MISC */
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
-//strings for making data requests
 
 /* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
 
+var SDx;
+var SDy;
+var SDz;
+var SDorigin;
 function testfunction(){
 //Fill with stuff you want to test after clicked test button
-
+  SDx = Mesh(SeaDragonFilePath);
+  SDy = Mesh(SeaDragonFilePath);
+  SDz = Mesh(SeaDragonFilePath);
+  SDorigin = Mesh(SeaDragonFilePath);
+  
+  SDx.setColor('#ff0000'); // RED
+  SDy.setColor('#0000ff'); // BLUE
+  SDz.setColor('#00ff00'); // GREEN
+  SDorigin.setColor('#ffffff'); // WHITE
+  
+  SDx.loadModel(0);
+  SDy.loadModel(0);
+  SDz.loadModel(0);
+  SDorigin.loadModel(0);
+  
 }
 
 function testfunction2(){
 //Fill with stuff you want to test after clicking test2 button
-  
+  SDx.setPosition(100,0,0);
+  SDy.setPosition(0,100,0);
+  SDz.setPosition(0,0,100);
+  SDorigin.setPosition(0,0,0);
 }
 /**
  * Initiates execution of all functions for setting the page up
@@ -78,10 +99,6 @@ $(document).ready(function () {
     updateOptions(icebergNameOptionsID, bergList);
     createScene();
     });
-
-function displayRig(){
-  
-}
 
 /**
  * Selects the iceberg data chosen from global map
@@ -126,7 +143,17 @@ function updateOptions(optionID, options) {
    return document.getElementById(icebergNameOptionsID).value;
  }
  
- 
+/**
+ * Changes the list of icebergs available to view
+ */
+function changeYear() {
+  console.log('changeYear() starting');
+  var yearSelected = document.getElementById(icebergYearOptionsID).value;
+  var bergList = getJSON(namesReq + '/' + yearSelected);
+  updateOptions(icebergNameOptionsID, bergList);
+  console.log('changeYear() finished');
+}
+
 /**
  * Load the data corresponding to the currently selected iceberg survey
  * @param {String} The year of the iceberg
@@ -158,6 +185,10 @@ function changeIceberg(yearSelected,bergSelected) {
   displayPointCloud(json);
   console.log('changeIceberg() finished');
 }
+/**
+ * Callback function from Google Map
+ * Probably not necessary
+ */
 function createMap(){
   console.log('Google Map ready to be created');
   //map = new GoogleMap('map');
@@ -201,6 +232,15 @@ function createMonitors(){
     dataSourcesProcessed++;
   }
 }
+
+/**
+ * Display Oilrig model
+ */
+function displayRig(){
+  oilRig = Mesh(OilRigFilePath);
+  oilRig.loadModel();
+}
+
 /**
  * Display iceberg mesh
  * @param {object} json
@@ -236,36 +276,16 @@ function displayIcebergMarker(){
 }
 
 /**
- * TODO Fix this function
- *
- * Convert latitude and longitude to local frame units
- * @param {Array} x Latitude positions of Model
- * @param {Array} y Longitude positions of Model
- * @param {Array} z Depth positions of Model
- * @param {Array} gps_origin Origin in the world frame in GPS coordinates
+ * Convert GPS position data object to local frame position data object
  */
-function setModelPosition(model,x, y, z, gps_origin) {
-  var xorigin = gps_origin[0];
-  var yorigin = gps_origin[1];
-  console.log(yorigin);
-  var xorigin_m = lat2m(xorigin);
-  var yorigin_m = long2m(yorigin);
-  console.log(yorigin_m);
-  console.log('Converting gps to local');
-  console.log(x);
-  console.log(y);
-  // Convert xy coordinates to metres and relative to local frame
-  for (i = 0; i < x.length; i++) {
-    x[i] = lat2m(x[i]) - xorigin_m;
-    y[i] = long2m(y[i]) - yorigin_m;
-  }
-  model.setPositionData(x,y,z);
-};
-
 function gpsToLocal(gpsData){
   var lat = gpsData.lat;
   var long = gpsData.long;
   var alt = gpsData.alt;
+  console.log('LAT');
+  console.log(lat);
+  console.log('LONG');
+  console.log(long);
 
   var gpsOrigin = gpsData.origin;
   var latOrigin = gpsData.origin.lat;
@@ -299,8 +319,8 @@ function gpsToLocal(gpsData){
     alt[i] = alt[i] - localData.origin.z;
   }
   localData.x = long;
-  localData.y = alt;
-  localData.z = lat;
+  localData.y = lat;
+  localData.z = alt;
 
   return localData;
 }
@@ -310,9 +330,14 @@ function gpsToLocal(gpsData){
  * @returns {number} Latitude degrees in metres
  */
 var long2x = function (lat,long) {
-  lat = lat * PI / 180;
-  return 111120*long*Math.cos(lat);
-  //return 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
+  //lat = lat * PI / 180;
+  /*var term1 = 111132.92;4
+  var term2 = -559.82 * Math.cos(2 * lat);
+  var term3 = 1.175 * Math.cos(4 * lat);
+  var term4  = -0.0023 * Math.cos(6 * lat);
+  var metresPerDegree = term1 + term2 + term3 + term4;
+  //return metresPerDegree * long * Math.cos(lat);*/
+  return 111120*long*Math.cos(lat * PI / 180);
 };
 
 /**
@@ -321,11 +346,29 @@ var long2x = function (lat,long) {
  * @returns {number} Longitude degrees in metres
  */
 var lat2y = function (lat) {
- // theta = theta * PI / 180;
+  //lat = lat * PI / 180;
+  /*var term1 = 111412.84 * Math.cos(lat);
+  var term2 = -93.5 * Math.cos(3 * lat);
+  var term3 = 0.118 * Math.cos(5 * lat);
+  var metresPerDegree = term1 + term2 + term3;*/
   return 111120*lat;
-  //return 111412.84 * Math.cos(theta) - 93.5 * Math.cos(3 * theta) + 0.118 * Math.cos(5 * theta);
+  //return metresPerDegree * lat * 180 / PI;
 };
 
+
+function hav_long2x(d,r){
+  
+}
+
+function hav_lat2x(d,r){
+  
+}
+/**
+ * haversine formula
+ */
+function hav(theta){
+  return (1 - Math.cos(theta)) / 2;
+}
 /**
  * Create and display SeaDragon model
  */
@@ -410,16 +453,6 @@ function displaySeaDragonMarker(json){
      else{
      console.log('No SeaDragon orientations array');
      } */
-}
-/**
- * Changes the list of icebergs available to view
- */
-function changeYear() {
-  console.log('changeYear() starting');
-  var yearSelected = document.getElementById(icebergYearOptionsID).value;
-  var bergList = getJSON(namesReq + '/' + yearSelected);
-  updateOptions('selectIceberg', bergList);
-  console.log('changeYear() finished');
 }
 
 /**

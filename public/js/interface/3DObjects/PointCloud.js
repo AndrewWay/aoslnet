@@ -36,7 +36,7 @@ var PointCloud = function (x,y,z) {
       this.World.add(this.mesh); //scene.add(pointcloud);
       var Axis = new THREE.Vector3(1, 0, 0);
       rotationAngle = -90 * Math.PI / 180; //Rotate by 90 degree
-      this.rotateAroundWorldAxis(this.mesh, Axis, rotationAngle);
+     // this.rotateAroundWorldAxis(this.mesh, Axis, rotationAngle);
     }
 
     /**

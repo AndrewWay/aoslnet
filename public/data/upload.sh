@@ -23,7 +23,7 @@ main(){
 
   #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-  read tsdpath  
+  read -e tsdpath  
   local tsd=$(processTSD $tsdpath)
   
   #POINT CLOUD DATA_____________
@@ -36,12 +36,12 @@ main(){
 
   #STL FILE #TODO get the filepath but wait until the very end to actually upload it
   echo -e "${ICyan}Enter the name to the .stl file  ${Color_Off}"
-  read stlpath
+  read -e stlpath
   local stl=$(getSTLjson $stlpath)
   
   #XYZ FILE
   echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
-  read xyzpath
+  read -e xyzpath
   local xyz=$(processPCD $xyzpath)  
 
   #NAME_________________________
@@ -59,9 +59,9 @@ main(){
   
   #GPS COORDINATES______________
   echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" 
-  read latitude
+  read -e latitude
   echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" 
-  read longitude
+  read -e longitude
   local long=`jq -n '{longitude : '$longitude'}'`
   local lat=`jq -n '{latitude : '$latitude'}'`  
   jsonraw="$name $year $lat $long $dima $stl $xyz $tsd"
