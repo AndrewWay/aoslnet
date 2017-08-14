@@ -14,7 +14,7 @@ var Model = function (Environment) {
   var xposition = [];
   var yposition = [];
   var zposition = [];
-
+  
   /**
    * 
    */

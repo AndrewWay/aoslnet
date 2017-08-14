@@ -356,18 +356,12 @@ var lat2y = function (lat) {
 };
 
 
-function hav_long2x(d,r){
+function display gpsPointCloud(json){
+ // if(json.hasOwnPropert(''))
   
-}
-
-function hav_lat2x(d,r){
   
-}
-/**
- * haversine formula
- */
-function hav(theta){
-  return (1 - Math.cos(theta)) / 2;
+  var gpsPC = PointCloud(x,y,z);
+  gpsPC.loadPointCloud();
 }
 /**
  * Create and display SeaDragon model

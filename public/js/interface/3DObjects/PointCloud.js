@@ -16,9 +16,6 @@ var PointCloud = function (x,y,z) {
       // grab data from the input elements
       var geometry = new THREE.Geometry();
       var materials;
-     /* var pcd_x = this.pcd_x;
-      var pcd_y = this.pcd_y;
-      var pcd_z = this.pcd_z;*/
       
       // loop through the points and add them to the scene
       for (var i = 0; i < z.length; i++) {
@@ -33,10 +30,7 @@ var PointCloud = function (x,y,z) {
       var color = [1, 1, 0.5];
       var materials = new THREE.PointCloudMaterial({size: size});
       this.mesh = new THREE.PointCloud(geometry, materials);
-      this.World.add(this.mesh); //scene.add(pointcloud);
-      var Axis = new THREE.Vector3(1, 0, 0);
-      rotationAngle = -90 * Math.PI / 180; //Rotate by 90 degree
-     // this.rotateAroundWorldAxis(this.mesh, Axis, rotationAngle);
+      this.World.add(this.mesh);
     }
 
     /**
