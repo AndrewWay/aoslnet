@@ -324,19 +324,14 @@ function gpsToLocal(gpsData){
 
   return localData;
 }
+
 /**
  * Convert latitude degrees to metres
  * @param {number} latitude degrees
+ * @param {number} longitude degrees
  * @returns {number} Latitude degrees in metres
  */
 var long2x = function (lat,long) {
-  //lat = lat * PI / 180;
-  /*var term1 = 111132.92;4
-  var term2 = -559.82 * Math.cos(2 * lat);
-  var term3 = 1.175 * Math.cos(4 * lat);
-  var term4  = -0.0023 * Math.cos(6 * lat);
-  var metresPerDegree = term1 + term2 + term3 + term4;
-  //return metresPerDegree * long * Math.cos(lat);*/
   return 111120*long*Math.cos(lat * PI / 180);
 };
 
@@ -346,17 +341,11 @@ var long2x = function (lat,long) {
  * @returns {number} Longitude degrees in metres
  */
 var lat2y = function (lat) {
-  //lat = lat * PI / 180;
-  /*var term1 = 111412.84 * Math.cos(lat);
-  var term2 = -93.5 * Math.cos(3 * lat);
-  var term3 = 0.118 * Math.cos(5 * lat);
-  var metresPerDegree = term1 + term2 + term3;*/
   return 111120*lat;
-  //return metresPerDegree * lat * 180 / PI;
 };
 
 
-function display gpsPointCloud(json){
+function gpsPointCloud(json){
  // if(json.hasOwnPropert(''))
   
   
@@ -528,6 +517,10 @@ function displayPointCloud(json) {
     var x = json['x'];
     var y = json['y'];
     var z = json['z'];
+    console.log('POINT CLOUD');
+    console.log(x);
+    console.log(y);
+    console.log(z);
     if(x.length > 0 && y.length > 0 && z.length > 0){
       console.log('creating point cloud model');
       console.log(DEMO);

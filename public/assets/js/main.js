@@ -41,7 +41,7 @@ function createScene() {
 	
 	DEMO.initialize('model', parameters);
 	var container = document.getElementById('model');
-	WINDOW.resizeCallback = function(inWidth, inHeight) { DEMO.resize(inWidth, inHeight); };
+	WINDOW.resizeCallback = function(inWidth, inHeight) { DEMO.resize($(container).width(),$(container).height()); };
 	DEMO.resize($(container).width(),$(container).height());
 	
 	mainLoop();

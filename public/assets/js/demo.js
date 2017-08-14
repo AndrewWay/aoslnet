@@ -48,13 +48,15 @@ var DEMO = {
 		
 		// Initialize Orbit control		
 		this.ms_Controls = new THREE.OrbitControls(this.ms_Camera, this.ms_Renderer.domElement);
-		//this.ms_Controls.userPan = false;
+		//this.ms_Controls.userPan = true;
 		//this.ms_Controls.userPanSpeed = 0.0;
 		this.ms_Controls.maxDistance = 5000.0;
 		this.ms_Controls.maxPolarAngle = Math.PI;
 	  //this.ms_Controls.minAzimuthAngle = 0; // radians
    // this.ms_Controls.maxAzimuthAngle = 0; // radians
-   
+    this.ms_Controls.enableDamping = true;
+    this.ms_Controls.dampingFactor = 0.01;
+    
 	  /* TRACKBALL */
 	  /*this.ms_Controls = new THREE.TrackballControls(this.ms_Camera, this.ms_Renderer.domElement);
     this.ms_Controls.staticMoving = false;

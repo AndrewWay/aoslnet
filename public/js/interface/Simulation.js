@@ -51,6 +51,7 @@ var Simulation = function (tmax) {
     this.set_time(newTime);
     this.dispdata(this.get_time());
     this.playEntities(newTime);
+    console.log(this.get_time());
   };
 
   /**

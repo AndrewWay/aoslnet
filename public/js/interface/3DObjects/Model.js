@@ -8,13 +8,20 @@ var Model = function (Environment) {
     var rotWorldMatrix;
   this.World = Environment.ms_Scene;
 
-  this.toggled = 1;
+  this.toggled = 1; //Boolean for determining if model is visible
   this.appearance = {color: 0xffffff };
   this.mesh;
   var xposition = [];
   var yposition = [];
   var zposition = [];
   
+  this.getPosition = function(index){
+    var position = new Object();
+    position.x = xposition[index];
+    position.y = yposition[index];
+    position.z = zposition[index];
+    return position;
+  }
   /**
    * 
    */
@@ -32,7 +39,11 @@ var Model = function (Environment) {
       console.log('Accessing model position array out of bounds');
     }
   }
-    
+  
+  /**
+   * Set the model position
+   * @param {Object} positionData contains properties x, y, and z
+   */
   this.setPositionData = function(positionData){
     xposition = positionData.x;
     yposition = positionData.y;
@@ -86,52 +97,56 @@ var Model = function (Environment) {
   }
 
   /**
-   *  Rotate the model around an arbitrary axis in object space
+   * Rotate the model around an arbitrary axis in object space
+   * @param {Vector3} axis The object to be rotated
+   * @param {Number} radians Angle of rotation
    */
-  this.rotateAroundObjectAxis = function (object, axis, radians) {
+  this.rotateAroundObjectAxis = function (axis, radians) {
     var rotObjectMatrix;
     rotObjectMatrix = new THREE.Matrix4();
     rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-    object.matrix.multiply(rotObjectMatrix);
-    object.rotation.setFromRotationMatrix(object.matrix);
+    this.mesh.matrix.multiply(rotObjectMatrix);
+    this.mesh.rotation.setFromRotationMatrix(object.matrix);
   }
 
   /**
    * Set the pitch
+   * @param {Number} radians Angle of rotation
    */
   this.setPitch = function(radians){
-    var mesh = this.mesh;
     var Axis = new THREE.Vector3(1, 0, 0);
-    this.rotateAroundWorldAxis(mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(Axis,radians); 
   }
 
   /**
    * Set the roll
+   * @param {Number} radians Angle of rotation
    */
   this.setRoll = function(radians){
-    var mesh = this.mesh;
     var Axis = new THREE.Vector3(0, 1, 0);
-    this.rotateAroundWorldAxis(mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(Axis,radians); 
   }
 
   /**
    * Set the yaw
+   * @param {Number} radians Angle of rotation
    */
   this.setYaw = function(radians){
-    var mesh = this.mesh;
     var Axis = new THREE.Vector3(0, 0, 1);
-    this.rotateAroundWorldAxis(mesh,Axis,radians); 
+    this.rotateAroundWorldAxis(Axis,radians); 
   }
 
   /**
-   * Rotate the model around an arbitrary axis in world space    
+   * Rotate the model around an arbitrary axis in world space   
+   * @param {Vector3} axis Axis of rotation
+   * @param {Number} radians Angle of rotation 
    */
-  this.rotateAroundWorldAxis = function (object, axis, radians) {
+  this.rotateAroundWorldAxis = function (axis, radians) {
     rotWorldMatrix = new THREE.Matrix4();
     rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
     rotWorldMatrix.multiply(object.matrix); // pre-multiply
-    object.matrix = rotWorldMatrix;
-    object.rotation.setFromRotationMatrix(object.matrix);
+    this.mesh.matrix = rotWorldMatrix;
+    this.mesh.rotation.setFromRotationMatrix(object.matrix);
   }
 
 
