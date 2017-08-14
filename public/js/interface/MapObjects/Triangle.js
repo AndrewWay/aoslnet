@@ -86,7 +86,7 @@ path: tri,
 geodesic: true,
 strokeColor: iconColor,
 strokeOpacity: 1.0,
-strokeWeight: 1,
+strokeWeight: 2,
 zIndex: 3
 });
 marker.setMap(this.parentMap);

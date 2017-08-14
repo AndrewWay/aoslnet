@@ -36,20 +36,32 @@ var DEMO = {
 	    NEAR = 0.5, FAR = 3000000;
 	  this.ms_Camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
 	
-	
 	//	this.ms_Camera = new THREE.PerspectiveCamera(55.0, WINDOW.ms_Width / WINDOW.ms_Height, 0.5, 3000000);
-		this.ms_Camera.position.set(0, Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
-		this.ms_Camera.lookAt(new THREE.Vector3(0, 0, 0));
+		this.ms_Camera.position.set(0, 0, 200);// Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
 
+    this.ms_Camera.up.x = 0;
+    this.ms_Camera.up.y = 0;
+    this.ms_Camera.up.z = 1;
+		this.ms_Camera.lookAt(new THREE.Vector3(0, -1, -1));
+    
 		this.ms_Raycaster = new THREE.Raycaster();
 		
 		// Initialize Orbit control		
 		this.ms_Controls = new THREE.OrbitControls(this.ms_Camera, this.ms_Renderer.domElement);
-		this.ms_Controls.userPan = false;
-		this.ms_Controls.userPanSpeed = 0.0;
+		//this.ms_Controls.userPan = false;
+		//this.ms_Controls.userPanSpeed = 0.0;
 		this.ms_Controls.maxDistance = 5000.0;
-		this.ms_Controls.maxPolarAngle = Math.PI * 0.495;
-	
+		this.ms_Controls.maxPolarAngle = Math.PI;
+	  //this.ms_Controls.minAzimuthAngle = 0; // radians
+   // this.ms_Controls.maxAzimuthAngle = 0; // radians
+   
+	  /* TRACKBALL */
+	  /*this.ms_Controls = new THREE.TrackballControls(this.ms_Camera, this.ms_Renderer.domElement);
+    this.ms_Controls.staticMoving = false;
+    this.ms_Controls.enableDamping = false;
+    this.ms_Controls.dampingFactor = 0.01;
+    this.ms_Controls.enableZoom = true;*/
+    
 		// Add light
 		var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		directionalLight.position.set(-600, 300, 600);
@@ -97,7 +109,7 @@ var DEMO = {
 			this.ms_Water.material
 		);
 		aMeshMirror.add(this.ms_Water);
-		aMeshMirror.rotation.x = - Math.PI * 0.5;
+	//	aMeshMirror.rotation.x = - Math.PI * 0.5;
 		this.ms_Scene.add(aMeshMirror);
 	
 		this.loadSkyBox();
@@ -129,7 +141,13 @@ var DEMO = {
 		  new THREE.BoxGeometry(1000000, 1000000, 1000000),
 		  aSkyBoxMaterial
 		);
-		
+		/*var rotObjectMatrix;
+		var axis = new THREE.Vector3(1,0,0);
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), Math.PI / 2);
+    aSkybox.matrix.multiply(rotObjectMatrix);
+    aSkybox.rotation.setFromRotationMatrix(aSkybox.matrix);
+*/
 		this.ms_Scene.add(aSkybox);
 	},
 	
