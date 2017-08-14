@@ -4,7 +4,6 @@
  * @version 0.1
  */
 var Model = function (Environment) {
-  console.log('creating ')
     var rotWorldMatrix;
   this.World = Environment.ms_Scene;
 
@@ -164,101 +163,6 @@ var Model = function (Environment) {
       this.toggled = 0;
     }
   }
-
-  /**
-   * Create the scene. TODO DELETE
-   */
-
-  function init() {
-
-    /* SCENE */
-
-    scene = new THREE.Scene(); // Create the scene 
-    scene.background = new THREE.Color(0x222222);
-
-    /* RENDERER */
-
-    renderer = new THREE.WebGLRenderer(); // Create the renderer
-    renderer.setClearColor(0xc4c4c4);
-    renderer.setPixelRatio(window.devicePixelRatio); // tch
-    /* DOM CONTAINER FOR RENDERER */
-
-    var container = document.getElementById(modelcontainerid); //Assign the output to container
-    renderer.setSize($(container).width(), $(container).height());
-    container.appendChild(renderer.domElement);
-
-    /* CLOCK */
-
-    clock = new THREE.Clock();
-
-    /* CAMERA */
-    var VIEW_ANGLE = 75,
-        ASPECT = $(container).width() / $(container).height(),
-        NEAR = 0.1,
-        FAR = 1000000;
-    camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-
-    //camera = new THREE.PerspectiveCamera( 60,$(container).width()/$(container).height(), 1, 1000 );
-    camera.position.z = cam_z;
-    camera.updateProjectionMatrix();
-    controls = new THREE.TrackballControls(camera, container);
-    //controls = new THREE.OrbitControls(camera);  
-    controls.staticMoving = false;
-    controls.enableDamping = false;
-    controls.dampingFactor = 0.01;
-    controls.enableZoom = true;
-    controls.addEventListener('change', render); // remove when using animation loop
-    // enable animation loop when using damping or autorotation
-
-    /* LIGHTS */
-
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(0, 0, 100);
-    light.intensity = 0.86;
-    scene.add(light);
-    var light = new THREE.DirectionalLight(0x002288);
-    light.position.set(0, 0, -1);
-    scene.add(light);
-    var light = new THREE.DirectionalLight(0x99cfff);
-    light.position.set(0, 0, 100);
-    light.intensity = 0.2;
-    scene.add(light);
-    //
-    stats = new Stats();
-    container.appendChild(stats.dom);
-    //
-    window.addEventListener('resize', onWindowResize, false);
-  }
-
-  /**
-   * Event handler for window resizing
-   */
-  this.onWindowResize = function () {
-    var container = document.getElementById(modelcontainerid); //Assign the output to container
-    camera.aspect = $(container).width() / $(container).height();
-    camera.updateProjectionMatrix();
-    renderer.setSize($(container).width(), $(container).height());
-  }
-
-  /**
-   * Animate the model
-   */
-  this.animate = function () {
-    requestAnimationFrame(animate);
-    controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
-    stats.update();
-    render();
-  }
-
-  /**
-   * Render model
-   */
-  this.render = function () {
-    renderer.render(scene, camera);
-  }
-  this.protoTest = function(){
-    console.log('Model Prototype');
-  } 
 };
 
 
