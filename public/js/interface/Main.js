@@ -38,7 +38,7 @@ var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
-var SDBottom = -4;
+var SDBottom = -1;
 
 /* REQUEST URLs */
 var namesReq = 'bergs/names';

@@ -36,12 +36,14 @@ var DEMO = {
 	    NEAR = 0.5, FAR = 3000000;
 	  this.ms_Camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
 	
-	console.log(Math.max(inParameters.width * 1.5, inParameters.height) / 8);
-	console.log(-inParameters.height);
 	//	this.ms_Camera = new THREE.PerspectiveCamera(55.0, WINDOW.ms_Width / WINDOW.ms_Height, 0.5, 3000000);
-		this.ms_Camera.position.set(0, 0, 100);// Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
-	//	this.ms_Camera.lookAt(new THREE.Vector3(0, 0, 1));
+		this.ms_Camera.position.set(0, 0, 200);// Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
 
+    this.ms_Camera.up.x = 0;
+    this.ms_Camera.up.y = 0;
+    this.ms_Camera.up.z = 1;
+		this.ms_Camera.lookAt(new THREE.Vector3(0, -1, -1));
+    
 		this.ms_Raycaster = new THREE.Raycaster();
 		
 		// Initialize Orbit control		
