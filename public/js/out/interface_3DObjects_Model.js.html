@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: interface/3DObjects/Model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: interface/3DObjects/Model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @constructor
+ * @author Andrew Way &lt;arw405@mun.ca>
+ * @version 0.1
+ */
+var Model = function (Environment) {
+  var rotWorldMatrix;
+  this.World = Environment.ms_Scene;
+
+  this.toggled = 1; //Boolean for determining if model is visible
+  this.appearance = {color: 0xffffff };
+  this.mesh;
+  var xposition = [];
+  var yposition = [];
+  var zposition = [];
+
+  /**
+   * Return position data corresponding to index
+   * @param {Number} index The index of the position data
+   */
+  this.getPosition = function(index){
+    var position = new Object();
+    position.x = xposition[index];
+    position.y = yposition[index];
+    position.z = zposition[index];
+    return position;
+  }
+  /**
+   * Interfacing function with Simulation. Plays back the position of SeaDragon
+   * @param {Number} index The index of the position data
+   */
+  this.play = function(index){
+    var xcheck = index &lt; xposition.length;
+    var ycheck = index &lt; yposition.length;
+    var zcheck = index &lt; zposition.length;
+    if(xcheck &amp;&amp; ycheck &amp;&amp; zcheck){
+      var newx = xposition[index];
+      var newy = yposition[index];
+      var newz = zposition[index];
+      this.setPosition(newx,newy,newz);
+    }
+    else{
+      console.log('Accessing model position array out of bounds');
+    }
+  }
+
+  /**
+   * Set the model position
+   * @param {Object} positionData contains properties x, y, and z
+   */
+  this.setPositionData = function(positionData){
+    xposition = positionData.x;
+    yposition = positionData.y;
+    zposition = positionData.z;
+    console.log(xposition.length);
+    console.log(yposition.length);
+    console.log(zposition.length);
+  }
+  /**
+   * set the hex color property of appearance
+   * @param {string} hexColor Color in hex
+   */
+  this.setColor = function (hexColor) {
+    this.appearance.color = hexColor;
+  }
+
+  /**
+   * Update the mesh by specifying a new 3D model file path
+   * @param {String} file
+   */
+  this.updateMesh = function () {
+    console.log('updateMesh() starting');
+    model();
+    console.log('updateMesh() ending');
+  };
+
+  /**
+   * Update the display for the iceberg dimensions
+   * @param {Number} h
+   * @param {Number} w
+   * @param {Number} v
+   */
+  this.updateDim = function (h, w, v) {
+    var hTd = document.getElementById("icebergHeight");
+    var wTd = document.getElementById("icebergWidth");
+    var vTd = document.getElementById("icebergVolume");
+    hTd.innerHTML = h;
+    wTd.innerHTML = w;
+    vTd.innerHTML = v;
+    console.log("updateDim() done");
+  }
+
+  /**
+   * Set the position of the model
+   * @param {number} x x position
+   * @param {number} y y position
+   * @param {number} z z position
+   */
+  this.setPosition = function (x, y, z) {
+    this.mesh.position.set(x, y, z);
+  }
+
+  /**
+   * Rotate the model around an arbitrary axis in object space
+   * @param {Vector3} axis The object to be rotated
+   * @param {Number} radians Angle of rotation
+   */
+  this.rotateAroundObjectAxis = function (axis, radians) {
+    var rotObjectMatrix;
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    this.mesh.matrix.multiply(rotObjectMatrix);
+    this.mesh.rotation.setFromRotationMatrix(object.matrix);
+  }
+
+  /**
+   * Set the pitch
+   * @param {Number} radians Angle of rotation
+   */
+  this.setPitch = function(radians){
+    var Axis = new THREE.Vector3(1, 0, 0);
+    this.rotateAroundWorldAxis(Axis,radians); 
+  }
+
+  /**
+   * Set the roll
+   * @param {Number} radians Angle of rotation
+   */
+  this.setRoll = function(radians){
+    var Axis = new THREE.Vector3(0, 1, 0);
+    this.rotateAroundWorldAxis(Axis,radians); 
+  }
+
+  /**
+   * Set the yaw
+   * @param {Number} radians Angle of rotation
+   */
+  this.setYaw = function(radians){
+    var Axis = new THREE.Vector3(0, 0, 1);
+    this.rotateAroundWorldAxis(Axis,radians); 
+  }
+
+  /**
+   * Rotate the model around an arbitrary axis in world space   
+   * @param {Vector3} axis Axis of rotation
+   * @param {Number} radians Angle of rotation 
+   */
+  this.rotateAroundWorldAxis = function (axis, radians) {
+    rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.matrix); // pre-multiply
+    this.mesh.matrix = rotWorldMatrix;
+    this.mesh.rotation.setFromRotationMatrix(object.matrix);
+  }
+
+
+  /**
+   * Make model visible or invisible
+   */
+  this.toggle = function () {
+    console.log('toggling');
+    if (this.toggled == 0) {
+      this.mesh.visible = true;
+      this.toggled = 1;
+    }
+    else {
+      this.mesh.visible = false;
+      this.toggled = 0;
+    }
+  }
+};
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#preselect">preselect</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Aug 15 2017 10:56:47 GMT-0230 (NDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
