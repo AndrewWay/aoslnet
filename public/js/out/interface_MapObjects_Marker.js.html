@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: interface/MapObjects/Marker.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: interface/MapObjects/Marker.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @constructor
+ * @param {google.Map} parentMap Map that contains the marker
+ * @param {Array} latitudeArray Array containing latitude data 
+ * @param {Array} longitudeArray Array containing longitude data
+ */
+var Marker = function(parent,latitudeArray,longitudeArray){
+
+  this.parentMap = parent;
+  var latArray = latitudeArray;
+  var longArray = longitudeArray;
+  var coordinateLiteral;
+  var marker;
+  var pathData = [];
+  var path;
+  var pathColor = '#f1f41d';
+  
+  /**
+   * Set the marker
+   * @param {google.maps.Marker} newMarker The new marker object 
+   */
+  this.setMarker = function(newMarker){
+    marker = newMarker;
+  }
+  /**
+   * Get the current marker
+   * @return marker The current google marker
+   */
+  this.getMarker = function(){
+    return marker;
+  }
+  /**
+   * Return the latitude corresponding to index
+   * @param {Number} index The index of the latitude
+   */
+  this.getLatitude = function(index){
+    return latArray[index];
+  }
+  /**
+   * Return the longitude corresponding to index
+   * @param {Number} index The index of the longitude
+   */
+  this.getLongitude = function(index){
+    return longArray[index];
+  }
+  /**
+   * Set current position
+   */
+   this.setPosition = function(index){
+     var Lat = latArray[index];
+     var Long = longArray[index];
+     coordinateLiteral = {lat: Lat,lng: Long};
+   }
+  this.setPathColor = function(hexColor){
+    pathColor = hexColor;
+  }
+
+  /**
+   * Display the marker
+   */
+  this.display = function(){
+    marker = new google.maps.Marker({position: coordinateLiteral,map: this.parentMap});   
+    marker.setMap(this.parentMap); 
+  }
+
+  /**
+   * Remove marker
+   */
+  this.removeMarker = function(){
+    marker.setMap(null);
+  }
+
+  /**
+   * Set the path of the marker
+   */
+  this.setPath = function() {
+    var i = 0;
+    while (i &lt; latArray.length &amp;&amp; i &lt; longArray.length) {
+      if (typeof latArray[i] === 'number') {
+        if (typeof longArray[i] === 'number') {
+          pathData.push({
+              "lat": latArray[i],
+              "lng": longArray[i]
+              });
+          i++;
+        }
+      }
+    }
+  }
+
+  /**
+   * Add path to map
+   */
+  this.displayPath = function(){
+    path = new google.maps.Polyline({
+path: pathData,
+strokeColor: pathColor,
+strokeOpacity: 0.8,
+strokeWeight: 2,});
+    path.setMap(this.parentMap);
+  }
+  
+  
+  this.setPath(); 
+  this.setPosition(0);
+}
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#preselect">preselect</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Aug 15 2017 10:56:47 GMT-0230 (NDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

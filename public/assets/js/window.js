@@ -17,6 +17,8 @@ var WINDOW = {
 		});
 	},
 	updateSize: function updateSize() {
+	  //this.ms_Width = $(container).width();
+	  //this.ms_Height = $(container).height() - 4;
 		this.ms_Width = $(window).width();
 		this.ms_Height = $(window).height() - 4;
 	},
@@ -44,5 +46,7 @@ var WINDOW = {
 				document.webkitCancelFullScreen();
 		}
 	},	
-	resizeCallback: function resizeCallback(inWidth, inHeight) {}
+	resizeCallback: function resizeCallback(inWidth, inHeight) {
+	  console.log('Resize call back');
+	}
 };
