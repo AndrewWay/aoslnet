@@ -8,7 +8,7 @@ function getJSON(url){
     var request = new XMLHttpRequest();
     request.open("GET",url,false);
     request.send(null);
-    console.log('database returned: '+request.responseText);
+   // console.log('database returned: '+request.responseText);
     var response = JSON.parse(request.responseText);
     console.log('getJSON() finished');
     return response;
