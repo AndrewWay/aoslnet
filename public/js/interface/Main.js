@@ -77,6 +77,7 @@ $(document).ready(function () {
     var bergList = getJSON(namesReq + '/' + yearSelected);
     updateOptions(icebergNameOptionsID, bergList);
     createScene();
+    autoselect();
     });
 
 function displayRig(){
@@ -88,9 +89,6 @@ function displayRig(){
  * Maybe check if cookie exists
  * If so, call correct functions to load iceberg survey corresponding to data found in cookie
  */
-function preselect() {
-
-}
 
 /**
  * Loads in a new list of datasets to choose from
@@ -120,7 +118,7 @@ function updateOptions(optionID, options) {
  }
  
 /**
- * Get the value of the selected year
+ * Get the value of the selected name
  */
  function getSelectedName(){
    return document.getElementById(icebergNameOptionsID).value;
@@ -162,6 +160,52 @@ function createMap(){
   console.log('Google Map ready to be created');
   //map = new GoogleMap('map');
 }
+
+//Read in iceberg name and year from cookie to automatically load the corresponding iceberg on
+//page load
+
+function autoselect() {
+var icename = getCookie("Name");
+var iceyear = getCookie("Year");
+document.getElementById("selectYear").value=iceyear;
+document.getElementById("selectName").value=icename;
+var loadButton = document.getElementById("loadButton");
+loadButton.click();
+}
+
+//Get a previously set cookie
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+//Check to ensure a cookie has been set and is read properly
+
+function checkCookie() {
+    var username = getCookie("Name");
+    var year = getCookie("Year");
+    if (username != "") {
+        alert("Welcome again " + username + " " + year);
+    } else {
+        username = prompt("Please enter your name:", "");
+        if (username != "" && username != null) {
+            setCookie("Name", username, 365);
+        }
+    }
+}
+
 
 /**
  * Creates charts for data sources

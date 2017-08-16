@@ -244,15 +244,14 @@ img.emoji {
       <button type="button" id="pausebtn" onclick="sim.pause()">Pause</button>
       <button type="button" id="stopbtn" onclick="sim.stop()">Stop</button>
       <button type="button" id=testbtn" onclick="testfunction()">Test</button>
-      <button type="button" id=testbtn2" onclick="testfunction2()">Test2</button>
-    </div>
+      <button type="button" id=testbtn2" onclick="testfunction2()">Test
   </div>
 
   <!-- DATABASE DATA CONTROL AND QUERY -->
-  <div id="datacontrol" class="page-segment">
+  <div id="datacontrol" class="pagefauto-segment">
     <select id="selectYear" onchange="changeYear()"></select>
     <select id="selectName"></select>
-    <button type="button" onclick="changeIceberg(getSelectedYear(),getSelectedName())">Load</button>
+    <button type="button" id="loadButton" onclick="changeIceberg(getSelectedYear(),getSelectedName())">Load</button>
   </div>
 </div><!-- #content -->
 
@@ -332,6 +331,7 @@ var WPGroHo = {"my_hash":"0a15cb77ccdff1dd67b2ad19644b143b"};
 /* ]]> */
 </script>
 <script type="text/javascript" src="3D%20Model%20Viewer%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/wpgroho.js"></script>
+
 
 	<script>
 		//initialize and attach hovercards to all gravatars
