@@ -196,12 +196,33 @@ function createMap(){
 //page load
 
 function autoselect() {
-var icename = getCookie("Name");
-var iceyear = getCookie("Year");
-document.getElementById("selectYear").value=iceyear;
-document.getElementById("selectName").value=icename;
-var loadButton = document.getElementById("loadButton");
-loadButton.click();
+  //Get the year of the iceberg from cookie
+  var iceyear = getCookie("Year");
+  var yearList = document.getElementById(icebergYearOptionsID)
+  //Set the year from option list to iceyear
+  for (var i = 0; i < yearList.length ; i++){
+    if (yearList.options[i].value === iceyear) {
+      yearList.selected = yearList.options[i];
+      yearList.value = yearList.options[i].value;
+      i = yearList.length;
+    }
+  }
+  //Get the icebergs from the database corresponding to that year
+  var bergList = getJSON(namesReq + '/' + iceyear);
+  //Update the iceberg name list with the names from iceyear
+  updateOptions(icebergNameOptionsID, bergList);
+  //Get the name of the iceberg from cookie
+  var icename = getCookie("Name");
+  var nameList = document.getElementById(icebergNameOptionsID);
+  //Set the name from names option list to icename
+  for (var i = 0; i < nameList.length ; i++){
+    if (nameList.options[i].value === icename) {
+      nameList.selected = nameList.options[i];
+      i = nameList.length;
+    }
+  }
+  changeIceberg(iceyear,icename);
+}
 }
 
 //Get a previously set cookie
