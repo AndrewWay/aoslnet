@@ -1,10 +1,10 @@
-selectedID="";
-selectedYear="";
-lat=[];
-long=[];
-id=[];
-year=[];
-iq=0;
+var selectedID="";
+var selectedYear="";
+var lat=[];
+var long=[];
+var id=[];
+var year=[];
+var iq=0;
 
 function setup() {
     var yearList = getJSON('/bergs/years');
@@ -70,13 +70,30 @@ function addMarker(i){
   });
   //Add a new google marker to the map
   marker.setMap(map); 
+
   google.maps.event.addListener(marker, 'click', function() {
     document.getElementById('desc').innerHTML='NAME: '+nm+' YEAR: '+yr+' LATITUDE: '+lt+' LONGITUDE: '+lg+' DESCRIPTION: [sometext]';
     selectedID=nm;
     selectedYear=yr;
+    setCookie("Name", id[i] , 365);
+    setCookie("Year", year[i], 365);
   });
+
   console.log("marker added for: "+nm);
 }
+
+// Set a cookie for use throughout the site. Note that clicking a marker sets a cookie
+// with the name and year for the corresponding iceberg.
+
+function setCookie(c_name, value, exdays)
+{
+  var exdate = new Date();
+  exdate.setDate(exdate.getDate() + exdays);
+  var c_value = escape(value) + 
+    ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+  document.cookie = c_name + "=" + c_value;
+}
+
 
 function mapReady() {
   console.log("initializing map...");
