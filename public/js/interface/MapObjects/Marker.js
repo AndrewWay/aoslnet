@@ -1,6 +1,6 @@
 /**
- * @namespace
- * @param {Google Map} parentMap Map that contains the marker
+ * @constructor
+ * @param {google.Map} parentMap Map that contains the marker
  * @param {Array} latitudeArray Array containing latitude data 
  * @param {Array} longitudeArray Array containing longitude data
  */
@@ -24,19 +24,21 @@ var Marker = function(parent,latitudeArray,longitudeArray){
   }
   /**
    * Get the current marker
-   * @return
+   * @return marker The current google marker
    */
   this.getMarker = function(){
     return marker;
   }
   /**
-   * 
+   * Return the latitude corresponding to index
+   * @param {Number} index The index of the latitude
    */
   this.getLatitude = function(index){
     return latArray[index];
   }
   /**
-   * 
+   * Return the longitude corresponding to index
+   * @param {Number} index The index of the longitude
    */
   this.getLongitude = function(index){
     return longArray[index];
