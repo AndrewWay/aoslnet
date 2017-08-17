@@ -93,7 +93,7 @@ $(document).ready(function () {
     document.getElementById("stopbtn").disabled = true;
     console.log('Document ready');
     var yearList = getJSON(yearsReq);
-    updateOptions('selectYear', yearList);
+    updateOptions(icebergYearOptionsID, yearList);
     var yearSelected = document.getElementById(icebergYearOptionsID).value;
     var bergList = getJSON(namesReq + '/' + yearSelected);
     updateOptions(icebergNameOptionsID, bergList);
