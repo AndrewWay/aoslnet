@@ -233,7 +233,6 @@ img.emoji {
 
   <!-- ICEBERG MODEL -->  
   <div id="model" class="page-segment"></div>
-  
 
   <!-- DATA CONTROL AND QUERY -->
   <table id="datacontrol" class="page-segment">
@@ -246,7 +245,7 @@ img.emoji {
       <td>
       <select id="selectYear" onchange="changeYear()"></select>
       <select id="selectName"></select>
-      <button type="button" onclick="changeIceberg(getSelectedYear(),getSelectedName())">Load</button>    
+      <button type="button" id="loadButton" onclick="changeIceberg(getSelectedYear(),getSelectedName())">Load</button>    
       </td>
       <td id="buttons"s>
         <button type="button" id="playbtn" onclick="sim.play()">Play</button>
@@ -257,6 +256,7 @@ img.emoji {
       </td>
     </tr>
   </table>
+
 </div><!-- #content -->
 
 	</div><!-- .site-content-contain -->
@@ -335,6 +335,7 @@ var WPGroHo = {"my_hash":"0a15cb77ccdff1dd67b2ad19644b143b"};
 /* ]]> */
 </script>
 <script type="text/javascript" src="3D%20Model%20Viewer%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/wpgroho.js"></script>
+
 
 	<script>
 		//initialize and attach hovercards to all gravatars
