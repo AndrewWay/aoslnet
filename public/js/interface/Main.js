@@ -223,7 +223,6 @@ function autoselect() {
   }
   changeIceberg(iceyear,icename);
 }
-}
 
 //Get a previously set cookie
 
