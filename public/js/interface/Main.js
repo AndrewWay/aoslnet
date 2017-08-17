@@ -1,7 +1,7 @@
 /**
  * @file main
  * @author Andrew Way <arw405@mun.ca>
- * @version 0.1
+ * @author Tyler Downey
  */
  
 /* CONSTANTS */
@@ -34,11 +34,14 @@ var icebergYearOptionsID = "selectYear";
 var modelcontainerid = 'model';
 
 /* INTERFACE PARAMETERS */
-var chartLimit = 0; // Maximum number of charts
+var chartLimit = 2; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
 var SDBottom = -1;
+
+/* INTERFACE OBJECTS */
+var interfaceObjects = [];
 
 /* REQUEST URLs */
 var namesReq = 'bergs/names';
@@ -78,12 +81,16 @@ function testfunction(){
   
 }
 
-function testfunction2(){
+function testfunction3(){
 //Fill with stuff you want to test after clicking test2 button
   SDx.setPosition(100,0,0);
   SDy.setPosition(0,100,0);
   SDz.setPosition(0,0,100);
   SDorigin.setPosition(0,0,0);
+}
+
+function testfunction2(){
+  resetInterface();
 }
 /**
  * Initiates execution of all functions for setting the page up
@@ -159,9 +166,8 @@ function changeYear() {
  */
 function changeIceberg(yearSelected,bergSelected) {
   console.log('changeIceberg() starting');
-  //var yearSelected = document.getElementById(icebergYearOptionsID).value;
-  //var bergSelected = document.getElementById("selectIceberg").value;
-  var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected);
+  //resetInterface();
+  var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected); // Get JSON
   if (json.constructor == Array) {
     json = json[0];
   }
@@ -176,12 +182,37 @@ function changeIceberg(yearSelected,bergSelected) {
     createMonitors();
   }
 
-  //displayDimensions(json);
+  displayDimensions(json);
   displaySeaDragon(json);
   displayMap(json);
   displayIceberg(json);
   displayPointCloud(json);
   console.log('changeIceberg() finished');
+}
+
+function resetInterface(){
+  //Remove Iceberg model
+  
+  //Remove SeaDragon model
+  
+  //Remove Iceberg marker 
+  
+  //Remove Iceberg perimeter
+  
+  //Remove SeaDragon path
+  
+  //Remove monitors
+  
+  //Remove Charts
+ // monitorQuantity = 0;
+ // dataSourcesProcessed = 0;
+ // chartQuantity = 0;
+  monitorQuantity = 0; 
+  for(var i = interfaceObjects.length - 1; i >= 0; i--){
+    console.log(i);
+    interfaceObjects[i].delete();
+    interfaceObjects.splice(i,1);
+  }
 }
 /**
  * Callback function from Google Map
@@ -192,9 +223,10 @@ function createMap(){
   //map = new GoogleMap('map');
 }
 
-//Read in iceberg name and year from cookie to automatically load the corresponding iceberg on
-//page load
-
+/**
+ * Read in iceberg name and year from cookie to automatically 
+ * load the corresponding iceberg on page load
+ */
 function autoselect() {
   //Get the year of the iceberg from cookie
   var iceyear = getCookie("Year");
@@ -224,8 +256,9 @@ function autoselect() {
   changeIceberg(iceyear,icename);
 }
 
-//Get a previously set cookie
-
+/**
+ * Get a previously set cookie
+ */
 function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -242,8 +275,9 @@ function getCookie(cname) {
     return "";
 }
 
-//Check to ensure a cookie has been set and is read properly
-
+/**
+ * Check to ensure a cookie has been set and is read properly
+ */
 function checkCookie() {
     var username = getCookie("Name");
     var year = getCookie("Year");
@@ -256,7 +290,6 @@ function checkCookie() {
         }
     }
 }
-
 
 /**
  * Creates charts for data sources
@@ -274,11 +307,13 @@ function createCharts(){
       newChart.autoResizeAxes();
       newChart.refresh();
       sim.manageChart(newChart);
+      interfaceObjects.push(newChart);
       chartQuantity++;
     }
     dataSourcesProcessed++;
   }
 }
+
 /**
  * Create monitors for data sources
  */
@@ -291,6 +326,7 @@ function createMonitors(){
       var newMonitor = new DataMonitor(keyPath,'monitorTable');
       newMonitor.setData(dataArray);
       sim.manageMonitor(newMonitor);
+      interfaceObjects.push(newMonitor);
       monitorQuantity++;
     }
     dataSourcesProcessed++;
@@ -321,6 +357,9 @@ function displayIceberg(json) {
   }
 }
 
+/**
+ * Display the iceberg marker in the Google Map
+ */
 function displayIcebergMarker(){
   if(jsonDataMap.has(icebergLatitudeName)){
     if(jsonDataMap.has(icebergLongitudeName)){
@@ -559,8 +598,6 @@ function displayMap(json) {
       surveyMarker.display();
       displaySeaDragonMarker();
       displayIcebergMarker();
-      //  map.setMarker(latitude,longitude);
-      //  map.displaySDPosition(latitude,longitude);
       map.setZoom(15);
     }
   }

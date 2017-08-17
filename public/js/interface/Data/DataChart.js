@@ -72,7 +72,16 @@ var DataChart = function(dataLabel,parentID){
   }
   
   this.refresh();
-
+  /**
+   * Update the charts, plots, and google map with data associated with time index t
+   * @param {number} t Time index 
+   */
+  this.dispdata = function (t) {
+      this.shiftChart(t);  
+      this.refresh();
+    }
+  };
+  
   /**
    * Returns the HTML ID of the charts div
    */
@@ -132,7 +141,7 @@ var DataChart = function(dataLabel,parentID){
   /**
    * Delete the chart
    */
-  this.deleteChart = function() {
-
+  this.delete = function() {
+    chartDiv.remove();
   }
 }

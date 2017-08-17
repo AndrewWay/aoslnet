@@ -51,7 +51,6 @@ var Simulation = function (tmax) {
     this.set_time(newTime);
     this.dispdata(this.get_time());
     this.playEntities(newTime);
-    console.log(this.get_time());
   };
 
   /**
@@ -66,7 +65,7 @@ var Simulation = function (tmax) {
     this.playid = setInterval(function () {
       var ti = parent.get_time(); //time[time_index];//Json objects have bad timestamp data
       //        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
-      parent.dispdata(ti);
+     // parent.dispdata(ti);
       parent.setTimeBar(ti);
       parent.playEntities(ti);
       //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
@@ -94,7 +93,7 @@ var Simulation = function (tmax) {
     clearInterval(this.playid);
     this.set_time(0);
     this.setTimeBar(this.get_time());
-    this.dispdata(this.get_time());
+  //  this.dispdata(this.get_time());
     this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
@@ -108,21 +107,6 @@ var Simulation = function (tmax) {
    */
   this.get_time = function () {
     return parseInt(time_index);
-  };
-
-  /**
-   * Update the charts, plots, and google map with data associated with time index t
-   * @param {number} t Time index 
-   */
-  this.dispdata = function (t) {
-    for(i = 0; i < this.charts.length; i++){
-      this.charts[i].shiftChart(t);  
-      this.charts[i].refresh();
-    }
-    for(i = 0; i < this.monitors.length; i++){
-      this.monitors[i].update(t);  
-    }
-    // updateSDPosition(t)
   };
 
   /**
@@ -156,4 +140,13 @@ var Simulation = function (tmax) {
     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
     document.getElementById(clockid).innerHTML = formattedTime;
   };
+  
+  this.delete = function(){
+    this.updateTimeMax(0);
+    this.sdx = [];
+    this.sdy = [];
+    this.charts = new Array(0);
+    this.monitors = new Array(0);
+    this.managedEntities = new Array(0);
+  }
 };
