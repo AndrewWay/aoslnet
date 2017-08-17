@@ -306,7 +306,7 @@ function createCharts(){
       newChart.setChartData(dataArray);
       newChart.autoResizeAxes();
       newChart.refresh();
-      sim.manageChart(newChart);
+      sim.manage(newChart);
       interfaceObjects.push(newChart);
       chartQuantity++;
     }
@@ -325,7 +325,7 @@ function createMonitors(){
     if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
       var newMonitor = new DataMonitor(keyPath,'monitorTable');
       newMonitor.setData(dataArray);
-      sim.manageMonitor(newMonitor);
+      sim.manage(newMonitor);
       interfaceObjects.push(newMonitor);
       monitorQuantity++;
     }

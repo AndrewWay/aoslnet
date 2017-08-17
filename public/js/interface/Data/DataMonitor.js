@@ -45,7 +45,7 @@ var DataMonitor = function(dataName, parentID){
   }
   
   /**
-   * Delete the data monitors representative HTML row
+   * Delete the data monitor's representative HTML row
    */
    this.delete = function(){
      var row = document.getElementById(this.rowID);
@@ -56,6 +56,13 @@ var DataMonitor = function(dataName, parentID){
        return;
      table.deleteRow(row.rowIndex);
    }
+   
+ /**
+  * Interfacing function with Simulation
+  */
+  this.play = function(t){
+    this.update(t);
+  }
 }
 
 

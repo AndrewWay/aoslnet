@@ -32,24 +32,13 @@ var Simulation = function (tmax) {
   this.manage = function(newEntity){
     this.managedEntities.push(newEntity);
   }
-  /**
-   * Set simulation object to manage chart
-   * @param {object} newChart The new chart to be tracked
-   */
-  this.manageChart = function(newChart){
-    this.charts.push(newChart);
-  }
-  this.manageMonitor = function(newMonitor){
-    this.monitors.push(newMonitor);
-  }
+
   /**
    * Set the time index based on the current value of the slider bar
    */
   this.manualsetTime = function () {
-    //TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
     var newTime = document.getElementById(this.timebarid).value;
     this.set_time(newTime);
-    this.dispdata(this.get_time());
     this.playEntities(newTime);
   };
 
@@ -63,12 +52,9 @@ var Simulation = function (tmax) {
     document.getElementById(this.timebarid).disabled = false;
     var parent = this;
     this.playid = setInterval(function () {
-      var ti = parent.get_time(); //time[time_index];//Json objects have bad timestamp data
-      //        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
-     // parent.dispdata(ti);
+      var ti = parent.get_time();
       parent.setTimeBar(ti);
-      parent.playEntities(ti);
-      //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
+      parent.playEntities(ti);   
       parent.set_time(ti + 1);
       if (ti >= parent.timeMax) {
         clearInterval(parent.playid);
@@ -93,7 +79,6 @@ var Simulation = function (tmax) {
     clearInterval(this.playid);
     this.set_time(0);
     this.setTimeBar(this.get_time());
-  //  this.dispdata(this.get_time());
     this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
