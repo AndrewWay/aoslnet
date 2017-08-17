@@ -4,7 +4,7 @@
  * @version 0.1
  */
 var Model = function (Environment) {
-    var rotWorldMatrix;
+  var rotWorldMatrix;
   this.World = Environment.ms_Scene;
 
   this.toggled = 1; //Boolean for determining if model is visible
@@ -13,7 +13,11 @@ var Model = function (Environment) {
   var xposition = [];
   var yposition = [];
   var zposition = [];
-  
+
+  /**
+   * Return position data corresponding to index
+   * @param {Number} index The index of the position data
+   */
   this.getPosition = function(index){
     var position = new Object();
     position.x = xposition[index];
@@ -22,7 +26,8 @@ var Model = function (Environment) {
     return position;
   }
   /**
-   * 
+   * Interfacing function with Simulation. Plays back the position of SeaDragon
+   * @param {Number} index The index of the position data
    */
   this.play = function(index){
     var xcheck = index < xposition.length;
@@ -38,7 +43,7 @@ var Model = function (Environment) {
       console.log('Accessing model position array out of bounds');
     }
   }
-  
+
   /**
    * Set the model position
    * @param {Object} positionData contains properties x, y, and z
@@ -164,5 +169,6 @@ var Model = function (Environment) {
     }
   }
 };
+
 
 

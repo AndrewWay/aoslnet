@@ -26,9 +26,12 @@ var DEMO = {
 		var container=document.getElementById(inIdCanvas);
 		// Initialize Renderer, Camera, Projector and Scene
 		this.ms_Renderer = this.enable? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+		this.ms_Renderer.setClearColor( 0x000000, 1.0);
 		this.ms_Canvas.html(this.ms_Renderer.domElement);
 		this.ms_Scene = new THREE.Scene();
-		
+					// FOG
+		//this.ms_Scene.fog = new THREE.FogExp2( 0xCCCFFF, 0.007);
+    //this.ms_Scene.fog.color.setHSL( 0.51, 0.6, 0.6 );
 		
 			
 		var VIEW_ANGLE = 55.0, 
@@ -36,9 +39,10 @@ var DEMO = {
 	    NEAR = 0.5, FAR = 3000000;
 	  this.ms_Camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
 	
-	//	this.ms_Camera = new THREE.PerspectiveCamera(55.0, WINDOW.ms_Width / WINDOW.ms_Height, 0.5, 3000000);
-		this.ms_Camera.position.set(0, 0, 200);// Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
 
+		this.ms_Camera.position.set(100, 0, 200);// Math.max(inParameters.width * 1.5, inParameters.height) / 8, -inParameters.height);
+
+    //Orient the camera frame of reference
     this.ms_Camera.up.x = 0;
     this.ms_Camera.up.y = 0;
     this.ms_Camera.up.z = 1;
@@ -50,7 +54,7 @@ var DEMO = {
 		this.ms_Controls = new THREE.OrbitControls(this.ms_Camera, this.ms_Renderer.domElement);
 		//this.ms_Controls.userPan = true;
 		//this.ms_Controls.userPanSpeed = 0.0;
-		this.ms_Controls.maxDistance = 5000.0;
+		//this.ms_Controls.maxDistance = 5000.0;
 		this.ms_Controls.maxPolarAngle = Math.PI;
 	  //this.ms_Controls.minAzimuthAngle = 0; // radians
    // this.ms_Controls.maxAzimuthAngle = 0; // radians
@@ -113,7 +117,7 @@ var DEMO = {
 		aMeshMirror.add(this.ms_Water);
 	//	aMeshMirror.rotation.x = - Math.PI * 0.5;
 		this.ms_Scene.add(aMeshMirror);
-	
+
 		this.loadSkyBox();
 	},
 	

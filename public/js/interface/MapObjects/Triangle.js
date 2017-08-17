@@ -1,7 +1,7 @@
 /**
- * Triangular Marker
+ * @constructor
+ * TriangularMarker
  */
-
 function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray){
   function TriangleObject(){
     this.__proto__ = new Marker(parentMap,latitudeArray,longitudeArray);
@@ -16,6 +16,7 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
     var currentLong;
     /**
      * Interface function to be compatible with Simulation object
+     * @param {Number} index The index of the data
      */
     this.play = function(index){
       this.setPosition(index);
@@ -23,7 +24,8 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
       this.refreshIcon();
     }
     /**
-     * 
+     * Set the orientation of the triangle marker
+     * @param {Number} index The index of the data
      */
     this.setOrientation = function(index){
       //Some math involving orientation heading to determine x and y
@@ -42,10 +44,6 @@ ax : currentLong,
      dy : currentLat + y,
       }
     }
-    /*this.setPosition = function(index){
-      currentLat = this.getLatitude(index);
-      currentLong = this.getLongitude(index);
-    }*/
     this.orArray = orientationArray;
 
     this.setIconColor = function(hexColor){

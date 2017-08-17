@@ -1,5 +1,5 @@
 /**
- * @file Google Map Control
+ * @constructor
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
  */

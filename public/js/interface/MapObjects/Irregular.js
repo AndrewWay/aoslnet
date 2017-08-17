@@ -1,5 +1,6 @@
 /**
  * Irregular Marker
+ * @constructor
  */
 
 function IrregularMarker(parentMap,latitudeArray,longitudeArray){
