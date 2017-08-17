@@ -10,7 +10,7 @@ function getJSON(url){
     request.send(null);
    // console.log('database returned: '+request.responseText);
     var response = JSON.parse(request.responseText);
-    console.log('getJSON() finished');
+    //console.log('getJSON() finished');
     return response;
 }
 
