@@ -1,17 +1,23 @@
-/** @constructor */
+/**
+ * @constructor
+ */
+ 
 var Simulation = function (tmax) {
 
   var time_index = 0;
   var delay_factor = 1;
   this.timebarid = 'timebar';
   this.timeMax = 0;
-    /**
+  
+  /**
    * Update the maximum value the time bar can have
    */
   this.updateTimeMax = function (t) {
     this.timeMax = t;
     document.getElementById(this.timebarid).max = this.timeMax;
   };
+  
+  /* INITIALIZATION */
   this.updateTimeMax(tmax - 1);
   this.playid;
   this.playbtnid = 'playbtn';
@@ -22,13 +28,19 @@ var Simulation = function (tmax) {
   this.charts = new Array(0);
   this.monitors = new Array(0);
   this.managedEntities = new Array(0);
-  /* PUBLIC FUNCTIONS */
   
+  /**
+   * Play all entities being tracked by this simulation
+   */  
   this.playEntities = function(index){
     for(var i = 0; i < this.managedEntities.length; i++){
       this.managedEntities[i].play(index);
     }
   }
+  
+  /**
+   * Track a new entity (monitor, chart, etc.)
+   */
   this.manage = function(newEntity){
     this.managedEntities.push(newEntity);
   }
@@ -43,7 +55,7 @@ var Simulation = function (tmax) {
   };
 
   /**
-   * Iterate through trial data and update displays
+   * Replay simulation by incrementing time index and calling play for each tracked entity
    */
   this.play = function () {
     document.getElementById(this.pausebtnid).disabled = false;
@@ -108,9 +120,6 @@ var Simulation = function (tmax) {
   this.set_time = function (t) {
     time_index = t;
   };
-
-
-  /* PRIVATE FUNCTIONS */
 
   /**
    * Update the clock with the time associated with time index t
