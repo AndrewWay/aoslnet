@@ -24,7 +24,7 @@ function Mesh(sourceFile){
     /**
      * Load and add the mesh to the scene
      */
-    this.loadModel = function (rotationAngle) {
+    this.loadModel = function () {
       var loader = new THREE.STLLoader();
       var MeshObject = this;
       loader.load(MeshObject.sourceFile, function (geometry) {
@@ -43,6 +43,7 @@ function Mesh(sourceFile){
       var loader = new THREE.OBJLoader();
       var MeshObject = this;
       loader.load( MeshObject.sourceFile, function ( geometry ) {
+          MeshObject.mesh = geometry;
           MeshObject.World.add( geometry );
           } );
     }

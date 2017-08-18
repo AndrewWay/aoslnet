@@ -11,6 +11,7 @@ function addToggle(id, callback, name) {
   element.name = name;
   element.value = name;
   element.onclick = callback;
+  element.id = id;
   element.setAttribute('onclick', callback);
   var toggleContainer = document.getElementById('pics');
   toggleContainer.append(element);

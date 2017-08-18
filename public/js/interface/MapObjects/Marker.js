@@ -99,7 +99,16 @@ strokeOpacity: 0.8,
 strokeWeight: 2,});
     path.setMap(this.parentMap);
   }
-  
+  this.delete = function(){
+    console.log(marker);
+    console.log(path);
+    if(typeof marker !== 'undefined' && marker !== null){
+      this.removeMarker();
+    }
+    if (typeof path !== 'undefined' && path !== null) {
+      path.setMap(null);
+    }
+  }
   
   this.setPath(); 
   this.setPosition(0);

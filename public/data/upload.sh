@@ -193,10 +193,10 @@ processPCD(){
   local rejectedpoints=0 #counter for tracking how many points are not floats
   local rejectionstring=""
   echo -e "Now processing PCD..." >&2
-  for i in `seq 2 $length`
+  for i in `seq 1 $length`
   do
     local rejectcode=0
-    local line=`cat $input | head -n $i | tail -n 1`
+    local line=`sed "${i}q;d" $input` #`cat $input | head -n $i | tail -n 1`
     local linearr=""
     IFS=$', \t' read -r -a linearr <<< "$line"
 

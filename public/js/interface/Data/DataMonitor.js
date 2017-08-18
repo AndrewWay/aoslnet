@@ -43,6 +43,26 @@ var DataMonitor = function(dataName, parentID){
   this.setData = function(data){
     this.dataSet = data;
   }
+  
+  /**
+   * Delete the data monitor's representative HTML row
+   */
+   this.delete = function(){
+     var row = document.getElementById(this.rowID);
+     var table = row.parentNode;
+     while ( table && table.tagName != 'TABLE' )
+       table = table.parentNode;
+     if ( !table )
+       return;
+     table.deleteRow(row.rowIndex);
+   }
+   
+ /**
+  * Interfacing function with Simulation
+  */
+  this.play = function(t){
+    this.update(t);
+  }
 }
 
 
