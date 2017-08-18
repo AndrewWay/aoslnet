@@ -44,10 +44,6 @@ var PointCloud = function (x,y,z) {
       this.pcd_y = y;
       this.pcd_z = z;
     }
-    
-    this.delete = function(){
-      this.World.remove(this.mesh);
-    }
   }
   return new PointCloudObject();
 };

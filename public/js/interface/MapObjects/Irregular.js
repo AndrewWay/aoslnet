@@ -29,7 +29,7 @@ fillOpacity: 0.35,
 });
 
 this.play = function(index){
-//TODO
+  //TODO
 }
 
 
@@ -37,6 +37,7 @@ marker.setMap(this.parentMap);
 }
 return new IrregularMarkerObject();
 }
+
 
 
 

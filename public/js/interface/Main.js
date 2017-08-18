@@ -191,15 +191,15 @@ function changeIceberg(yearSelected,bergSelected) {
 }
 
 function resetInterface(){
-  //Remove Iceberg model
+  //Remove Iceberg model DONE
+   
+  //Remove SeaDragon model DONE
   
-  //Remove SeaDragon model
-  
-  //Remove Iceberg marker 
+  //Remove Iceberg marker DONE
   
   //Remove Iceberg perimeter
   
-  //Remove SeaDragon path
+  //Remove SeaDragon path 
   
   //Remove monitors DONE
   
@@ -216,6 +216,7 @@ function resetInterface(){
     interfaceObjects.splice(i,1);
   }
 }
+
 /**
  * Callback function from Google Map
  * Probably not necessary
@@ -354,8 +355,10 @@ function displayIceberg(json) {
     console.log('loading stl from ' + filepath);
     Iceberg = Mesh(filepath);
     Iceberg.setColor('#ffffff');
-    Iceberg.loadModel(-1.5708); //TODO Don't pass rotation as argument. make sure models are in consistent frame
+    Iceberg.loadModel();
+    interfaceObjects.push(Iceberg);
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
+    Iceberg.setToggleID('meshtoggle');
   }
 }
 
@@ -450,6 +453,7 @@ function displayPointCloud(json) {
       IcebergPointCloud.loadPointCloud();
       interfaceObjects.push(IcebergPointCloud);
       addToggle('pointstoggle', 'IcebergPointCloud.toggle()', 'Toggle Points'); 
+      IcebergPointCloud.setToggleID('pointstoggle');
     }
   }
 }

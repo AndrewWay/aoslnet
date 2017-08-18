@@ -100,8 +100,9 @@ strokeWeight: 2,});
     path.setMap(this.parentMap);
   }
   this.delete = function(){
-    console.log('hello!');
-    this.removeMarker();
+    if(typeof marker !== 'undefined' && marker !== null){
+      this.removeMarker();
+    }
     if (typeof path !== 'undefined' && path !== null) {
       path.setMap(null);
     }

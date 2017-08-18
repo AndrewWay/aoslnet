@@ -43,11 +43,9 @@ function Mesh(sourceFile){
       var loader = new THREE.OBJLoader();
       var MeshObject = this;
       loader.load( MeshObject.sourceFile, function ( geometry ) {
+          MeshObject.mesh = geometry;
           MeshObject.World.add( geometry );
           } );
-    }
-    this.delete = function(){
-      this.World.remove(this.mesh);
     }
   }
   return new MeshObject();
