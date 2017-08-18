@@ -166,7 +166,7 @@ function changeYear() {
  */
 function changeIceberg(yearSelected,bergSelected) {
   console.log('changeIceberg() starting');
-  //resetInterface();
+  resetInterface();
   var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected); // Get JSON
   if (json.constructor == Array) {
     json = json[0];
@@ -191,20 +191,6 @@ function changeIceberg(yearSelected,bergSelected) {
 }
 
 function resetInterface(){
-  //Remove Iceberg model DONE
-   
-  //Remove SeaDragon model DONE
-  
-  //Remove Iceberg marker DONE
-  
-  //Remove Iceberg perimeter
-  
-  //Remove SeaDragon path DONE
-  
-  //Remove monitors DONE
-  
-  //Remove Charts DONE
-  
   dataSourcesProcessed = 0;
   chartQuantity = 0;
   monitorQuantity = 0; 
