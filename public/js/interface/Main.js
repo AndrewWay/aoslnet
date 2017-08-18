@@ -1,7 +1,7 @@
 /**
  * @file main
  * @author Andrew Way <arw405@mun.ca>
- * @version 0.1
+ * @author Tyler Downey
  */
  
 /* CONSTANTS */
@@ -13,6 +13,7 @@ var longitudeName = 'longitudeSD';
 var orientationName = 'orientationSD';
 var icebergLatitudeName = 'latI0';
 var icebergLongitudeName = 'longI0';
+var picturePathName = 'Picture';
 
 /* SIMULATION OBJECTS */
 var sim; // Simulation object
@@ -32,13 +33,18 @@ var seaDragonMarker;
 var icebergNameOptionsID = "selectName";
 var icebergYearOptionsID = "selectYear";
 var modelcontainerid = 'model';
+var picID = 'icedisp';
 
 /* INTERFACE PARAMETERS */
-var chartLimit = 0; // Maximum number of charts
+var chartLimit = 2; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
 var SDBottom = -1;
+
+/* INTERFACE OBJECTS */
+var interfaceObjects = [];
+var Cam;
 
 /* REQUEST URLs */
 var namesReq = 'bergs/names';
@@ -50,7 +56,8 @@ var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
 var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 /* MISC */
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
-
+var currentIcebergName = '';
+var currentIcebergYear = '';
 /* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
@@ -75,16 +82,16 @@ function testfunction(){
   SDy.loadModel(0);
   SDz.loadModel(0);
   SDorigin.loadModel(0);
-  
 }
 
-function testfunction2(){
+function testfunction3(){
 //Fill with stuff you want to test after clicking test2 button
   SDx.setPosition(100,0,0);
   SDy.setPosition(0,100,0);
   SDz.setPosition(0,0,100);
   SDorigin.setPosition(0,0,0);
 }
+
 /**
  * Initiates execution of all functions for setting the page up
  */
@@ -100,13 +107,7 @@ $(document).ready(function () {
     createScene();
     autoselect();
     });
-
-/**
- * Selects the iceberg data chosen from global map
- * Maybe check if cookie exists
- * If so, call correct functions to load iceberg survey corresponding to data found in cookie
- */
-
+    
 /**
  * Loads in a new list of datasets to choose from
  * @param {String} optionID 
@@ -159,13 +160,11 @@ function changeYear() {
  */
 function changeIceberg(yearSelected,bergSelected) {
   console.log('changeIceberg() starting');
-  //var yearSelected = document.getElementById(icebergYearOptionsID).value;
-  //var bergSelected = document.getElementById("selectIceberg").value;
-  var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected);
+  resetInterface();
+  var json = getJSON(dataReq + '/' + yearSelected + '/' + bergSelected); // Get JSON
   if (json.constructor == Array) {
     json = json[0];
   }
-  console.log(json);
   if(json.hasOwnProperty('Data') && json['Data'].length > 0){
     extractKeyPaths(json['Data'][0]); //Only checks first element
     distributeData(json['Data']); 
@@ -175,14 +174,31 @@ function changeIceberg(yearSelected,bergSelected) {
     createCharts();
     createMonitors();
   }
-
-  //displayDimensions(json);
+  currentIcebergYear = yearSelected;
+  currentIcebergName = bergSelected;
+  
+  displayCamera();
+  displayDimensions(json);
   displaySeaDragon(json);
   displayMap(json);
   displayIceberg(json);
   displayPointCloud(json);
   console.log('changeIceberg() finished');
 }
+
+function resetInterface(){
+  dataSourcesProcessed = 0;
+  chartQuantity = 0;
+  monitorQuantity = 0; 
+  
+  for(var i = interfaceObjects.length - 1; i >= 0; i--){
+    console.log(i);
+    console.log(interfaceObjects[i]);
+    interfaceObjects[i].delete();
+    interfaceObjects.splice(i,1);
+  }
+}
+
 /**
  * Callback function from Google Map
  * Probably not necessary
@@ -192,9 +208,10 @@ function createMap(){
   //map = new GoogleMap('map');
 }
 
-//Read in iceberg name and year from cookie to automatically load the corresponding iceberg on
-//page load
-
+/**
+ * Read in iceberg name and year from cookie to automatically 
+ * load the corresponding iceberg on page load
+ */
 function autoselect() {
   //Get the year of the iceberg from cookie
   var iceyear = getCookie("Year");
@@ -224,8 +241,9 @@ function autoselect() {
   changeIceberg(iceyear,icename);
 }
 
-//Get a previously set cookie
-
+/**
+ * Get a previously set cookie
+ */
 function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -242,8 +260,9 @@ function getCookie(cname) {
     return "";
 }
 
-//Check to ensure a cookie has been set and is read properly
-
+/**
+ * Check to ensure a cookie has been set and is read properly
+ */
 function checkCookie() {
     var username = getCookie("Name");
     var year = getCookie("Year");
@@ -256,7 +275,6 @@ function checkCookie() {
         }
     }
 }
-
 
 /**
  * Creates charts for data sources
@@ -273,12 +291,14 @@ function createCharts(){
       newChart.setChartData(dataArray);
       newChart.autoResizeAxes();
       newChart.refresh();
-      sim.manageChart(newChart);
+      sim.manage(newChart);
+      interfaceObjects.push(newChart);
       chartQuantity++;
     }
     dataSourcesProcessed++;
   }
 }
+
 /**
  * Create monitors for data sources
  */
@@ -290,13 +310,26 @@ function createMonitors(){
     if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
       var newMonitor = new DataMonitor(keyPath,'monitorTable');
       newMonitor.setData(dataArray);
-      sim.manageMonitor(newMonitor);
+      sim.manage(newMonitor);
+      interfaceObjects.push(newMonitor);
       monitorQuantity++;
     }
     dataSourcesProcessed++;
   }
 }
 
+/**
+ * Initialize and display camera
+ */
+function displayCamera(){
+  if(jsonDataMap.has(picturePathName)){
+    console.log('loading pictures');
+    var picturePaths = jsonDataMap.get(picturePathName);
+    console.log(picturePaths);
+    var basePath = 'data/images/'+currentIcebergYear+'/'+currentIcebergName+'/';
+ //   Cam = new Camera(picID,picturePaths,basePath);
+  }
+}
 /**
  * Display Oilrig model
  */
@@ -316,11 +349,16 @@ function displayIceberg(json) {
     console.log('loading stl from ' + filepath);
     Iceberg = Mesh(filepath);
     Iceberg.setColor('#ffffff');
-    Iceberg.loadModel(-1.5708); //TODO Don't pass rotation as argument. make sure models are in consistent frame
+    Iceberg.loadModel();
+    interfaceObjects.push(Iceberg);
     addToggle('meshtoggle', 'Iceberg.toggle();', 'Toggle Mesh');
+    Iceberg.setToggleID('meshtoggle');
   }
 }
 
+/**
+ * Display the iceberg marker in the Google Map
+ */
 function displayIcebergMarker(){
   if(jsonDataMap.has(icebergLatitudeName)){
     if(jsonDataMap.has(icebergLongitudeName)){
@@ -328,7 +366,136 @@ function displayIcebergMarker(){
       var longitudeArray = jsonDataMap.get(icebergLongitudeName);
       icebergMarker = IrregularMarker(map.getMap(),latitudeArray,longitudeArray);  
       icebergMarker.displayPath();
-      sim.manage(icebergMarker);   
+      sim.manage(icebergMarker);  
+      interfaceObjects.push(icebergMarker); 
+    }
+    else{
+      console.log('No Iceberg longitude array');
+    }
+  }
+  else{
+    console.log('No Iceberg latitude array');
+  }
+}
+
+/**
+ * Display markers and polygons on Google Map
+ * @param {object} json
+ */
+function displayMap(json) {
+  //TODO if longitude and latitude exist, create map. Have map invisible by default
+  //Load longitude and latitude of iceberg
+  if (json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')) {
+    var longitude = json.longitude;
+    var latitude = json.latitude;
+    var displayMapBool = 1;
+    if (typeof longitude === 'number') {
+      if (!(longitude >= -180 && longitude <= 180)) {
+        console.log("longitude invalid: out of range.");
+        displayMapBool = 0;
+      }
+    }
+    else {
+      console.log("longitude invalid: not of type 'number'")
+        displayMapBool = 0;
+    }
+    if (typeof latitude === 'number') {
+      if (!(latitude >= -90 && latitude <= 90)) {
+        console.log("latitude invalid: out of range.");
+        displayMapBool = 0;
+      }
+    }
+    else {
+      console.log("latitude invalid: not of type 'number'")
+        displayMapBool = 0;
+    }
+    if(displayMapBool == 1){
+      map = new GoogleMap('map');
+      map.setCenter(latitude,longitude);
+      surveyMarker = new Marker(map.getMap(),[latitude],[longitude]);
+      surveyMarker.display();
+      displaySeaDragonMarker();
+      displayIcebergMarker();
+      interfaceObjects.push(surveyMarker);
+      map.setZoom(15);
+    }
+  }
+}
+
+/**
+ * Display point cloud
+ * @param {object} json
+ */
+function displayPointCloud(json) {
+  //Load the point cloud data
+  var xarray_check = json.hasOwnProperty('x');
+  var yarray_check = json.hasOwnProperty('y');
+  var zarray_check = json.hasOwnProperty('z');
+
+  if (xarray_check && yarray_check && zarray_check) {
+    var x = json['x'];
+    var y = json['y'];
+    var z = json['z'];
+    console.log('POINT CLOUD');
+    console.log(x);
+    console.log(y);
+    console.log(z);
+    if(x.length > 0 && y.length > 0 && z.length > 0){
+      console.log('creating point cloud model');
+      console.log(DEMO);
+      IcebergPointCloud = PointCloud(x, y, z);
+      IcebergPointCloud.loadPointCloud();
+      interfaceObjects.push(IcebergPointCloud);
+      addToggle('pointstoggle', 'IcebergPointCloud.toggle()', 'Toggle Points'); 
+      IcebergPointCloud.setToggleID('pointstoggle');
+    }
+  }
+}
+/**
+ * Create and display SeaDragon model
+ */
+function displaySeaDragon(json){
+  // if(jsonDataMap.has(orientationName)){
+  if(jsonDataMap.has(latitudeName) && jsonDataMap.get(latitudeName).length > 0){
+    if(jsonDataMap.has(longitudeName) && jsonDataMap.get(longitudeName).length > 0){
+      if(json.hasOwnProperty('latitude')){
+        if(json.hasOwnProperty('longitude')){
+
+          SeaDragon = Mesh(SeaDragonFilePath);
+          SeaDragon.setColor('#ffff00');
+          var latitudeArray = jsonDataMap.get(latitudeName);
+          console.log('LATARRAYLENGTH: '+latitudeArray.length);
+          var longitudeArray = jsonDataMap.get(longitudeName);
+          var orientationArray = jsonDataMap.get(orientationName); //TODO Account for orientation
+          var gps = {};
+          gps.lat = latitudeArray;
+          gps.long = longitudeArray;
+          var altitudeArray = [];
+          for(var i = 0; i < latitudeArray.length; i++){
+            altitudeArray.push(SDBottom);
+          }
+          gps.alt = altitudeArray;
+          gps.origin = {};
+          gps.origin.lat = json['latitude'];
+          gps.origin.long = json['longitude'];
+          gps.origin.alt = 0;
+          var localPositionData = gpsToLocal(gps);
+          console.log(localPositionData.x);
+          console.log(localPositionData.y);
+          console.log(localPositionData.z);
+          
+          SeaDragon.setPositionData(localPositionData);
+          SeaDragon.loadModel();
+          sim.manage(SeaDragon);
+          interfaceObjects.push(SeaDragon);
+        }
+        else{
+          console.log('No longitude origin provided');
+        }
+      }
+      else{
+        console.log('No latitude origin provided');
+      }
     }
     else{
       console.log('No SeaDragon longitude array');
@@ -336,6 +503,58 @@ function displayIcebergMarker(){
   }
   else{
     console.log('No SeaDragon latitude array');
+  }
+  /* }
+     else{
+     console.log('No SeaDragon orientations array');
+     } */
+}
+
+/**
+ * Create and display SeaDragon Marker
+ */
+function displaySeaDragonMarker(json){
+  console.log('Displaying SeaDragon Marker');
+  // if(jsonDataMap.has(orientationName)){
+  if(jsonDataMap.has(latitudeName)){
+    if(jsonDataMap.has(longitudeName)){
+      var latitudeArray = jsonDataMap.get(latitudeName);
+      var longitudeArray = jsonDataMap.get(longitudeName);
+      var orientationArray = jsonDataMap.get(orientationName);
+      seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
+      seaDragonMarker.displayPath();
+      sim.manage(seaDragonMarker);  
+      interfaceObjects.push(seaDragonMarker);
+    }
+    else{
+      console.log('No SeaDragon longitude array');
+    }
+  }
+  else{
+    console.log('No SeaDragon latitude array');
+  }
+  /* }
+     else{
+     console.log('No SeaDragon orientations array');
+     } */
+}
+
+/**
+ * Displays the dimensions of the iceberg
+ * @param {object} json The JSON that contains the dimensions
+ */
+function displayDimensions(json) {
+  if (json.hasOwnProperty('height')) {
+    var height = json.height;
+    //TODO add height monitor
+  }
+  if (json.hasOwnProperty('width')) {
+    var width = json.width;
+    //TODO add width monitor
+  }
+  if (json.hasOwnProperty('volume')) {
+    var volume = json.volume;
+    //TODO add volume monitor 
   }
 }
 
@@ -408,189 +627,14 @@ var lat2y = function (lat) {
   return 111120*lat;
 };
 
-
+/**
+ * Load pointcloud projection into Google Map.
+ * Not developed
+ */
 function gpsPointCloud(json){
  // if(json.hasOwnPropert(''))
   
   
   var gpsPC = PointCloud(x,y,z);
   gpsPC.loadPointCloud();
-}
-/**
- * Create and display SeaDragon model
- */
-function displaySeaDragon(json){
-  // if(jsonDataMap.has(orientationName)){
-  if(jsonDataMap.has(latitudeName) && jsonDataMap.get(latitudeName).length > 0){
-    if(jsonDataMap.has(longitudeName) && jsonDataMap.get(longitudeName).length > 0){
-      if(json.hasOwnProperty('latitude')){
-        if(json.hasOwnProperty('longitude')){
-
-          SeaDragon = Mesh(SeaDragonFilePath);
-          SeaDragon.setColor('#ffff00');
-          var latitudeArray = jsonDataMap.get(latitudeName);
-          console.log('LATARRAYLENGTH: '+latitudeArray.length);
-          var longitudeArray = jsonDataMap.get(longitudeName);
-          var orientationArray = jsonDataMap.get(orientationName); //TODO Account for orientation
-          var gps = {};
-          gps.lat = latitudeArray;
-          gps.long = longitudeArray;
-          var altitudeArray = [];
-          for(var i = 0; i < latitudeArray.length; i++){
-            altitudeArray.push(SDBottom);
-          }
-          gps.alt = altitudeArray;
-          gps.origin = {};
-          gps.origin.lat = json['latitude'];
-          gps.origin.long = json['longitude'];
-          gps.origin.alt = 0;
-          var localPositionData = gpsToLocal(gps);
-          console.log(localPositionData.x);
-          console.log(localPositionData.y);
-          console.log(localPositionData.z);
-          
-          SeaDragon.setPositionData(localPositionData);
-          SeaDragon.loadModel(0);
-          sim.manage(SeaDragon);
-        }
-        else{
-          console.log('No longitude origin provided');
-        }
-      }
-      else{
-        console.log('No latitude origin provided');
-      }
-    }
-    else{
-      console.log('No SeaDragon longitude array');
-    }
-  }
-  else{
-    console.log('No SeaDragon latitude array');
-  }
-  /* }
-     else{
-     console.log('No SeaDragon orientations array');
-     } */
-}
-
-/**
- * Create and display SeaDragon Marker
- */
-function displaySeaDragonMarker(json){
-  console.log('Displaying SeaDragon Marker');
-  // if(jsonDataMap.has(orientationName)){
-  if(jsonDataMap.has(latitudeName)){
-    if(jsonDataMap.has(longitudeName)){
-      var latitudeArray = jsonDataMap.get(latitudeName);
-      var longitudeArray = jsonDataMap.get(longitudeName);
-      var orientationArray = jsonDataMap.get(orientationName);
-      seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
-      seaDragonMarker.displayPath();
-      sim.manage(seaDragonMarker);   
-    }
-    else{
-      console.log('No SeaDragon longitude array');
-    }
-  }
-  else{
-    console.log('No SeaDragon latitude array');
-  }
-  /* }
-     else{
-     console.log('No SeaDragon orientations array');
-     } */
-}
-
-/**
- * Displays the dimensions of the iceberg
- * @param {object} json The JSON that contains the dimensions
- */
-function displayDimensions(json) {
-  if (json.hasOwnProperty('height')) {
-    var height = json.height;
-    //TODO add height monitor
-  }
-  if (json.hasOwnProperty('width')) {
-    var width = json.width;
-    //TODO add width monitor
-  }
-  if (json.hasOwnProperty('volume')) {
-    var volume = json.volume;
-    //TODO add volume monitor 
-  }
-}
-
-/**
- * Display markers and polygons on Google Map
- * @param {object} json
- */
-function displayMap(json) {
-  //TODO if longitude and latitude exist, create map. Have map invisible by default
-  //Load longitude and latitude of iceberg
-  if (json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')) {
-    var longitude = json.longitude;
-    var latitude = json.latitude;
-    var displayMapBool = 1;
-    if (typeof longitude === 'number') {
-      if (!(longitude >= -180 && longitude <= 180)) {
-        console.log("longitude invalid: out of range.");
-        displayMapBool = 0;
-      }
-    }
-    else {
-      console.log("longitude invalid: not of type 'number'")
-        displayMapBool = 0;
-    }
-    if (typeof latitude === 'number') {
-      if (!(latitude >= -90 && latitude <= 90)) {
-        console.log("latitude invalid: out of range.");
-        displayMapBool = 0;
-      }
-    }
-    else {
-      console.log("latitude invalid: not of type 'number'")
-        displayMapBool = 0;
-    }
-    if(displayMapBool == 1){
-      map = new GoogleMap('map');
-      map.setCenter(latitude,longitude);
-      surveyMarker = new Marker(map.getMap(),[latitude],[longitude]);
-      surveyMarker.display();
-      displaySeaDragonMarker();
-      displayIcebergMarker();
-      //  map.setMarker(latitude,longitude);
-      //  map.displaySDPosition(latitude,longitude);
-      map.setZoom(15);
-    }
-  }
-}
-
-
-/**
- * Display point cloud
- * @param {object} json
- */
-function displayPointCloud(json) {
-  //Load the point cloud data
-  var xarray_check = json.hasOwnProperty('x');
-  var yarray_check = json.hasOwnProperty('y');
-  var zarray_check = json.hasOwnProperty('z');
-
-  if (xarray_check && yarray_check && zarray_check) {
-    var x = json['x'];
-    var y = json['y'];
-    var z = json['z'];
-    console.log('POINT CLOUD');
-    console.log(x);
-    console.log(y);
-    console.log(z);
-    if(x.length > 0 && y.length > 0 && z.length > 0){
-      console.log('creating point cloud model');
-      console.log(DEMO);
-      IcebergPointCloud = PointCloud(x, y, z);
-      IcebergPointCloud.loadPointCloud();
-      addToggle('pointstoggle', 'IcebergPointCloud.toggle()', 'Toggle Points'); 
-    }
-  }
 }

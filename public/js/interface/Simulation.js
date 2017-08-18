@@ -1,17 +1,23 @@
-/** @constructor */
+/**
+ * @constructor
+ */
+ 
 var Simulation = function (tmax) {
 
   var time_index = 0;
   var delay_factor = 1;
   this.timebarid = 'timebar';
   this.timeMax = 0;
-    /**
+  
+  /**
    * Update the maximum value the time bar can have
    */
   this.updateTimeMax = function (t) {
     this.timeMax = t;
     document.getElementById(this.timebarid).max = this.timeMax;
   };
+  
+  /* INITIALIZATION */
   this.updateTimeMax(tmax - 1);
   this.playid;
   this.playbtnid = 'playbtn';
@@ -22,40 +28,34 @@ var Simulation = function (tmax) {
   this.charts = new Array(0);
   this.monitors = new Array(0);
   this.managedEntities = new Array(0);
-  /* PUBLIC FUNCTIONS */
   
+  /**
+   * Play all entities being tracked by this simulation
+   */  
   this.playEntities = function(index){
     for(var i = 0; i < this.managedEntities.length; i++){
       this.managedEntities[i].play(index);
     }
   }
+  
+  /**
+   * Track a new entity (monitor, chart, etc.)
+   */
   this.manage = function(newEntity){
     this.managedEntities.push(newEntity);
   }
-  /**
-   * Set simulation object to manage chart
-   * @param {object} newChart The new chart to be tracked
-   */
-  this.manageChart = function(newChart){
-    this.charts.push(newChart);
-  }
-  this.manageMonitor = function(newMonitor){
-    this.monitors.push(newMonitor);
-  }
+
   /**
    * Set the time index based on the current value of the slider bar
    */
   this.manualsetTime = function () {
-    //TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
     var newTime = document.getElementById(this.timebarid).value;
     this.set_time(newTime);
-    this.dispdata(this.get_time());
     this.playEntities(newTime);
-    console.log(this.get_time());
   };
 
   /**
-   * Iterate through trial data and update displays
+   * Replay simulation by incrementing time index and calling play for each tracked entity
    */
   this.play = function () {
     document.getElementById(this.pausebtnid).disabled = false;
@@ -64,12 +64,9 @@ var Simulation = function (tmax) {
     document.getElementById(this.timebarid).disabled = false;
     var parent = this;
     this.playid = setInterval(function () {
-      var ti = parent.get_time(); //time[time_index];//Json objects have bad timestamp data
-      //        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
-      parent.dispdata(ti);
+      var ti = parent.get_time();
       parent.setTimeBar(ti);
-      parent.playEntities(ti);
-      //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
+      parent.playEntities(ti);   
       parent.set_time(ti + 1);
       if (ti >= parent.timeMax) {
         clearInterval(parent.playid);
@@ -94,7 +91,6 @@ var Simulation = function (tmax) {
     clearInterval(this.playid);
     this.set_time(0);
     this.setTimeBar(this.get_time());
-    this.dispdata(this.get_time());
     this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
@@ -108,21 +104,6 @@ var Simulation = function (tmax) {
    */
   this.get_time = function () {
     return parseInt(time_index);
-  };
-
-  /**
-   * Update the charts, plots, and google map with data associated with time index t
-   * @param {number} t Time index 
-   */
-  this.dispdata = function (t) {
-    for(i = 0; i < this.charts.length; i++){
-      this.charts[i].shiftChart(t);  
-      this.charts[i].refresh();
-    }
-    for(i = 0; i < this.monitors.length; i++){
-      this.monitors[i].update(t);  
-    }
-    // updateSDPosition(t)
   };
 
   /**
@@ -140,9 +121,6 @@ var Simulation = function (tmax) {
     time_index = t;
   };
 
-
-  /* PRIVATE FUNCTIONS */
-
   /**
    * Update the clock with the time associated with time index t
    * @param {number} t time index
@@ -156,4 +134,13 @@ var Simulation = function (tmax) {
     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
     document.getElementById(clockid).innerHTML = formattedTime;
   };
+  
+  this.delete = function(){
+    this.updateTimeMax(0);
+    this.sdx = [];
+    this.sdy = [];
+    this.charts = new Array(0);
+    this.monitors = new Array(0);
+    this.managedEntities = new Array(0);
+  }
 };

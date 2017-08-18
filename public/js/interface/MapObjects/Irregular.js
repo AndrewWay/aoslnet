@@ -19,7 +19,7 @@ function IrregularMarker(parentMap,latitudeArray,longitudeArray){
         }
       }
     }
-    var icebergPerimeter = new google.maps.Polygon({
+    newMarker = new google.maps.Polygon({
 path: perim,
 strokeColor: '#ffffff',
 strokeOpacity: 0.8,
@@ -29,13 +29,15 @@ fillOpacity: 0.35,
 });
 
 this.play = function(index){
-//TODO
+  //TODO
 }
 
-icebergPerimeter.setMap(this.parentMap);
+this.setMarker(newMarker);
+newMarker.setMap(this.parentMap);
 }
 return new IrregularMarkerObject();
 }
+
 
 
 

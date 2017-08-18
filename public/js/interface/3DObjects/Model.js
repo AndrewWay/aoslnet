@@ -7,13 +7,14 @@ var Model = function (Environment) {
   var rotWorldMatrix;
   this.World = Environment.ms_Scene;
 
+  var toggleID = ''; // ID for html toggle
   this.toggled = 1; //Boolean for determining if model is visible
   this.appearance = {color: 0xffffff };
   this.mesh;
   var xposition = [];
   var yposition = [];
   var zposition = [];
-
+  
   /**
    * Return position data corresponding to index
    * @param {Number} index The index of the position data
@@ -153,7 +154,9 @@ var Model = function (Environment) {
     this.mesh.rotation.setFromRotationMatrix(object.matrix);
   }
 
-
+  this.setToggleID = function(ID){
+    toggleID = ID;
+  }
   /**
    * Make model visible or invisible
    */
@@ -168,7 +171,19 @@ var Model = function (Environment) {
       this.toggled = 0;
     }
   }
+
+  /**
+   * Delete the model from the interface
+   */
+  this.delete = function(){
+    this.World.remove(this.mesh);
+    if(toggleID !== ''){
+      console.log(toggleID);
+      document.getElementById(toggleID).remove();
+    }
+  }
 };
+
 
 
 
