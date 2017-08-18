@@ -327,7 +327,7 @@ function displayCamera(){
     var picturePaths = jsonDataMap.get(picturePathName);
     console.log(picturePaths);
     var basePath = 'data/images/'+currentIcebergYear+'/'+currentIcebergName+'/';
-    Cam = new Camera(picID,picturePaths,basePath);
+ //   Cam = new Camera(picID,picturePaths,basePath);
   }
 }
 /**
