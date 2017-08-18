@@ -100,6 +100,8 @@ strokeWeight: 2,});
     path.setMap(this.parentMap);
   }
   this.delete = function(){
+    console.log(marker);
+    console.log(path);
     if(typeof marker !== 'undefined' && marker !== null){
       this.removeMarker();
     }

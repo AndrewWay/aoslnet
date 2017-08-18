@@ -199,7 +199,7 @@ function resetInterface(){
   
   //Remove Iceberg perimeter
   
-  //Remove SeaDragon path 
+  //Remove SeaDragon path DONE
   
   //Remove monitors DONE
   

@@ -19,7 +19,7 @@ function IrregularMarker(parentMap,latitudeArray,longitudeArray){
         }
       }
     }
-    marker = new google.maps.Polygon({
+    newMarker = new google.maps.Polygon({
 path: perim,
 strokeColor: '#ffffff',
 strokeOpacity: 0.8,
@@ -32,8 +32,8 @@ this.play = function(index){
   //TODO
 }
 
-
-marker.setMap(this.parentMap);
+this.setMarker(newMarker);
+newMarker.setMap(this.parentMap);
 }
 return new IrregularMarkerObject();
 }
