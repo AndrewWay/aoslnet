@@ -13,6 +13,7 @@ var longitudeName = 'longitudeSD';
 var orientationName = 'orientationSD';
 var icebergLatitudeName = 'latI0';
 var icebergLongitudeName = 'longI0';
+var picturePathName = 'Picture';
 
 /* SIMULATION OBJECTS */
 var sim; // Simulation object
@@ -32,6 +33,7 @@ var seaDragonMarker;
 var icebergNameOptionsID = "selectName";
 var icebergYearOptionsID = "selectYear";
 var modelcontainerid = 'model';
+var picID = 'icedisp';
 
 /* INTERFACE PARAMETERS */
 var chartLimit = 2; // Maximum number of charts
@@ -42,6 +44,7 @@ var SDBottom = -1;
 
 /* INTERFACE OBJECTS */
 var interfaceObjects = [];
+var Cam;
 
 /* REQUEST URLs */
 var namesReq = 'bergs/names';
@@ -53,7 +56,8 @@ var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
 var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 /* MISC */
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
-
+var currentIcebergName = '';
+var currentIcebergYear = '';
 /* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
@@ -78,7 +82,6 @@ function testfunction(){
   SDy.loadModel(0);
   SDz.loadModel(0);
   SDorigin.loadModel(0);
-  
 }
 
 function testfunction3(){
@@ -89,9 +92,6 @@ function testfunction3(){
   SDorigin.setPosition(0,0,0);
 }
 
-function testfunction2(){
-  resetInterface();
-}
 /**
  * Initiates execution of all functions for setting the page up
  */
@@ -107,13 +107,7 @@ $(document).ready(function () {
     createScene();
     autoselect();
     });
-
-/**
- * Selects the iceberg data chosen from global map
- * Maybe check if cookie exists
- * If so, call correct functions to load iceberg survey corresponding to data found in cookie
- */
-
+    
 /**
  * Loads in a new list of datasets to choose from
  * @param {String} optionID 
@@ -171,7 +165,6 @@ function changeIceberg(yearSelected,bergSelected) {
   if (json.constructor == Array) {
     json = json[0];
   }
-  console.log(json);
   if(json.hasOwnProperty('Data') && json['Data'].length > 0){
     extractKeyPaths(json['Data'][0]); //Only checks first element
     distributeData(json['Data']); 
@@ -181,7 +174,10 @@ function changeIceberg(yearSelected,bergSelected) {
     createCharts();
     createMonitors();
   }
-
+  currentIcebergYear = yearSelected;
+  currentIcebergName = bergSelected;
+  
+  displayCamera();
   displayDimensions(json);
   displaySeaDragon(json);
   displayMap(json);
@@ -322,6 +318,18 @@ function createMonitors(){
   }
 }
 
+/**
+ * Initialize and display camera
+ */
+function displayCamera(){
+  if(jsonDataMap.has(picturePathName)){
+    console.log('loading pictures');
+    var picturePaths = jsonDataMap.get(picturePathName);
+    console.log(picturePaths);
+    var basePath = 'data/images/'+currentIcebergYear+'/'+currentIcebergName+'/';
+    Cam = new Camera(picID,picturePaths,basePath);
+  }
+}
 /**
  * Display Oilrig model
  */

@@ -6,12 +6,13 @@
 
 set -e #Make script exit upon generating error of (almost) all commands. See man bash for more info
 
-imagestore="/home/away/workspace/aoslnet/site/public/images"
+IMAGE_STORE="images/"
 
 #Script must be ran in public/data 
 PUBLIC_STL_DIR='models/stl/'
 PUBLIC_XYZ_DIR='models/xyz/'
 PROC_XYZ_DIR='processing/processed/'
+
 
 vno=0.1
 
@@ -46,6 +47,7 @@ main(){
 
   #NAME_________________________
   local name=$(getName)  
+ 
   #YEAR_________________________
   local year=$(processYear $pcdpath $tsdpath)
 
@@ -53,9 +55,9 @@ main(){
   local dima=$(dimensional_analysis "$output")  #Get width, height, and volume from PCD
 
   #IMAGES_______________________ 
-  #echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
-  #read imagepath
-  #storeimages $imagepath  
+  echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
+  read -e imagePath
+  storeImages "$imagePath" `echo $year | jq '.year'`  `echo $name | jq '.name'`  
   
   #GPS COORDINATES______________
   echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" 
@@ -70,7 +72,6 @@ main(){
   echo $json > tmp.json
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
-
 }
 
 getName(){
@@ -240,12 +241,14 @@ processYear(){
   local year=""
   local yearpcd=""
   local yeartsd=""
+  
   #Check if pcd and tsd are jsons
   if [ "${pcd: -5}" == ".json" ];then
     yearpcd=`cat $pcd | jq '.year' 2> /dev/null`
   elif [ "${tsd: -5}" == ".json" ];then
     yeartsd=`cat $tsd | jq '.year' 2> /dev/null`
   fi
+  
   #Check if either files contain a key "year"
   if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
     echo "No year detected in output string. Please enter the year: " >&2
@@ -288,10 +291,19 @@ dimensional_analysis(){
   echo $ret
 }
 
-storeimages(){
-  path=$1
-  echo "moving to $imagestore/$year/$name"
-  #cp -r $path/* $imagestore/$year/$name
+storeImages(){
+  local path=$1
+  local yr=$2
+  local nme=$3
+  yr=${yr//\"}
+  nme=${nme//\"}
+  if [[ -d $path ]]; then
+    echo "moving to $IMAGE_STORE$yr/$nme" >&2
+    mkdir -p $IMAGE_STORE$yr/$nme
+    cp -r $path* $IMAGE_STORE$yr/$nme/
+  else
+    echo -e "${Red}Path \"$path\" does not exist. Images will not be displayed in the website" >&2
+  fi
 }
 
 heightcalc(){
