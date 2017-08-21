@@ -327,7 +327,10 @@ function displayCamera(){
     var picturePaths = jsonDataMap.get(picturePathName);
     console.log(picturePaths);
     var basePath = 'data/images/'+currentIcebergYear+'/'+currentIcebergName+'/';
- //   Cam = new Camera(picID,picturePaths,basePath);
+    Cam = new Camera(picID,picturePaths,basePath);
+  }
+  else{
+    console.log("No pictures specified in JSON")
   }
 }
 /**
@@ -436,10 +439,7 @@ function displayPointCloud(json) {
     var x = json['x'];
     var y = json['y'];
     var z = json['z'];
-    console.log('POINT CLOUD');
-    console.log(x);
-    console.log(y);
-    console.log(z);
+
     if(x.length > 0 && y.length > 0 && z.length > 0){
       console.log('creating point cloud model');
       console.log(DEMO);
@@ -463,10 +463,9 @@ function displaySeaDragon(json){
 
           SeaDragon = Mesh(SeaDragonFilePath);
           SeaDragon.setColor('#ffff00');
-          var latitudeArray = jsonDataMap.get(latitudeName);
-          console.log('LATARRAYLENGTH: '+latitudeArray.length);
-          var longitudeArray = jsonDataMap.get(longitudeName);
-          var orientationArray = jsonDataMap.get(orientationName); //TODO Account for orientation
+          var latitudeArray = jsonDataMap.get(latitudeName).slice();
+          var longitudeArray = jsonDataMap.get(longitudeName).slice();
+         // var orientationArray = jsonDataMap.get(orientationName).slice(); //TODO Account for orientation
           var gps = {};
           gps.lat = latitudeArray;
           gps.long = longitudeArray;
@@ -521,6 +520,9 @@ function displaySeaDragonMarker(json){
       var latitudeArray = jsonDataMap.get(latitudeName);
       var longitudeArray = jsonDataMap.get(longitudeName);
       var orientationArray = jsonDataMap.get(orientationName);
+      console.log("SD ICON COORD ARRAYS");
+      console.log(latitudeArray);
+      console.log(longitudeArray);
       seaDragonMarker = TriangleMarker(map.getMap(),latitudeArray,longitudeArray,orientationArray);  
       seaDragonMarker.displayPath();
       sim.manage(seaDragonMarker);  

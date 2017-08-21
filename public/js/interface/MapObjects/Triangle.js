@@ -32,7 +32,9 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
       //TODO
       var currentLat = this.getLatitude(index);
       var currentLong = this.getLongitude(index);
-      
+      console.log("SEADRAGON ICON COORDINATES");
+      console.log(currentLat);
+      console.log(currentLong);
       iconProps = {
 ax : currentLong,
      ay : currentLat + y,
@@ -58,7 +60,7 @@ ax : currentLong,
      * @param {Number} lat
      * @param {Number} long
      */
-    this.display = function(lat, lng) {
+    this.display = function() {
       var tri = [];
 
 
@@ -84,11 +86,12 @@ path: tri,
 geodesic: true,
 strokeColor: iconColor,
 strokeOpacity: 1.0,
-strokeWeight: 2,
+strokeWeight: 4,
 zIndex: 3
 });
 marker.setMap(this.parentMap);
 this.setMarker(marker);
+console.log("HELLO");
 }
 
 this.setPosition(0);

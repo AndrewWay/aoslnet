@@ -13,6 +13,7 @@ PUBLIC_STL_DIR='models/stl/'
 PUBLIC_XYZ_DIR='models/xyz/'
 PROC_XYZ_DIR='processing/processed/'
 
+MAX_PCD_SIZE=5000
 
 vno=0.1
 
@@ -27,14 +28,6 @@ main(){
   read -e tsdpath  
   local tsd=$(processTSD $tsdpath)
   
-  #POINT CLOUD DATA_____________
-#  echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
-#  read pcdpath  
-#  if [ -f $pcdpath ];then
-#    dos2unix $pcdpath #Ensure the data file is in unix format
-#  fi
-#  local pcd=$(processPCD $pcdpath)
-
   #STL FILE #TODO get the filepath but wait until the very end to actually upload it
   echo -e "${ICyan}Enter the name to the .stl file  ${Color_Off}"
   read -e stlpath
@@ -43,13 +36,16 @@ main(){
   #XYZ FILE
   echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
   read -e xyzpath
-  local xyz=$(processPCD $xyzpath)  
+ # if [ -f $xyzpath ];then
+ #   dos2unix $xyzpath #Ensure the data file is in unix format
+ # fi
+  local xyz=$(processPCD "$xyzpath")  
 
   #NAME_________________________
   local name=$(getName)  
- 
+
   #YEAR_________________________
-  local year=$(processYear $pcdpath $tsdpath)
+  local year=$(processYear "$tsdpath")
 
   #DIMENSIONAL ANALYSIS_________
   local dima=$(dimensional_analysis "$output")  #Get width, height, and volume from PCD
@@ -60,13 +56,9 @@ main(){
   storeImages "$imagePath" `echo $year | jq '.year'`  `echo $name | jq '.name'`  
   
   #GPS COORDINATES______________
-  echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" 
-  read -e latitude
-  echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" 
-  read -e longitude
-  local long=`jq -n '{longitude : '$longitude'}'`
-  local lat=`jq -n '{latitude : '$latitude'}'`  
-  jsonraw="$name $year $lat $long $dima $stl $xyz $tsd"
+  local gps=$(processCoordinates "$tsdpath")
+
+  jsonraw="$name $year $gps $dima $stl $xyz $tsd"
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
@@ -74,6 +66,51 @@ main(){
   rm tmp.json
 }
 
+processCoordinates(){
+  
+  local path="$1"
+  local ret=''
+  local filecontents=`cat "$path"`
+  local dataexist=`jq 'has("worldPosition")' <<< "$filecontents"`    
+  if [ "$dataexist" == 'true' ];then #Check if the json file has the Data array
+    local locationData=`jq -r '.worldPosition[]' <<< "$filecontents"`
+
+    local hasLat=`jq 'has("lat")' <<< "$locationData"`
+    echo $hasLat >&2
+    local hasLong=`jq 'has("long")' <<< "$locationData"`
+    echo $hasLong >&2
+    local lat=''
+    local long=''
+
+    #Check if worldPosition array has latitude
+    if [ "$hasLat" == 'true' ]; then
+      lat=`jq ".lat" <<< "$locationData"`
+    else
+      echo -e "${Red}No latitude key found in JSON${Color_Off}" >&2
+      echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" >&2
+      read -e lat
+    fi
+    
+    #Check if worldPosition array has longitude
+    if [ "$hasLong" == 'true' ]; then
+      long=`jq ".long" <<< "$locationData"`
+    else
+      echo -e "${Red}No longitude key found in JSON${Color_Off}" >&2
+      echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" >&2
+      read -e lat
+    fi
+  else
+    echo -e "${Red}No worldPosition key found in JSON${Color_Off}" >&2
+    echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" >&2
+    read -e lat
+    echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" >&2
+    read -e long
+  fi
+  long=`jq -n '{longitude : '$long'}'`
+  lat=`jq -n '{latitude : '$lat'}'`  
+  ret=`echo "$long $lat" | jq -s add`
+  echo "$ret"
+}
 getName(){
   #Accepts nothing
   #Creates a name
@@ -170,7 +207,7 @@ processPCD(){
   #Accepts the path to a space separated or comma separated xyz file 
   #Converts the file into 3 JSON-compatible arrays: x y and z
   #Returns JSON with 3 arrays, for x, y and z coordinates of points
-
+  
   local failcode=0
   local input=$1
 
@@ -184,8 +221,21 @@ processPCD(){
     exit 1
   fi
 
+  local file_increment=1
+  local i=1
   #Create the data arrays
   local length=`cat $input | wc -l`
+  
+  if [ $length -gt $MAX_PCD_SIZE ]; then
+    echo "Pointcloud file length greater than $MAX_PCD_SIZE: decimate PCD array? (y/n)" >&2
+    read -e answer
+    if [ "$answer" == "y" ]; then
+      local decimation_factor=`python -c "from math import ceil; print ceil($length/$MAX_PCD_SIZE)"`
+      decimation_factor=`printf "%0.f" $decimation_factor`
+      file_increment=$decimation_factor
+    fi
+  fi
+  
   length=$((length-1)) #Iterate over all n-1 points in the for loop. Handle nth point outside loop
   local xdat='['
   local ydat='['
@@ -193,8 +243,9 @@ processPCD(){
   
   local rejectedpoints=0 #counter for tracking how many points are not floats
   local rejectionstring=""
+  local convert_rejection=0
   echo -e "Now processing PCD..." >&2
-  for i in `seq 1 $length`
+  while [ $i -lt $length ]
   do
     local rejectcode=0
     local line=`sed "${i}q;d" $input` #`cat $input | head -n $i | tail -n 1`
@@ -212,9 +263,24 @@ processPCD(){
       zdat=$zdat$newz,
     else
       rejectedpoints=$((rejectedpoints + 1))
-      rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off}"
+      local rejection_rate=`echo "$rejectedpoints/$length" | bc -l`
+      local badfile=`echo "$rejection_rate > 0.05" | bc -l`
+      rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off} $rejection_rate"
+      if [ "$badfile" -eq 1 ] && [ "$convert_rejection" -eq 0 ]; then
+       printf "\nXYZ file is being heavily rejected. Is your file in UNIX format? If not, would you like me to convert it to UNIX format? (y/n)" >&2
+       local answer=""
+       read -e answer
+       if [ "$answer" == "y" ];then
+        dos2unix $input
+        i=1
+        rejectedpoints=0
+       else
+        convert_rejection=1
+       fi
+      fi
     fi
     echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
+    i=$((i+file_increment))
   done
 
   echo -e "" >&2
@@ -236,21 +302,16 @@ processPCD(){
 }
 
 processYear(){
-  local pcd="$1"
-  local tsd="$2"
+  local tsd="$1"
   local year=""
-  local yearpcd=""
   local yeartsd=""
   
-  #Check if pcd and tsd are jsons
-  if [ "${pcd: -5}" == ".json" ];then
-    yearpcd=`cat $pcd | jq '.year' 2> /dev/null`
-  elif [ "${tsd: -5}" == ".json" ];then
+  if [ "${tsd: -5}" == ".json" ];then
     yeartsd=`cat $tsd | jq '.year' 2> /dev/null`
   fi
   
   #Check if either files contain a key "year"
-  if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
+  if [ ! "$yeartsd" == ^[0-9]{4}$ ];then
     echo "No year detected in output string. Please enter the year: " >&2
     read year
   fi
@@ -297,12 +358,12 @@ storeImages(){
   local nme=$3
   yr=${yr//\"}
   nme=${nme//\"}
-  if [[ -d $path ]]; then
+  if [[ -d "$path" ]]; then
     echo "moving to $IMAGE_STORE$yr/$nme" >&2
     mkdir -p $IMAGE_STORE$yr/$nme
     cp -r $path* $IMAGE_STORE$yr/$nme/
   else
-    echo -e "${Red}Path \"$path\" does not exist. Images will not be displayed in the website" >&2
+    echo -e "${Red}Path \"$path\" does not exist. Images will not be displayed in the website${Color_Off}" >&2
   fi
 }
 
