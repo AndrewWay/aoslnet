@@ -37,7 +37,15 @@ var Camera = function(parentID,names,base){
     pictureNames = newPictureNames;
   }
   
+  this.play = function(index){
+    this.displayPicture(index);
+  }
   /**
-   * Delete the picture array
+   * Delete the picture array and reset the camera
    */
+   this.delete = function(index){
+     pictureNames=[];
+   }
+   
+   this.displayPicture(0);
 }

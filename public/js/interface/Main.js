@@ -328,6 +328,7 @@ function displayCamera(){
     console.log(picturePaths);
     var basePath = 'data/images/'+currentIcebergYear+'/'+currentIcebergName+'/';
     Cam = new Camera(picID,picturePaths,basePath);
+    sim.manage(Cam);
   }
   else{
     console.log("No pictures specified in JSON")
