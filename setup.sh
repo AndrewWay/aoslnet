@@ -32,3 +32,8 @@ sudo apt-get install -y mongodb-org
 
 #Install jq
 sudo apt install jq
+
+
+#finished
+echo "Please run npm start to start server"
+echo "please run sudo service mongod start to start mongoDB"

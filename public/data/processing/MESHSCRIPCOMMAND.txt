@@ -1,0 +1,1 @@
+meshlabserver -i processing/processed/r11i03.xyz -o models/stl/r11i03.stl -om vc vn -s processing/poissonmesh.mlx

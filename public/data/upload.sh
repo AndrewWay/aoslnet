@@ -1,93 +1,116 @@
 #!/bin/bash
 
-#Takes data from TSD and PCD sources and appends it to a JSON file that is compatible with MongoDB
-#Two input files: PCD and TSD (Point cloud data and time-stamped data.)
-#PCD: can be comma separated, space separated, or both. 
-#TSD: JSON. You can specify the name of the array that contains the time-stamped data
-#Both: The script will check either for a consistent year to be used in the uploaded JSON.
+#DATABASE UPLOAD SCRIPT
+#Centralizes data sources by forming a JSON object containing data arrays and filepaths to iceberg model files
+#To add a new JSON entry, simply create a new function that returns a JSON string and combine it with the final string
 
-#Change these headers to match those in your PCD files
-pcdheader_x='X_Value'
-pcdheader_y='Y_Value'
-pcdheader_z='Z_Value'
+set -e #Make script exit upon generating error of (almost) all commands. See man bash for more info
 
-#Knowledge base
-pcd_is_csv=0
-pcd_is_json=0
-tsd_is_csv=0
-tsd_is_json=0
+IMAGE_STORE="images/"
 
-imagestore="/home/away/workspace/aoslnet/site/public/images"
+#Script must be ran in public/data 
+PUBLIC_STL_DIR='models/stl/'
+PUBLIC_XYZ_DIR='models/xyz/'
+PROC_XYZ_DIR='processing/processed/'
+
+MAX_PCD_SIZE=5000
 
 vno=0.1
 
 main(){
-  
+
   echo -e "${BBlue}AOSL MongoDB Data Upload"
   echo -e "${UWhite}Version $vno"
   echo ""
 
   #TIME STAMPED DATA____________
   echo -e "${ICyan}Enter the path to the file containing the timestamped data: ${Color_Off}"
-  read tsdpath  
+  read -e tsdpath  
   local tsd=$(processTSD $tsdpath)
   
-  #POINT CLOUD DATA_____________
-#  echo -e "${ICyan}Enter the path to the file containing the point cloud data: ${Color_Off}"
-#  read pcdpath  
-#  if [ -f $pcdpath ];then
-#    dos2unix $pcdpath #Ensure the data file is in unix format
-#  fi
-#  local pcd=$(processPCD $pcdpath)
-
+  #STL FILE #TODO get the filepath but wait until the very end to actually upload it
   echo -e "${ICyan}Enter the name to the .stl file  ${Color_Off}"
-  read stlpath
-  local stl=$(getSTLPath $stlpath)
+  read -e stlpath
+  local stl=$(getSTLjson $stlpath)
+  
+  #XYZ FILE
+  echo -e "${ICyan}Enter the name to the .xyz file  ${Color_Off}"
+  read -e xyzpath
+ # if [ -f $xyzpath ];then
+ #   dos2unix $xyzpath #Ensure the data file is in unix format
+ # fi
+  local xyz=$(processPCD "$xyzpath")  
 
   #NAME_________________________
   local name=$(getName)  
+
   #YEAR_________________________
-  local year=$(processYear $pcdpath $tsdpath)
+  local year=$(processYear "$tsdpath")
 
   #DIMENSIONAL ANALYSIS_________
   local dima=$(dimensional_analysis "$output")  #Get width, height, and volume from PCD
 
   #IMAGES_______________________ 
-  #echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
-  #read imagepath
-  #storeimages $imagepath  
+  echo -e "${ICyan}Enter the path to the file containing the pictures data ${Color_Off}"
+  read -e imagePath
+  storeImages "$imagePath" `echo $year | jq '.year'`  `echo $name | jq '.name'`  
   
   #GPS COORDINATES______________
-  echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" 
-  read latitude
-  echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" 
-  read longitude
-  local long=`jq -n '{longitude : '$longitude'}'`
-  local lat=`jq -n '{latitude : '$latitude'}'`  
-  jsonraw="$name $year $lat $long $dima $stl $tsd"
+  local gps=$(processCoordinates "$tsdpath")
+
+  jsonraw="$name $year $gps $dima $stl $xyz $tsd"
   local json=`echo "$jsonraw" | jq -s add` # The final combined JSON
 
   echo $json > tmp.json
   mongoimport -d aosldb -c data --file tmp.json
   rm tmp.json
-
 }
 
-salvage(){
-  #Function left on backburner. Not neccessary
-  #Accepts a JSON
-  #Checks if the JSON has key given as first argument
-  #Returns the value associated with the key
-
-  local key=$1
-  local source=$2
+processCoordinates(){
   
-  #Check if key exists
+  local path="$1"
+  local ret=''
+  local filecontents=`cat "$path"`
+  local dataexist=`jq 'has("worldPosition")' <<< "$filecontents"`    
+  if [ "$dataexist" == 'true' ];then #Check if the json file has the Data array
+    local locationData=`jq -r '.worldPosition[]' <<< "$filecontents"`
 
-  #Return null if doesn't exists, return value if exists
+    local hasLat=`jq 'has("lat")' <<< "$locationData"`
+    echo $hasLat >&2
+    local hasLong=`jq 'has("long")' <<< "$locationData"`
+    echo $hasLong >&2
+    local lat=''
+    local long=''
 
+    #Check if worldPosition array has latitude
+    if [ "$hasLat" == 'true' ]; then
+      lat=`jq ".lat" <<< "$locationData"`
+    else
+      echo -e "${Red}No latitude key found in JSON${Color_Off}" >&2
+      echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" >&2
+      read -e lat
+    fi
+    
+    #Check if worldPosition array has longitude
+    if [ "$hasLong" == 'true' ]; then
+      long=`jq ".long" <<< "$locationData"`
+    else
+      echo -e "${Red}No longitude key found in JSON${Color_Off}" >&2
+      echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" >&2
+      read -e lat
+    fi
+  else
+    echo -e "${Red}No worldPosition key found in JSON${Color_Off}" >&2
+    echo -e "${ICyan}Enter the latitude of the iceberg${Color_Off}" >&2
+    read -e lat
+    echo -e "${ICyan}Enter the longitude of the iceberg${Color_Off}" >&2
+    read -e long
+  fi
+  long=`jq -n '{longitude : '$long'}'`
+  lat=`jq -n '{latitude : '$lat'}'`  
+  ret=`echo "$long $lat" | jq -s add`
+  echo "$ret"
 }
-
 getName(){
   #Accepts nothing
   #Creates a name
@@ -137,96 +160,82 @@ processTSD(){
   echo "$ret"
 }
 
-getSTLPath(){
+getSTLjson(){
   #Accepts path to .stl file
   #Creates json string {stlpath : path/to/stl}
   #Returns data JSON
 
-  local file=$1
-  local path="data/models/stl/$file"
+  local stlpath=$1
+  local stlfile=$(basename $stlpath) 
+  local path="data/$PUBLIC_STL_DIR$stlfile"
   local ret=""  
-  if [ "${file: -4}" == ".stl" ] && [ -f $file ];then #Check if the file is an existing json
+  if [ "${stlfile: -4}" == ".stl" ] && [ -f $stlpath ];then #Check if the file is an existing .stl
     ret=`jq -n '{ stlpath : "'$path'" }'`
     echo "$ret"
-    mv $file models/stl/$file
+    cp $stlpath $PUBLIC_STL_DIR$stlfile
   else
-    echo ".stl filepath does not exist" >&2 #File not json: Data array set to empty
+    echo ".stl filepath does not exist" >&2 #File not stl
     echo "Not adding .stl filepath JSON string to output" >&2
     exit 1
   fi
 }
 
-getXYZPath(){
+getXYZjson(){
   #Accepts path to .xyz file
   #Creates json string { xyzpath : path/to/xyz }
   #Returns data JSON
 
-  local path=$1
+  local xyzpath=$1
+  local xyzfile=$(basename $xyzpath)
+  echo "xyz base name $xyzfile" >&2
+  local path="data/$PUBLIC_XYZ_DIR$xyzfile"
   local ret=""  
-  if [ "${path: -4}" == ".xyz" ] && [ -f $path ];then #Check if the file is an existing json
-    ret=`jq '{ xyzpath : '$path' }'`
+  if [ "${xyzfile: -4}" == ".xyz" ] && [ -f $xyzpath ];then #Check if the file is an existing json
+    ret=`jq -n '{ xyzpath : "'$path'" }'`
     echo "$ret"
+    cp $xyzpath $PUBLIC_XYZ_DIR$xyzfile
   else
-    echo ".xyz filepath does not exist" >&2 #File not json: Data array set to empty
+    echo ".xyz filepath does not exist" >&2 #File not xyz
     echo "Not adding .xyz filepath JSON string to output" >&2
     exit 1
   fi
 }
+
 processPCD(){
   #TODO: Break this function up into smaller functions? Function is big and pretty complex
 
-  #Accepts the path to a space separated or comma separated file 
+  #Accepts the path to a space separated or comma separated xyz file 
   #Converts the file into 3 JSON-compatible arrays: x y and z
   #Returns JSON with 3 arrays, for x, y and z coordinates of points
-
+  
   local failcode=0
   local input=$1
-  local badh=-1
 
-  local xindex=$badh
-  local yindex=$badh
-  local zindex=$badh
+  local xindex=0
+  local yindex=1
+  local zindex=2
   if [ ! -f "$input" ];then
     echo -e "${Red}File \"$input\" does not exist. Setting PCD arrays to empty. ${Color_Off}" >&2
     local ret=`jq -n '{x : [] } + {y : [] } + {z : [] }'`
     echo "$ret"
     exit 1
   fi
-  #Take the raw data file and determine what columns contain the x,y, and z data
-  local headers=`cat $input | head -n 1`
-  local headarrs=""
-  IFS=$', \t' read -r -a headarrs <<< "$headers"
 
-  #check which columns contain strings x y and z
-  for h in `seq 0 "${#headarrs[@]}"`
-  do
-    header=${headarrs[$h]}
-    if [[ "$header" == "$pcdheader_x" ]];then
-      xindex=$h
-    fi
-    if [[ "$header" =~ "$pcdheader_y" ]];then
-      yindex=$h
-    fi
-    if [[ "$header" =~ "$pcdheader_z" ]];then
-      zindex=$h
-    fi    
-  done
-  
-  if [ $xindex == $badh ];then
-    echo -e "${Red}$pcdheader_x heading not detected.${Color_Off}" >&2
-    failcode=1
-  fi
-  if [ $yindex == $badh ];then
-    echo -e "${Red}$pcdheader_y heading not detected.${Color_Off}" >&2
-    failcode=1
-  fi
-  if [ $zindex == $badh ];then
-    echo -e "${Red}$pcdheader_z heading not detected.${Color_Off}" >&2
-    failcode=1
-  fi
-
+  local file_increment=1
+  local i=1
   #Create the data arrays
   local length=`cat $input | wc -l`
+  
+  if [ $length -gt $MAX_PCD_SIZE ]; then
+    echo "Pointcloud file length greater than $MAX_PCD_SIZE: decimate PCD array? (y/n)" >&2
+    read -e answer
+    if [ "$answer" == "y" ]; then
+      local decimation_factor=`python -c "from math import ceil; print ceil($length/$MAX_PCD_SIZE)"`
+      decimation_factor=`printf "%0.f" $decimation_factor`
+      file_increment=$decimation_factor
+    fi
+  fi
+  
   length=$((length-1)) #Iterate over all n-1 points in the for loop. Handle nth point outside loop
   local xdat='['
   local ydat='['
@@ -234,46 +243,56 @@ processPCD(){
   
   local rejectedpoints=0 #counter for tracking how many points are not floats
   local rejectionstring=""
-  if [[ $failcode -eq 1 ]];then #If the script failed to find x y and z headers, set arrays to []
-    echo -e "${Red}processPCD failed to find correct headers in $input. Setting PCD arrays to []${Color_Off}" >&2   
-    xdat="[]"
-    ydat="[]"
-    zdat="[]" 
-  else #Else grab the x y z data from the input file and create the x y and z JSON arrays
-    echo -e "Now processing PCD..." >&2
-    for i in `seq 2 $length`
-    do
-      local rejectcode=0
-      local line=`cat $input | head -n $i | tail -n 1`
-      local linearr=""
-      IFS=$', \t' read -r -a linearr <<< "$line"
+  local convert_rejection=0
+  echo -e "Now processing PCD..." >&2
+  while [ $i -lt $length ]
+  do
+    local rejectcode=0
+    local line=`sed "${i}q;d" $input` #`cat $input | head -n $i | tail -n 1`
+    local linearr=""
+    IFS=$', \t' read -r -a linearr <<< "$line"
 
-      local newx=${linearr[$xindex]}
-      local newy=${linearr[$yindex]}
-      local newz=${linearr[$zindex]}
-      #echo "newx: $newx" >&2
-  #Shorten this if statement
+    local newx=${linearr[$xindex]}
+    local newy=${linearr[$yindex]}
+    local newz=${linearr[$zindex]}
+    #echo "newx: |$newx|" >&2
+    #Shorten this if statement
     if [[ $newx =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newy =~ ^[-+]?[0-9]+\.?[0-9]*$ && $newz =~ ^[-+]?[0-9]+\.?[0-9]*$ ]];then
       xdat=$xdat$newx,
       ydat=$ydat$newy,
       zdat=$zdat$newz,
     else
       rejectedpoints=$((rejectedpoints + 1))
-      rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off}"
+      local rejection_rate=`echo "$rejectedpoints/$length" | bc -l`
+      local badfile=`echo "$rejection_rate > 0.05" | bc -l`
+      rejectionstring="${Red}rejected points: $rejectedpoints/$length${Color_Off} $rejection_rate"
+      if [ "$badfile" -eq 1 ] && [ "$convert_rejection" -eq 0 ]; then
+       printf "\nXYZ file is being heavily rejected. Is your file in UNIX format? If not, would you like me to convert it to UNIX format? (y/n)" >&2
+       local answer=""
+       read -e answer
+       if [ "$answer" == "y" ];then
+        dos2unix $input
+        i=1
+        rejectedpoints=0
+       else
+        convert_rejection=1
+       fi
+      fi
     fi
-      echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
-    done
-    echo -e "" >&2
-    local line=`cat $input | tail -n 1`
-    IFS=$', \t' read -r -a linearr <<< "$line"
-    newx=${linearr[$xindex]}
-    newy=${linearr[$yindex]}
-    newz=${linearr[$zindex]}
+    echo -en "\rpoints processed: $i/$length $rejectionstring" >&2    
+    i=$((i+file_increment))
+  done
 
-    xdat="$xdat$newx]"
-    ydat="$ydat$newy]"
-    zdat="$zdat$newz]"
-  fi
+  echo -e "" >&2
+  local line=`cat $input | tail -n 1`
+  IFS=$', \t' read -r -a linearr <<< "$line"
+  newx=${linearr[$xindex]}
+  newy=${linearr[$yindex]}
+  newz=${linearr[$zindex]}
+
+  xdat="$xdat$newx]"
+  ydat="$ydat$newy]"
+  zdat="$zdat$newz]"
   local xarr=`jq '{x : .}' <<< "$xdat"`
   local yarr=`jq '{y : .}' <<< "$ydat"`
   local zarr=`jq '{z : .}' <<< "$zdat"`
@@ -283,19 +302,16 @@ processPCD(){
 }
 
 processYear(){
-  local pcd="$1"
-  local tsd="$2"
+  local tsd="$1"
   local year=""
-  local yearpcd=""
   local yeartsd=""
-  #Check if pcd and tsd are jsons
-  if [ "${pcd: -5}" == ".json" ];then
-    yearpcd=`cat $pcd | jq '.year' 2> /dev/null`
-  elif [ "${tsd: -5}" == ".json" ];then
+  
+  if [ "${tsd: -5}" == ".json" ];then
     yeartsd=`cat $tsd | jq '.year' 2> /dev/null`
   fi
+  
   #Check if either files contain a key "year"
-  if [ ! "$yearpcd" == ^[0-9]{4}$ ] && [ ! "$yeartsd" == ^[0-9]{4}$ ];then
+  if [ ! "$yeartsd" == ^[0-9]{4}$ ];then
     echo "No year detected in output string. Please enter the year: " >&2
     read year
   fi
@@ -336,10 +352,19 @@ dimensional_analysis(){
   echo $ret
 }
 
-storeimages(){
-  path=$1
-  echo "moving to $imagestore/$year/$name"
-  #cp -r $path/* $imagestore/$year/$name
+storeImages(){
+  local path=$1
+  local yr=$2
+  local nme=$3
+  yr=${yr//\"}
+  nme=${nme//\"}
+  if [[ -d "$path" ]]; then
+    echo "moving to $IMAGE_STORE$yr/$nme" >&2
+    mkdir -p $IMAGE_STORE$yr/$nme
+    cp -r $path* $IMAGE_STORE$yr/$nme/
+  else
+    echo -e "${Red}Path \"$path\" does not exist. Images will not be displayed in the website${Color_Off}" >&2
+  fi
 }
 
 heightcalc(){

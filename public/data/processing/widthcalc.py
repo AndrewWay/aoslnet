@@ -16,6 +16,8 @@ wid = 0
 #that have the largest seperation distance (corresponds to the largest width of the iceberg)
 for i in range(0,card):
     p1 = [float(x) for x in data[i][0:3]]#grab the first point
+    sys.stdout.write("\r{0}>".format("="*i))
+    sys.stdout.flush()
     for j in range(i+1,card):
         p2 = [float(x) for x in data[j][0:3]] #grab the second point
         if (abs((p2[2]-p1[2])/p2[2]) <= bound): #check if the two points are roughly in the same plane

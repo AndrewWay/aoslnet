@@ -40,11 +40,11 @@
   width: 200px;
 }
 
-#displaytable,th,td{
+#monitorTable,th,td{
   width: 150px;
   color: #00ff00;
 }
-#displays{
+#monitors{
   position: absolute;
   z-index: 3;
   left: 215px;
@@ -59,13 +59,10 @@
 	line-height: 10px;
 }
 #temporal{
-  position: absolute;
-  height: 60px;
-  width: 250px;
+  position: relative;
+  width: 600px;
   z-index:2;
-  left: 50%;
-  bottom: 12vh;
-  margin: -30px 0 0 -125px;
+  float: center;
 }
 #graphs{
   position: absolute;

@@ -20,7 +20,7 @@
   <script type="text/javascript" src='js/globalmap/gmap.js'></script>
   <script type="text/javascript" src="js/datatransfer.js"></script>
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
-  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
 <!-- AOSL SCRIPTS -->
 
 	<script type="text/javascript">
@@ -164,19 +164,18 @@ img.emoji {
 
   </div>
   <div id="overview">
-    <h2>Iceberg Information</h2>
-    <p id="desc">Click a marker</p>  
+    <center><h2>Iceberg Information</h2>
+    <p id="desc">Click a marker</p><center>  
     <button type="button" onclick="view()">View</button>
   </div>
 
-		
 	</div><!-- .site-content-contain -->
 </div><!-- #page -->
 <!--  -->
 
 	<script type="text/javascript">
 	/* <![CDATA[ */
-		jQuery(document).ready( function($) {
+		/*jQuery(document).ready( function($) {
 			function doFollowingHover() {
 				$('#wp-admin-bar-follow > a').unbind( '.unfollow' );
 
@@ -250,7 +249,7 @@ var WPGroHo = {"my_hash":"0a15cb77ccdff1dd67b2ad19644b143b"};
 
 	<script>
 		//initialize and attach hovercards to all gravatars
-		jQuery( document ).ready( function( $ ) {
+		/*jQuery( document ).ready( function( $ ) {
 
 			if (typeof Gravatar === "undefined"){
 				return;
@@ -297,13 +296,13 @@ var wpcom_tos_report_form = {"ajaxurl":"\/wp-admin\/admin-ajax.php","isLoggedout
 </script>
 <script type="text/javascript">
 /* <![CDATA[ */
-var actionbardata = {"siteID":"132944102","siteName":"Sea Dragon Data Analyzer","siteURL":"https:\/\/aoslseadragon.com","icon":"<img alt='' src='https:\/\/aoslseadragon.files.wordpress.com\/2017\/07\/cropped-home_2.jpg?w=50' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"1","canCustomizeSite":"1","isFollowing":"","themeSlug":"pub\/twentyseventeen","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/aoslseadragon.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Faoslseadragon.com%2Fdata-mapper%2F","themeURL":"https:\/\/wordpress.com\/theme\/twentyseventeen\/","xhrURL":"https:\/\/aoslseadragon.com\/wp-admin\/admin-ajax.php","nonce":"6ea954961c","isSingular":"1","isFolded":"","isLoggedIn":"1","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"d38978c268\" \/>","referer":"https:\/\/aoslseadragon.com\/data-mapper\/","canFollow":"1","statusMessage":"","customizeLink":"https:\/\/aoslseadragon.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Faoslseadragon.wordpress.com%2Fdata-mapper%2F","postID":"18","shortlink":"http:\/\/wp.me\/P8ZOPI-i","canEditPost":"1","editLink":"https:\/\/wordpress.com\/page\/aoslseadragon.com\/18","statsLink":"https:\/\/wordpress.com\/stats\/post\/18\/aoslseadragon.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Twenty Seventeen","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/aoslseadragon.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Faoslseadragon.com%2Fdata-mapper%2F\">Log in now.<\/a>","stats":"Stats"}};
+/*var actionbardata = {"siteID":"132944102","siteName":"Sea Dragon Data Analyzer","siteURL":"https:\/\/aoslseadragon.com","icon":"<img alt='' src='https:\/\/aoslseadragon.files.wordpress.com\/2017\/07\/cropped-home_2.jpg?w=50' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"1","canCustomizeSite":"1","isFollowing":"","themeSlug":"pub\/twentyseventeen","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/aoslseadragon.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Faoslseadragon.com%2Fdata-mapper%2F","themeURL":"https:\/\/wordpress.com\/theme\/twentyseventeen\/","xhrURL":"https:\/\/aoslseadragon.com\/wp-admin\/admin-ajax.php","nonce":"6ea954961c","isSingular":"1","isFolded":"","isLoggedIn":"1","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"d38978c268\" \/>","referer":"https:\/\/aoslseadragon.com\/data-mapper\/","canFollow":"1","statusMessage":"","customizeLink":"https:\/\/aoslseadragon.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Faoslseadragon.wordpress.com%2Fdata-mapper%2F","postID":"18","shortlink":"http:\/\/wp.me\/P8ZOPI-i","canEditPost":"1","editLink":"https:\/\/wordpress.com\/page\/aoslseadragon.com\/18","statsLink":"https:\/\/wordpress.com\/stats\/post\/18\/aoslseadragon.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Twenty Seventeen","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/aoslseadragon.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Faoslseadragon.com%2Fdata-mapper%2F\">Log in now.<\/a>","stats":"Stats"}};
 /* ]]> */
 </script>
 <script type="text/javascript" src="Data%20Mapper%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/a_002"></script><div id="actionbar" class="actnbr-pub-twentyseventeen actnbr-has-customize actnbr-has-edit"><ul><li class="actnbr-btn actnbr-customize"><a href="https://aoslseadragon.wordpress.com/wp-admin/customize.php?url=https%3A%2F%2Faoslseadragon.wordpress.com%2Fdata-mapper%2F"><svg class="gridicon gridicon__customize" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M2 6c0-1.505.78-3.08 2-4 0 .845.69 2 2 2 1.657 0 3 1.343 3 3 0 .386-.08.752-.212 1.09.74.594 1.476 1.19 2.19 1.81L8.9 11.98c-.62-.716-1.214-1.454-1.807-2.192C6.753 9.92 6.387 10 6 10c-2.21 0-4-1.79-4-4zm12.152 6.848l1.34-1.34c.607.304 1.283.492 2.008.492 2.485 0 4.5-2.015 4.5-4.5 0-.725-.188-1.4-.493-2.007L18 9l-2-2 3.507-3.507C18.9 3.188 18.225 3 17.5 3 15.015 3 13 5.015 13 7.5c0 .725.188 1.4.493 2.007L3 20l2 2 6.848-6.848c1.885 1.928 3.874 3.753 5.977 5.45l1.425 1.148 1.5-1.5-1.15-1.425c-1.695-2.103-3.52-4.092-5.448-5.977z" data-reactid=".2.1.1:0.1b.0"></path></g></svg><span>Customize<span></span></span></a></li><li class="actnbr-btn actnbr-edit"><a href="https://wordpress.com/page/aoslseadragon.com/18"><svg class="gridicon gridicon__pencil" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M13 6l5 5-9.507 9.507c-.686-.686-.69-1.794-.012-2.485l-.002-.003c-.69.676-1.8.673-2.485-.013-.677-.677-.686-1.762-.036-2.455l-.008-.008c-.694.65-1.78.64-2.456-.036L13 6zm7.586-.414l-2.172-2.172c-.78-.78-2.047-.78-2.828 0L14 5l5 5 1.586-1.586c.78-.78.78-2.047 0-2.828zM3 18v3h3c0-1.657-1.343-3-3-3z"></path></g></svg><span>Edit</span></a></li><li class="actnbr-btn actnbr-stats"><a href="https://wordpress.com/stats/post/18/aoslseadragon.com"><svg class="gridicon gridicon__stats-alt" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M21,21H3v-2h18V21z M8,10H4v7h4V10z M14,3h-4v14h4V3z M20,6h-4v11h4V6z"></path></g></svg><span>Stats</span></a></li><li class="actnbr-ellipsis actnbr-hidden"> 			  <svg class="gridicon gridicon__ellipsis" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle></g></svg> 			  <div class="actnbr-popover tip tip-top-left actnbr-more"> 			  	<div class="tip-arrow"></div> 			  	<div class="tip-inner"> 				  <ul> 				    <li class="actnbr-sitename"><a href="https://aoslseadragon.com/"><img alt="" src="Data%20Mapper%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/cropped-home_2.jpg" class="avatar avatar-50" width="50" height="50"> Sea Dragon Data Analyzer</a></li> 				   	<li class="actnbr-folded-customize"><a href="https://aoslseadragon.wordpress.com/wp-admin/customize.php?url=https%3A%2F%2Faoslseadragon.wordpress.com%2Fdata-mapper%2F"><svg class="gridicon gridicon__customize" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M2 6c0-1.505.78-3.08 2-4 0 .845.69 2 2 2 1.657 0 3 1.343 3 3 0 .386-.08.752-.212 1.09.74.594 1.476 1.19 2.19 1.81L8.9 11.98c-.62-.716-1.214-1.454-1.807-2.192C6.753 9.92 6.387 10 6 10c-2.21 0-4-1.79-4-4zm12.152 6.848l1.34-1.34c.607.304 1.283.492 2.008.492 2.485 0 4.5-2.015 4.5-4.5 0-.725-.188-1.4-.493-2.007L18 9l-2-2 3.507-3.507C18.9 3.188 18.225 3 17.5 3 15.015 3 13 5.015 13 7.5c0 .725.188 1.4.493 2.007L3 20l2 2 6.848-6.848c1.885 1.928 3.874 3.753 5.977 5.45l1.425 1.148 1.5-1.5-1.15-1.425c-1.695-2.103-3.52-4.092-5.448-5.977z" data-reactid=".2.1.1:0.1b.0"></path></g></svg><span>Customize<span></span></span></a></li> 				    <li class="actnbr-folded-follow"><a class="actnbr-action actnbr-actn-follow" href=""><svg class="gridicon gridicon__follow" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M23 16v2h-3v3h-2v-3h-3v-2h3v-3h2v3h3zM20 2v9h-4v3h-3v4H4c-1.1 0-2-.9-2-2V2h18zM8 13v-1H4v1h4zm3-3H4v1h7v-1zm0-2H4v1h7V8zm7-4H4v2h14V4z"></path></g></svg><span>Follow</span></a></li> 					 				     				    <li class="actnbr-theme"><a href="https://wordpress.com/theme/twentyseventeen/">Get theme: Twenty Seventeen</a></li> 				    <li class="actnbr-shortlink"><a href="http://wp.me/P8ZOPI-i">Copy shortlink</a></li> 				     				    <li class="actnbr-reader"><a href="https://wordpress.com/read/blogs/132944102/posts/18">View post in Reader</a></li> 				    <li class="actnbr-follows"><a href="https://wordpress.com/following/edit">Manage subscriptions</a></li> 				     				    <li class="actnbr-fold"><a href="">Collapse this bar</a></li> 			      </ul> 			    </div> 		      </div> 		    </li> 	      </ul></div>
 <script type="text/javascript">
 // <![CDATA[
-(function() {
+/*(function() {
 try{
   if ( window.external &&'msIsSiteMode' in window.external) {
     if (window.external.msIsSiteMode()) {
@@ -316,7 +315,7 @@ try{
     }
   }
 }catch(e){}
-})();
+})();*/
 // ]]>
 </script>		<iframe src="Data%20Mapper%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/master.html" scrolling="no" id="likes-master" name="likes-master" style="display:none;"></iframe>
 		<div id="likes-other-gravatars"><div class="likes-text"><span>%d</span> bloggers like this:</div><ul class="wpl-avatars sd-like-gravatars"></ul></div>
@@ -329,7 +328,7 @@ _tkq.push(['storeContext', {'blog_id':'132944102','blog_tz':'-2','user_lang':'en
 _stq.push(['view', {'blog':'132944102','v':'wpcom','tz':'-2','user':'1','priv':'1','user_id':'125203624','post':'18','subd':'aoslseadragon'}]);
 _stq.push(['extra', {'crypt':'UE40eW5QN0p8M2Y/RE1zNDZ8S252Wis9XUQyb3YrcUVIU2R0VH5TdUlSYmNEVlB+OF8laSU/R0otdVcud2FoTyxmM0hdenMxTTFxMWVmblRXVnosRVc1fk9lNnN4LG9GaWFDd3JOZ05HSmpnb2MxWFlLeGpoSFhDQ3pDKyV8aVhKSDZic2x5OFBFYX5kTHcuZj9aSTdLcVJaZG9vNk5VOTlUPXMucTZzMUFReWJqT1UwPS1fdl1GYTYrflIudkVzLCYmSnFORStXVTFwUDltU1k/OUhzWXNidC16a1duLCZPaS5FRit8eFZjVyxhd3FKOFJubGcxU01zfmltP29XJjRyNmllJU41bC1YPTNHZWNubXN5WFVXd1dfcnI5TzJvdFl5anguQ0xNOT0='}]);
 	</script>
-<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /></noscript>
+<!--<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /></noscript>
 		<div id="wpadminbar" class="ltr">
 							<a class="screen-reader-shortcut" href="#wp-toolbar" tabindex="1">Skip to toolbar</a>
 						<div class="quicklinks" id="wp-toolbar" role="navigation" aria-label="Toolbar" tabindex="0">
@@ -498,7 +497,7 @@ if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
 		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
 	}
 	
-}
+}-->
 </script><svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
 <defs>
 <symbol id="icon-behance" viewBox="0 0 37 32">
@@ -783,6 +782,6 @@ c0.091-0.647,0.349-1.086,0.635-1.337c-2.22-0.251-4.555-1.111-4.555-4.943c0-1.091
 
 <div class="comment-likes-overlay" style="display: none;"></div><img src="Data%20Mapper%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/g.gif" alt=":)" id="wpstats">
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOE5dxPP2ebY6mdBn-DlbBMhx0AB16DEA&callback=mapReady" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxcmnJp6s7IyJSxW6E1riK_WpQN-HehmY&callback=mapReady" async defer></script>
 
 </body></html>
