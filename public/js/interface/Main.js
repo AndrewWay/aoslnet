@@ -36,7 +36,7 @@ var modelcontainerid = 'model';
 var picID = 'icedisp';
 
 /* INTERFACE PARAMETERS */
-var chartLimit = 2; // Maximum number of charts
+var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
@@ -52,7 +52,8 @@ var yearsReq = 'bergs/years';
 var dataReq = 'bergs/data';
 
 /* FILEPATHS */
-var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl';
+var SeaDragonFilePath = 'data/models/seadragon/SeaDragon_small.stl'; 
+//var SeaDragonFilePath = 'data/models/seadragon/SeaDragon(Simple+FullSize).STL';
 var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 /* MISC */
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
@@ -456,6 +457,7 @@ function displayPointCloud(json) {
  * Create and display SeaDragon model
  */
 function displaySeaDragon(json){
+  console.log('Displaying SeaDragon model');
   // if(jsonDataMap.has(orientationName)){
   if(jsonDataMap.has(latitudeName) && jsonDataMap.get(latitudeName).length > 0){
     if(jsonDataMap.has(longitudeName) && jsonDataMap.get(longitudeName).length > 0){
@@ -600,8 +602,8 @@ function gpsToLocal(gpsData){
   }
   
   for (i = 0; i < minArraySize; i++) {
-    long[i] = long2x(lat[i],long[i]) - localData.origin.x;
-    lat[i] = lat2y(lat[i]) - localData.origin.y;
+    long[i] = 111120*(long[i] - longOrigin)*Math.cos(lat[i]*PI/180); //long2x(lat[i],long[i]) - localData.origin.x;
+    lat[i] =  111120*(lat[i] - latOrigin); //lat2y(lat[i]) - localData.origin.y;
     alt[i] = alt[i] - localData.origin.z;
   }
   localData.x = long;

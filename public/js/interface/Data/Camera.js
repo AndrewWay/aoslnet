@@ -21,7 +21,6 @@ var Camera = function(parentID,names,base){
   this.displayPicture = function(i){
     if(i < pictureNames.length){
       var picturePath = basePath + pictureNames[i];
-      console.log(picturePath);
       document.getElementById(displayID).src = picturePath;
     }
     else{
