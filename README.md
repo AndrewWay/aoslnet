@@ -19,3 +19,5 @@ cd public/data/
 Here you'll find another script "upload.sh". Follow the prompts from the script and the script will upload a new JSON to the database you have running on your local machine. 
 
 That's it! Enjoy.
+
+More documentation on the JavaScript can be found in public/js/out/index.html
