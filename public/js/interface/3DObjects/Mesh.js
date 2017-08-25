@@ -5,9 +5,10 @@ function Mesh(sourceFile){
   function MeshObject(){
     this.sourceFile = sourceFile;
     this.__proto__ = new Model(DEMO);
+    
     /**
      * Set the current 3D model filepath on the public directory
-     * @param {String} file
+     * @param {String} file Filepath to the 3D model
      */
     this.setFile = function(file){
       this.sourceFile = file;
@@ -38,6 +39,7 @@ function Mesh(sourceFile){
 
     /**
      * Load and add an .obj file to scene
+     * Not used
      */
     this.loadOBJ = function(rotationAngle){
       var loader = new THREE.OBJLoader();

@@ -1,5 +1,8 @@
 /**
  * @constructor
+ * @param {Array} x X Array
+ * @param {Array} y Y Array
+ * @param {Array} z Z Array
  */
 var PointCloud = function (x,y,z) {
   function PointCloudObject(){
@@ -8,6 +11,7 @@ var PointCloud = function (x,y,z) {
     this.pcd_x = x;
     this.pcd_y = y;
     this.pcd_z = z;
+    
     /**
      * Add 3D point cloud object
      */
@@ -35,9 +39,9 @@ var PointCloud = function (x,y,z) {
 
     /**
      * Set the xyz point cloud data arrays
-     * @param {Number} x
-     * @param {Number} y
-     * @param {Number} z
+     * @param {Array} x X Array
+     * @param {Array} y Y Array
+     * @param {Array} z Z Array
      */
     this.setPointCloud = function (x, y, z) {
       this.pcd_x = x;
