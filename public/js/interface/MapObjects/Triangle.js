@@ -1,5 +1,6 @@
 /**
  * @constructor
+ * 
  * TriangularMarker
  * @param {Object} parentMap Map that contains the triangle marker
  * @param {Array} latitudeArray Array that contains the triangle latitude coordinates
