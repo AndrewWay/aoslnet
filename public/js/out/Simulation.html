@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Simulation<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Simulation<span class="signature">(tmax)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="Simulation"><span class="type-signature"></span>new Simulation<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Simulation"><span class="type-signature"></span>new Simulation<span class="signature">(tmax)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,6 +54,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tmax</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Maximum time index of the simulation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -89,7 +138,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line2">line 2</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -136,141 +185,6 @@
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="dispdata"><span class="type-signature"></span>dispdata<span class="signature">(t)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Update the charts, plots, and google map with data associated with time index t
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>t</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Time index</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line117">line 117</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         
             
@@ -330,7 +244,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line109">line 109</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -382,7 +296,7 @@
     
 
     
-    <h4 class="name" id="manageChart"><span class="type-signature"></span>manageChart<span class="signature">(newChart)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="manage"><span class="type-signature"></span>manage<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -390,7 +304,7 @@
 
 
 <div class="description">
-    Set simulation object to manage chart
+    Track a new entity (monitor, chart, etc.)
 </div>
 
 
@@ -399,55 +313,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>newChart</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The new chart to be tracked</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -483,7 +348,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line39">line 39</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -569,7 +434,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line48">line 48</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line52">line 52</a>
     </li></ul></dd>
     
 
@@ -655,7 +520,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line83">line 83</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -697,7 +562,7 @@
 
 
 <div class="description">
-    Iterate through trial data and update displays
+    Replay simulation by incrementing time index and calling play for each tracked entity
 </div>
 
 
@@ -741,7 +606,93 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line60">line 60</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line61">line 61</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="playEntities"><span class="type-signature"></span>playEntities<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Play all entities being tracked by this simulation
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -876,7 +827,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line139">line 139</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -962,7 +913,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line131">line 131</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -1048,7 +999,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line93">line 93</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line91">line 91</a>
     </li></ul></dd>
     
 
@@ -1134,7 +1085,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line11">line 11</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -1269,7 +1220,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line150">line 150</a>
+        <a href="interface_Simulation.js.html">interface/Simulation.js</a>, <a href="interface_Simulation.js.html#line129">line 129</a>
     </li></ul></dd>
     
 
@@ -1313,13 +1264,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#preselect">preselect</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Aug 15 2017 10:56:47 GMT-0230 (NDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 19:55:45 GMT-0230 (NDT)
 </footer>
 
 <script> prettyPrint(); </script>

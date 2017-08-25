@@ -1,7 +1,7 @@
 /**
  * @constructor
- * @param {string} dataName
- * @param {string} parentID
+ * @param {string} dataName Name of the data source being monitored
+ * @param {string} parentID HTML ID of the div containing the monitor
  */
 var DataMonitor = function(dataName, parentID){
 
@@ -58,7 +58,7 @@ var DataMonitor = function(dataName, parentID){
    }
    
  /**
-  * Interfacing function with Simulation
+  * Interfacing function with Simulation. Updates the monitor value according to the current time index
   */
   this.play = function(t){
     this.update(t);

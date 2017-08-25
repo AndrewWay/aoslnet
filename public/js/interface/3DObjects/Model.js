@@ -2,6 +2,7 @@
  * @constructor
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
+ * @param {Object} Environment Demo object found in public/assets/js/demo.js. Creates the 3D environment
  */
 var Model = function (Environment) {
   var rotWorldMatrix;
@@ -18,6 +19,7 @@ var Model = function (Environment) {
   /**
    * Return position data corresponding to index
    * @param {Number} index The index of the position data
+   * @return {Object} position Position object containing models position in local frame 
    */
   this.getPosition = function(index){
     var position = new Object();
@@ -26,6 +28,7 @@ var Model = function (Environment) {
     position.z = zposition[index];
     return position;
   }
+  
   /**
    * Interfacing function with Simulation. Plays back the position of SeaDragon
    * @param {Number} index The index of the position data
@@ -66,7 +69,7 @@ var Model = function (Environment) {
   }
 
   /**
-   * Update the mesh by specifying a new 3D model file path
+   * DEPRECATED. Update the mesh by specifying a new 3D model file path
    * @param {String} file
    */
   this.updateMesh = function () {
@@ -76,10 +79,10 @@ var Model = function (Environment) {
   };
 
   /**
-   * Update the display for the iceberg dimensions
-   * @param {Number} h
-   * @param {Number} w
-   * @param {Number} v
+   * DEPRECATED. Update the display for the iceberg dimensions
+   * @param {Number} h Height
+   * @param {Number} w Width
+   * @param {Number} v Volume
    */
   this.updateDim = function (h, w, v) {
     var hTd = document.getElementById("icebergHeight");
@@ -154,9 +157,14 @@ var Model = function (Environment) {
     this.mesh.rotation.setFromRotationMatrix(object.matrix);
   }
 
+  /**
+   * Associates a toggle button with the Mesh
+   * @param {String} ID HTML ID of the button
+   */
   this.setToggleID = function(ID){
     toggleID = ID;
   }
+  
   /**
    * Make model visible or invisible
    */

@@ -1,6 +1,10 @@
 /**
  * @constructor
  * TriangularMarker
+ * @param {Object} parentMap Map that contains the triangle marker
+ * @param {Array} latitudeArray Array that contains the triangle latitude coordinates
+ * @param {Array} longitudeArray Array that contains the triangle longitude coordinates
+ * @param {Array} orientation Array that contains the triangle orientations
  */
 function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray){
   function TriangleObject(){
@@ -14,6 +18,7 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
     var iconProps;
     var currentLat;
     var currentLong;
+    
     /**
      * Interface function to be compatible with Simulation object
      * @param {Number} index The index of the data
@@ -23,6 +28,7 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
       this.setOrientation(index);
       this.refreshIcon();
     }
+    
     /**
      * Set the orientation of the triangle marker
      * @param {Number} index The index of the data

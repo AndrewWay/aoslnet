@@ -1,5 +1,6 @@
 /**
  * @constructor
+ * @param {Number} tmax Maximum time index of the simulation
  */
  
 var Simulation = function (tmax) {
