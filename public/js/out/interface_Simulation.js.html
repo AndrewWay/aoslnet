@@ -26,20 +26,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @constructor */
+            <pre class="prettyprint source linenums"><code>/**
+ * @constructor
+ */
+ 
 var Simulation = function (tmax) {
 
   var time_index = 0;
   var delay_factor = 1;
   this.timebarid = 'timebar';
   this.timeMax = 0;
-    /**
+  
+  /**
    * Update the maximum value the time bar can have
    */
   this.updateTimeMax = function (t) {
     this.timeMax = t;
     document.getElementById(this.timebarid).max = this.timeMax;
   };
+  
+  /* INITIALIZATION */
   this.updateTimeMax(tmax - 1);
   this.playid;
   this.playbtnid = 'playbtn';
@@ -50,40 +56,34 @@ var Simulation = function (tmax) {
   this.charts = new Array(0);
   this.monitors = new Array(0);
   this.managedEntities = new Array(0);
-  /* PUBLIC FUNCTIONS */
   
+  /**
+   * Play all entities being tracked by this simulation
+   */  
   this.playEntities = function(index){
     for(var i = 0; i &lt; this.managedEntities.length; i++){
       this.managedEntities[i].play(index);
     }
   }
+  
+  /**
+   * Track a new entity (monitor, chart, etc.)
+   */
   this.manage = function(newEntity){
     this.managedEntities.push(newEntity);
   }
-  /**
-   * Set simulation object to manage chart
-   * @param {object} newChart The new chart to be tracked
-   */
-  this.manageChart = function(newChart){
-    this.charts.push(newChart);
-  }
-  this.manageMonitor = function(newMonitor){
-    this.monitors.push(newMonitor);
-  }
+
   /**
    * Set the time index based on the current value of the slider bar
    */
   this.manualsetTime = function () {
-    //TODO Have play and manualsetTime call the same single function for updating all data/positions/etc
     var newTime = document.getElementById(this.timebarid).value;
     this.set_time(newTime);
-    this.dispdata(this.get_time());
     this.playEntities(newTime);
-    console.log(this.get_time());
   };
 
   /**
-   * Iterate through trial data and update displays
+   * Replay simulation by incrementing time index and calling play for each tracked entity
    */
   this.play = function () {
     document.getElementById(this.pausebtnid).disabled = false;
@@ -92,12 +92,9 @@ var Simulation = function (tmax) {
     document.getElementById(this.timebarid).disabled = false;
     var parent = this;
     this.playid = setInterval(function () {
-      var ti = parent.get_time(); //time[time_index];//Json objects have bad timestamp data
-      //        console.log('time: '+ti+' sdx: '+parent.sdx[ti]+' sdy: '+parent.sdy[ti]);        
-      parent.dispdata(ti);
+      var ti = parent.get_time();
       parent.setTimeBar(ti);
-      parent.playEntities(ti);
-      //        setSDModelPosition(parent.sdx[ti],parent.sdy[ti],SDBottom);        
+      parent.playEntities(ti);   
       parent.set_time(ti + 1);
       if (ti >= parent.timeMax) {
         clearInterval(parent.playid);
@@ -122,7 +119,6 @@ var Simulation = function (tmax) {
     clearInterval(this.playid);
     this.set_time(0);
     this.setTimeBar(this.get_time());
-    this.dispdata(this.get_time());
     this.playEntities(this.get_time());
     document.getElementById(this.timebarid).disabled = false;
     document.getElementById(this.stopbtnid).disabled = true;
@@ -136,21 +132,6 @@ var Simulation = function (tmax) {
    */
   this.get_time = function () {
     return parseInt(time_index);
-  };
-
-  /**
-   * Update the charts, plots, and google map with data associated with time index t
-   * @param {number} t Time index 
-   */
-  this.dispdata = function (t) {
-    for(i = 0; i &lt; this.charts.length; i++){
-      this.charts[i].shiftChart(t);  
-      this.charts[i].refresh();
-    }
-    for(i = 0; i &lt; this.monitors.length; i++){
-      this.monitors[i].update(t);  
-    }
-    // updateSDPosition(t)
   };
 
   /**
@@ -168,9 +149,6 @@ var Simulation = function (tmax) {
     time_index = t;
   };
 
-
-  /* PRIVATE FUNCTIONS */
-
   /**
    * Update the clock with the time associated with time index t
    * @param {number} t time index
@@ -184,6 +162,15 @@ var Simulation = function (tmax) {
     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
     document.getElementById(clockid).innerHTML = formattedTime;
   };
+  
+  this.delete = function(){
+    this.updateTimeMax(0);
+    this.sdx = [];
+    this.sdy = [];
+    this.charts = new Array(0);
+    this.monitors = new Array(0);
+    this.managedEntities = new Array(0);
+  }
 };
 </code></pre>
         </article>
@@ -195,13 +182,13 @@ var Simulation = function (tmax) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#preselect">preselect</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Aug 15 2017 10:56:47 GMT-0230 (NDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 15:35:01 GMT-0230 (NDT)
 </footer>
 
 <script> prettyPrint(); </script>

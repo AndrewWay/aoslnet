@@ -47,7 +47,7 @@ function IrregularMarker(parentMap,latitudeArray,longitudeArray){
         }
       }
     }
-    var icebergPerimeter = new google.maps.Polygon({
+    newMarker = new google.maps.Polygon({
 path: perim,
 strokeColor: '#ffffff',
 strokeOpacity: 0.8,
@@ -57,13 +57,15 @@ fillOpacity: 0.35,
 });
 
 this.play = function(index){
-//TODO
+  //TODO
 }
 
-icebergPerimeter.setMap(this.parentMap);
+this.setMarker(newMarker);
+newMarker.setMap(this.parentMap);
 }
 return new IrregularMarkerObject();
 }
+
 
 
 
@@ -77,13 +79,13 @@ return new IrregularMarkerObject();
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#preselect">preselect</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Aug 15 2017 10:56:47 GMT-0230 (NDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 15:35:01 GMT-0230 (NDT)
 </footer>
 
 <script> prettyPrint(); </script>
