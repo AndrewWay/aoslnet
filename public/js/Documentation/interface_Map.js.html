@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: interface/Map.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: interface/Map.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @constructor
+ * @author Andrew Way &lt;arw405@mun.ca>
+ * @version 0.1
+ * @param {String} parentDivID HTML ID of the div containing the Google Map
+ */
+var GoogleMap = function(parentDivID){
+  var default_lat = 60;
+  var default_long = -45;
+  var default_zoom = 2;
+  this.parentDivID = parentDivID;
+  var AOSL_seadragon_latitude;
+  var AOSL_seadragon_longitude;
+  var map = new google.maps.Map(document.getElementById(this.parentDivID));
+  var SDMarker;
+
+  /**
+   * Return the actual Google Map
+   * @return {Object} map Map object from the google API
+   */
+  this.getMap = function(){
+    return map;
+  }
+  
+  /**
+   * Reset the Google Map to its default settings
+   * 
+   */
+  this.reset = function(){
+    this.setZoom(default_zoom);
+    this.setCenter(default_lat,default_long);
+    //TODO
+    // Remove all markers
+    //Remove all polygons 
+  }
+  
+  /**
+   * Set the zoom of the map
+   * @param {Number} z Zoom level 
+   */
+  this.setZoom = function(z) {
+    map.setZoom(z);
+  }
+
+  /**
+   * Set the position of the map
+   * @param {Number} lt Latitude of the new center
+   * @param {Number} lg Longitude of the new center
+   * 
+   */
+  this.setCenter = function(lt, lg) {
+    var LatLngLiteral = {
+lat: lt,
+     lng: lg
+    };
+    map.setCenter(LatLngLiteral);
+  }
+
+  // Set to default position and zoom
+  this.setCenter(default_lat, default_long);
+  this.setZoom(default_zoom);
+
+
+/**
+ * update SeaDragon
+ * @param {Number} t
+ */
+this.updateMarker = function(t) {
+  this.removeSDPosition();
+  if (t &lt; AOSL_seadragon_latitude.length &amp;&amp; t &lt; AOSL_seadragon_longitude.length) {
+    var lat = AOSL_seadragon_latitude[t];
+    var long = AOSL_seadragon_longitude[t];
+    displaySDPosition(lat, long);
+  }
+  else {
+    console.warn('Playback attempted to access array out of bounds')
+  }
+}
+
+
+/**
+ * Remove SeaDragon symbol from map
+ */
+this.removeMarker = function() {
+  if (typeof(sdpos) !== 'undefined') {
+    sdpos.setMap(null);
+  }
+  else {
+    console.warn('Non-existent SeaDragon symbol attempting to be removed');
+  }
+}
+
+
+
+}
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 19:55:45 GMT-0230 (NDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

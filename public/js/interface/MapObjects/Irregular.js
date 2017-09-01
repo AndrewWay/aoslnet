@@ -1,8 +1,10 @@
 /**
  * Irregular Marker
  * @constructor
+ * @param {Object} parentMap The map object that contains the irregular marker
+ * @param {Array} latitudeArray The array that contains the latitude coordinates of each point within the polygon
+ * @param {Array} longitudeArray The array that contains the longitude coordinates of each point within the polygon
  */
-
 function IrregularMarker(parentMap,latitudeArray,longitudeArray){
   function IrregularMarkerObject() {
     this.__proto__ = new Marker(parentMap,latitudeArray,longitudeArray);
@@ -28,6 +30,10 @@ fillColor: '#3634d1',
 fillOpacity: 0.35,
 });
 
+/**
+ * Interfacing function with Simulation. Allows the polygon to move within the google map. 
+ * @param {Number} index Time index
+ */
 this.play = function(index){
   //TODO
 }

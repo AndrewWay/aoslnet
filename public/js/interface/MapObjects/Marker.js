@@ -22,35 +22,47 @@ var Marker = function(parent,latitudeArray,longitudeArray){
   this.setMarker = function(newMarker){
     marker = newMarker;
   }
+  
   /**
    * Get the current marker
-   * @return marker The current google marker
+   * @return {Object} marker The current google marker
    */
   this.getMarker = function(){
     return marker;
   }
+  
   /**
    * Return the latitude corresponding to index
    * @param {Number} index The index of the latitude
+   * @return {Number} latArray[index] Latitude of the marker for a particular time index
    */
   this.getLatitude = function(index){
     return latArray[index];
   }
+  
   /**
    * Return the longitude corresponding to index
    * @param {Number} index The index of the longitude
+   * @return {Number} longArray[index] Longitude of the marker for a particular time index
    */
   this.getLongitude = function(index){
     return longArray[index];
   }
+  
   /**
    * Set current position
+   * @param {Number} index Time index
    */
    this.setPosition = function(index){
      var Lat = latArray[index];
      var Long = longArray[index];
      coordinateLiteral = {lat: Lat,lng: Long};
    }
+   
+   /**
+    * Set the marker path color
+    * @param {String} hexColor Hex Color for the path
+    */
   this.setPathColor = function(hexColor){
     pathColor = hexColor;
   }
@@ -100,8 +112,6 @@ strokeWeight: 2,});
     path.setMap(this.parentMap);
   }
   this.delete = function(){
-    console.log(marker);
-    console.log(path);
     if(typeof marker !== 'undefined' && marker !== null){
       this.removeMarker();
     }

@@ -2,6 +2,7 @@
  * @constructor
  * @author Andrew Way <arw405@mun.ca>
  * @version 0.1
+ * @param {String} parentDivID HTML ID of the div containing the Google Map
  */
 var GoogleMap = function(parentDivID){
   var default_lat = 60;
@@ -13,9 +14,18 @@ var GoogleMap = function(parentDivID){
   var map = new google.maps.Map(document.getElementById(this.parentDivID));
   var SDMarker;
 
+  /**
+   * Return the actual Google Map
+   * @return {Object} map Map object from the google API
+   */
   this.getMap = function(){
     return map;
   }
+  
+  /**
+   * Reset the Google Map to its default settings
+   * 
+   */
   this.reset = function(){
     this.setZoom(default_zoom);
     this.setCenter(default_lat,default_long);
@@ -23,10 +33,10 @@ var GoogleMap = function(parentDivID){
     // Remove all markers
     //Remove all polygons 
   }
+  
   /**
    * Set the zoom of the map
-   * @param {Number} z
-   * 
+   * @param {Number} z Zoom level 
    */
   this.setZoom = function(z) {
     map.setZoom(z);
@@ -34,8 +44,8 @@ var GoogleMap = function(parentDivID){
 
   /**
    * Set the position of the map
-   * @param {Number} lt
-   * @param {Number} lg
+   * @param {Number} lt Latitude of the new center
+   * @param {Number} lg Longitude of the new center
    * 
    */
   this.setCenter = function(lt, lg) {
@@ -52,9 +62,8 @@ lat: lt,
 
 
 /**
- * update SeaDragon coordinates
- * @param {Number} lat
- * @param {Number} long
+ * update SeaDragon
+ * @param {Number} t
  */
 this.updateMarker = function(t) {
   this.removeSDPosition();

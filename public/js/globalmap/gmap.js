@@ -1,3 +1,7 @@
+/**
+ * @file gmap.js Data Map
+ */
+
 var selectedID="";
 var selectedYear="";
 var lat=[];
@@ -6,6 +10,9 @@ var id=[];
 var year=[];
 var iq=0;
 
+/**
+ * Run all functions necessary for loading of page
+ */
 function setup() {
     var yearList = getJSON('/bergs/years');
     console.log(yearList);    
@@ -33,6 +40,9 @@ function setup() {
   console.log(long);
 }
 
+/**
+ * Route to data viewer page
+ */
 function view(){
   console.log("selected: "+selectedYear+" "+selectedID);
   sessionStorage.setItem('selectedID', selectedID);
@@ -41,6 +51,10 @@ function view(){
    window.location.href = '/interface'
 }
 
+
+/**
+ * Distribute data obtained from database into various arrays
+ */
 function distributeData(dat){
   console.log("distributing data...");  
   var lt=dat[0].latitude;//Im not even sure why I'm accessing the JSON like an array. 
@@ -55,6 +69,9 @@ function distributeData(dat){
   console.log("data distributed.");
 }
 
+/**
+ * Add a new marker into the map
+ */
 function addMarker(i){
   console.log("adding marker...");
   var lt = parseFloat(lat[i]);
@@ -82,11 +99,12 @@ function addMarker(i){
   console.log("marker added for: "+nm);
 }
 
-// Set a cookie for use throughout the site. Note that clicking a marker sets a cookie
-// with the name and year for the corresponding iceberg.
-
+/**
+ * Set a cookie for use throughout the site. 
+ */
 function setCookie(c_name, value, exdays)
 {
+  // Note that clicking a marker sets a cookie with the name and year for the corresponding iceberg.
   var exdate = new Date();
   exdate.setDate(exdate.getDate() + exdays);
   var c_value = escape(value) + 
@@ -94,7 +112,9 @@ function setCookie(c_name, value, exdays)
   document.cookie = c_name + "=" + c_value;
 }
 
-
+/**
+ * Initialize the map when ready
+ */
 function mapReady() {
   console.log("initializing map...");
 
