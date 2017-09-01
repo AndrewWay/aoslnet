@@ -1,6 +1,3 @@
-/**
- * @file Data Chart
- */
 
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {
@@ -9,6 +6,8 @@ google.charts.load('current', {
 
 /**
  * @constructor
+ * @param {String} dataLabel Label of the data being displayed
+ * @param {String} parentID HTML ID of the div containing the Data Chart
  */
 var DataChart = function(dataLabel,parentID){
   var hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16); // Assign a random color to the chart line
@@ -80,10 +79,12 @@ while (!isOk) {
   
   /**
    * Interfacing function with simulation
+   * @param {number} t Time index
    */
   this.play = function(t){
     this.display(t);
   }
+  
   /**
    * Update the charts, plots, and google map with data associated with time index t
    * @param {number} t Time index 
@@ -95,6 +96,7 @@ while (!isOk) {
   
   /**
    * Returns the HTML ID of the charts div
+   * @return {String} chartID HTML ID of the chart
    */
   this.getID = function(){
     return this.chartID;
@@ -137,7 +139,7 @@ while (!isOk) {
 
   /**
    * Shift chart to end at a specified time
-   * @param {number} time 
+   * @param {number} time Time index
    */
   this.shiftChart = function(time) {
     this.xMax = time;

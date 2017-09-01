@@ -1,6 +1,34 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: interface/Main.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: interface/Main.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @file main
- * @author Andrew Way <arw405@mun.ca>
+ * @author Andrew Way &lt;arw405@mun.ca>
  * @author Tyler Downey
  */
  
@@ -36,9 +64,6 @@ var modelcontainerid = 'model';
 var picID = 'icedisp';
 
 /* INTERFACE PARAMETERS */
-
-var chartLimit = 5; // Maximum number of charts
-var monitorLimit = 5; // Maximum number of displays (charts + monitors)
 var chartLimit = 0; // Maximum number of charts
 var monitorLimit = 4; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
@@ -62,11 +87,6 @@ var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
 var currentIcebergName = '';
 var currentIcebergYear = '';
-
-/* JS MAPS */
-var chartMap = new Map();
-var monitorMap = new Map();
-
 /* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
@@ -129,7 +149,7 @@ function updateOptions(optionID, options) {
     optList.removeChild(optList.firstChild);
   }
   //Append new options to option list
-  for (var i = 0; i < options.length; i++) {
+  for (var i = 0; i &lt; options.length; i++) {
     var option = document.createElement("option");
     option.text = options[i];
     option.value = options[i];
@@ -174,14 +194,14 @@ function changeIceberg(yearSelected,bergSelected) {
   if (json.constructor == Array) {
     json = json[0];
   }
-  if(json.hasOwnProperty('Data') && json['Data'].length > 0){
+  if(json.hasOwnProperty('Data') &amp;&amp; json['Data'].length > 0){
     extractKeyPaths(json['Data'][0]); //Only checks first element
     distributeData(json['Data']); 
     var setSize = json['Data'].length;
     console.log('SETSIZE: '+setSize);
     sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
-    //createCharts();
-    //createMonitors();
+    createCharts();
+    createMonitors();
   }
   currentIcebergYear = yearSelected;
   currentIcebergName = bergSelected;
@@ -226,7 +246,7 @@ function autoselect() {
   var iceyear = getCookie("Year");
   var yearList = document.getElementById(icebergYearOptionsID)
   //Set the year from option list to iceyear
-  for (var i = 0; i < yearList.length ; i++){
+  for (var i = 0; i &lt; yearList.length ; i++){
     if (yearList.options[i].value === iceyear) {
       yearList.selected = yearList.options[i];
       yearList.value = yearList.options[i].value;
@@ -241,7 +261,7 @@ function autoselect() {
   var icename = getCookie("Name");
   var nameList = document.getElementById(icebergNameOptionsID);
   //Set the name from names option list to icename
-  for (var i = 0; i < nameList.length ; i++){
+  for (var i = 0; i &lt; nameList.length ; i++){
     if (nameList.options[i].value === icename) {
       nameList.selected = nameList.options[i];
       i = nameList.length;
@@ -257,7 +277,7 @@ function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
+    for(var i = 0; i &lt;ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
@@ -279,21 +299,21 @@ function checkCookie() {
         alert("Welcome again " + username + " " + year);
     } else {
         username = prompt("Please enter your name:", "");
-        if (username != "" && username != null) {
+        if (username != "" &amp;&amp; username != null) {
             setCookie("Name", username, 365);
         }
     }
 }
 
 /**
- * Creates charts for data sources. toggleCharts() is an updated version of createCharts()
+ * Creates charts for data sources
  */
-function createCharts(keyPathArray){
-  while(dataSourcesProcessed < keyPathArray.length && chartQuantity < chartLimit){
+function createCharts(){
+  while(dataSourcesProcessed &lt; jsonKeyPaths.length &amp;&amp; chartQuantity &lt; chartLimit){
     var index = dataSourcesProcessed;
-    var keyPath = keyPathArray[index];
+    var keyPath = jsonKeyPaths[index];
     var dataArray = jsonDataMap.get(keyPath);
-    if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
+    if(!dataArray.some(isNaN) &amp;&amp; dataArray.length > 0){ // Check if the data array only contains at least one number
       //Create a new chart
       console.log('Adding chart: '+keyPath);
       var newChart = new DataChart(keyPath,'graphs');
@@ -303,81 +323,20 @@ function createCharts(keyPathArray){
       sim.manage(newChart);
       interfaceObjects.push(newChart);
       chartQuantity++;
-      chartMap.set(keyPath,newChart);
     }
     dataSourcesProcessed++;
   }
 }
 
 /**
- * Toggles charts on and off using the user-end toggle menu.
-*/
-function toggleChart(dataLabel){
-  var check = document.getElementById(dataLabel + "Chart")
-  var dataArray = jsonDataMap.get(dataLabel);
-  if (check.value==='Off' || check.value==undefined) {
-      check.style.backgroundColor= '#32cd32'; //bright green
-      check.value='On';
-      console.log('Adding chart: '+dataLabel);
-      var newChart = new DataChart(dataLabel,'graphs');
-      newChart.setChartData(dataArray);
-      newChart.autoResizeAxes();
-      newChart.refresh();
-      sim.manage(newChart);
-      interfaceObjects.push(newChart);
-      chartMap.set(dataLabel,newChart);
-  }
-  else
-  {
-    check.style.backgroundColor= '#202020'; //light blaCK
-    check.value='Off';
-    for (var i = 0; i < interfaceObjects.length; i++){
-      if ( interfaceObjects[i].chartID=='graph_' + dataLabel){      
-        console.log('Deleting chart: ' + dataLabel);
-        interfaceObjects[i].delete();
-      }
-    }
-  } 
-    
-}
-
-/**
- * Toggles monitors on and off using the user-end toggle menu.
-*/
-function toggleMonitor(dataLabel) {
-  var check = document.getElementById(dataLabel + 'Monitor');
-  var dataArray = jsonDataMap.get(dataLabel);
-  if (check.value==='Off' || check.value==undefined) {
-      check.value='On';
-      check.style.backgroundColor='#32cd32';
-      console.log('Adding monitor: '+dataLabel);
-      var newMonitor = new DataMonitor(dataLabel,'monitorTable');
-      newMonitor.setData(dataArray);
-      sim.manage(newMonitor);
-      interfaceObjects.push(newMonitor);
-  }
-  else
-  {
-    check.value='Off'
-    check.style.backgroundColor='#202020';
-      for (var i = 0; i < interfaceObjects.length; i++){
-        if ( interfaceObjects[i].rowID=='monitor_' + dataLabel){      
-          console.log('Deleting monitor: ' + dataLabel);
-          interfaceObjects[i].delete();
-        }
-    }
-  }
-}
-
-/**
- * Create monitors for data sources. toggleMonitor() is an updated version of createMonitors()
+ * Create monitors for data sources
  */
 function createMonitors(){
-  while(dataSourcesProcessed < jsonKeyPaths.length && monitorQuantity < monitorLimit){
+  while(dataSourcesProcessed &lt; jsonKeyPaths.length &amp;&amp; monitorQuantity &lt; monitorLimit){
     var index = dataSourcesProcessed;
     var keyPath = jsonKeyPaths[index];
     var dataArray = jsonDataMap.get(keyPath);
-    if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
+    if(!dataArray.some(isNaN) &amp;&amp; dataArray.length > 0){ // Check if the data array only contains at least one number
       var newMonitor = new DataMonitor(keyPath,'monitorTable');
       newMonitor.setData(dataArray);
       sim.manage(newMonitor);
@@ -459,12 +418,12 @@ function displayIcebergMarker(){
 function displayMap(json) {
   //TODO if longitude and latitude exist, create map. Have map invisible by default
   //Load longitude and latitude of iceberg
-  if (json.hasOwnProperty('longitude') && json.hasOwnProperty('latitude')) {
+  if (json.hasOwnProperty('longitude') &amp;&amp; json.hasOwnProperty('latitude')) {
     var longitude = json.longitude;
     var latitude = json.latitude;
     var displayMapBool = 1;
     if (typeof longitude === 'number') {
-      if (!(longitude >= -180 && longitude <= 180)) {
+      if (!(longitude >= -180 &amp;&amp; longitude &lt;= 180)) {
         console.log("longitude invalid: out of range.");
         displayMapBool = 0;
       }
@@ -474,7 +433,7 @@ function displayMap(json) {
         displayMapBool = 0;
     }
     if (typeof latitude === 'number') {
-      if (!(latitude >= -90 && latitude <= 90)) {
+      if (!(latitude >= -90 &amp;&amp; latitude &lt;= 90)) {
         console.log("latitude invalid: out of range.");
         displayMapBool = 0;
       }
@@ -506,12 +465,12 @@ function displayPointCloud(json) {
   var yarray_check = json.hasOwnProperty('y');
   var zarray_check = json.hasOwnProperty('z');
 
-  if (xarray_check && yarray_check && zarray_check) {
+  if (xarray_check &amp;&amp; yarray_check &amp;&amp; zarray_check) {
     var x = json['x'];
     var y = json['y'];
     var z = json['z'];
 
-    if(x.length > 0 && y.length > 0 && z.length > 0){
+    if(x.length > 0 &amp;&amp; y.length > 0 &amp;&amp; z.length > 0){
       console.log('creating point cloud model');
       console.log(DEMO);
       IcebergPointCloud = PointCloud(x, y, z);
@@ -528,8 +487,8 @@ function displayPointCloud(json) {
 function displaySeaDragon(json){
   console.log('Displaying SeaDragon model');
   // if(jsonDataMap.has(orientationName)){
-  if(jsonDataMap.has(latitudeName) && jsonDataMap.get(latitudeName).length > 0){
-    if(jsonDataMap.has(longitudeName) && jsonDataMap.get(longitudeName).length > 0){
+  if(jsonDataMap.has(latitudeName) &amp;&amp; jsonDataMap.get(latitudeName).length > 0){
+    if(jsonDataMap.has(longitudeName) &amp;&amp; jsonDataMap.get(longitudeName).length > 0){
       if(json.hasOwnProperty('latitude')){
         if(json.hasOwnProperty('longitude')){
 
@@ -542,7 +501,7 @@ function displaySeaDragon(json){
           gps.lat = latitudeArray;
           gps.long = longitudeArray;
           var altitudeArray = [];
-          for(var i = 0; i < latitudeArray.length; i++){
+          for(var i = 0; i &lt; latitudeArray.length; i++){
             altitudeArray.push(SDBottom);
           }
           gps.alt = altitudeArray;
@@ -660,17 +619,17 @@ function gpsToLocal(gpsData){
   
   
   var minArraySize = 0;
-  if(lat.length < long.length){
+  if(lat.length &lt; long.length){
     minArraySize = lat.length;
   }
   else{
     minArraySize = long.length;
   }
-  if(alt.length < minArraySize ){
+  if(alt.length &lt; minArraySize ){
     minArraySize = alt.length;
   }
   
-  for (i = 0; i < minArraySize; i++) {
+  for (i = 0; i &lt; minArraySize; i++) {
     long[i] = 111120*(long[i] - longOrigin)*Math.cos(lat[i]*PI/180); //long2x(lat[i],long[i]) - localData.origin.x;
     lat[i] =  111120*(lat[i] - latOrigin); //lat2y(lat[i]) - localData.origin.y;
     alt[i] = alt[i] - localData.origin.z;
@@ -712,3 +671,26 @@ function gpsPointCloud(json){
   var gpsPC = PointCloud(x,y,z);
   gpsPC.loadPointCloud();
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 19:55:45 GMT-0230 (NDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,6 +1,11 @@
 /**
  * @constructor
+ * 
  * TriangularMarker
+ * @param {Object} parentMap Map that contains the triangle marker
+ * @param {Array} latitudeArray Array that contains the triangle latitude coordinates
+ * @param {Array} longitudeArray Array that contains the triangle longitude coordinates
+ * @param {Array} orientation Array that contains the triangle orientations
  */
 function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray){
   function TriangleObject(){
@@ -14,6 +19,7 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
     var iconProps;
     var currentLat;
     var currentLong;
+    
     /**
      * Interface function to be compatible with Simulation object
      * @param {Number} index The index of the data
@@ -23,6 +29,7 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
       this.setOrientation(index);
       this.refreshIcon();
     }
+    
     /**
      * Set the orientation of the triangle marker
      * @param {Number} index The index of the data
@@ -32,7 +39,6 @@ function TriangleMarker(parentMap,latitudeArray,longitudeArray,orientationArray)
       //TODO
       var currentLat = this.getLatitude(index);
       var currentLong = this.getLongitude(index);
-      
       iconProps = {
 ax : currentLong,
      ay : currentLat + y,
@@ -58,7 +64,7 @@ ax : currentLong,
      * @param {Number} lat
      * @param {Number} long
      */
-    this.display = function(lat, lng) {
+    this.display = function() {
       var tri = [];
 
 
@@ -84,11 +90,12 @@ path: tri,
 geodesic: true,
 strokeColor: iconColor,
 strokeOpacity: 1.0,
-strokeWeight: 2,
+strokeWeight: 4,
 zIndex: 3
 });
 marker.setMap(this.parentMap);
 this.setMarker(marker);
+console.log("HELLO");
 }
 
 this.setPosition(0);

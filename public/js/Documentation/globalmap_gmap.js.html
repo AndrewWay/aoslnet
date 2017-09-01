@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: globalmap/gmap.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: globalmap/gmap.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file gmap.js Data Map
+ */
+
+var selectedID="";
+var selectedYear="";
+var lat=[];
+var long=[];
+var id=[];
+var year=[];
+var iq=0;
+
+/**
+ * Run all functions necessary for loading of page
+ */
+function setup() {
+    var yearList = getJSON('/bergs/years');
+    console.log(yearList);    
+    console.log("Hello?");
+    for(i=0;i&lt;yearList.length;i++){
+      var yearSelected = parseInt(yearList[i]);
+      var bergList = getJSON('/bergs/names/'+yearSelected);
+      console.log("Berglist "+bergList);
+      for(j=0;j&lt;bergList.length;j++){
+        bergSelected = bergList[j]; //Get the name of the iceberg        
+        var dat = getJSON('/bergs/data/'+yearSelected+'/'+bergSelected);//Get iceberg data
+        if(dat.length > 0){
+          console.log("adding iceberg");
+          distributeData(dat);//Add data to the global array
+          addMarker(iq);//Add an iceberg marker to the map       
+          iq++;//Increment the iceberg quantity      
+        }
+        else{
+          console.log("Measurement array for "+bergSelected+" is empty. Not adding marker to map.");
+        }
+              
+      } 
+    }
+  console.log(lat);
+  console.log(long);
+}
+
+/**
+ * Route to data viewer page
+ */
+function view(){
+  console.log("selected: "+selectedYear+" "+selectedID);
+  sessionStorage.setItem('selectedID', selectedID);
+  sessionStorage.setItem('selectedYear', selectedYear);
+  console.log("redirecting to interface");
+   window.location.href = '/interface'
+}
+
+
+/**
+ * Distribute data obtained from database into various arrays
+ */
+function distributeData(dat){
+  console.log("distributing data...");  
+  var lt=dat[0].latitude;//Im not even sure why I'm accessing the JSON like an array. 
+  var lg=dat[0].longitude;
+  var yr=dat[0].year;
+  var nm=dat[0].name;
+
+  lat.push(lt);        
+  long.push(lg);  
+  year.push(yr);
+  id.push(nm);
+  console.log("data distributed.");
+}
+
+/**
+ * Add a new marker into the map
+ */
+function addMarker(i){
+  console.log("adding marker...");
+  var lt = parseFloat(lat[i]);
+  var lg = parseFloat(long[i]);  
+  var nm = id[i];
+  var yr = year[i];
+  var coord = {lat: lt,lng: lg};
+  //Create a new google marker
+  var marker = new google.maps.Marker({
+    position: coord,
+    map: map,
+    title: nm
+  });
+  //Add a new google marker to the map
+  marker.setMap(map); 
+
+  google.maps.event.addListener(marker, 'click', function() {
+    document.getElementById('desc').innerHTML='NAME: '+nm+' YEAR: '+yr+' LATITUDE: '+lt+' LONGITUDE: '+lg+' DESCRIPTION: [sometext]';
+    selectedID=nm;
+    selectedYear=yr;
+    setCookie("Name", id[i] , 365);
+    setCookie("Year", year[i], 365);
+  });
+
+  console.log("marker added for: "+nm);
+}
+
+/**
+ * Set a cookie for use throughout the site. 
+ */
+function setCookie(c_name, value, exdays)
+{
+  // Note that clicking a marker sets a cookie with the name and year for the corresponding iceberg.
+  var exdate = new Date();
+  exdate.setDate(exdate.getDate() + exdays);
+  var c_value = escape(value) + 
+    ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+  document.cookie = c_name + "=" + c_value;
+}
+
+/**
+ * Initialize the map when ready
+ */
+function mapReady() {
+  console.log("initializing map...");
+
+  var centerLat = 0;
+  var centerLng = 0;
+
+  //Initialize Map
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 3,
+    center: {lat: centerLat, lng: centerLng},
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  });
+  console.log("map initialized.");
+  
+  setup();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Camera.html">Camera</a></li><li><a href="DataChart.html">DataChart</a></li><li><a href="DataMonitor.html">DataMonitor</a></li><li><a href="GoogleMap.html">GoogleMap</a></li><li><a href="IrregularMarker.html">IrregularMarker</a></li><li><a href="Marker.html">Marker</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Model.html">Model</a></li><li><a href="PointCloud.html">PointCloud</a></li><li><a href="Simulation.html">Simulation</a></li><li><a href="TriangularMarker.html">TriangularMarker</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addMarker">addMarker</a></li><li><a href="global.html#addToggle">addToggle</a></li><li><a href="global.html#autoselect">autoselect</a></li><li><a href="global.html#beautifyLabel">beautifyLabel</a></li><li><a href="global.html#changeIceberg">changeIceberg</a></li><li><a href="global.html#changeYear">changeYear</a></li><li><a href="global.html#checkCookie">checkCookie</a></li><li><a href="global.html#createCharts">createCharts</a></li><li><a href="global.html#createMap">createMap</a></li><li><a href="global.html#createMonitors">createMonitors</a></li><li><a href="global.html#Detector">Detector</a></li><li><a href="global.html#displayCamera">displayCamera</a></li><li><a href="global.html#displayDimensions">displayDimensions</a></li><li><a href="global.html#displayIceberg">displayIceberg</a></li><li><a href="global.html#displayIcebergMarker">displayIcebergMarker</a></li><li><a href="global.html#displayMap">displayMap</a></li><li><a href="global.html#displayPointCloud">displayPointCloud</a></li><li><a href="global.html#displayRig">displayRig</a></li><li><a href="global.html#displaySeaDragon">displaySeaDragon</a></li><li><a href="global.html#displaySeaDragonMarker">displaySeaDragonMarker</a></li><li><a href="global.html#distributeData">distributeData</a></li><li><a href="global.html#extractKeyPaths">extractKeyPaths</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getDatum">getDatum</a></li><li><a href="global.html#getFocalLength">getFocalLength</a></li><li><a href="global.html#getSelectedName">getSelectedName</a></li><li><a href="global.html#getSelectedYear">getSelectedYear</a></li><li><a href="global.html#gpsPointCloud">gpsPointCloud</a></li><li><a href="global.html#gpsToLocal">gpsToLocal</a></li><li><a href="global.html#keypathHelper">keypathHelper</a></li><li><a href="global.html#keytoValue">keytoValue</a></li><li><a href="global.html#lat2y">lat2y</a></li><li><a href="global.html#long2x">long2x</a></li><li><a href="global.html#mapReady">mapReady</a></li><li><a href="global.html#sanitizeNodeName">sanitizeNodeName</a></li><li><a href="global.html#setCookie">setCookie</a></li><li><a href="global.html#setFocalLength">setFocalLength</a></li><li><a href="global.html#setup">setup</a></li><li><a href="global.html#setViewOffset">setViewOffset</a></li><li><a href="global.html#updateOptions">updateOptions</a></li><li><a href="global.html#view">view</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 25 2017 19:55:45 GMT-0230 (NDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
