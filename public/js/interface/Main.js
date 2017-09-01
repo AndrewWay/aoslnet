@@ -36,8 +36,8 @@ var modelcontainerid = 'model';
 var picID = 'icedisp';
 
 /* INTERFACE PARAMETERS */
-var chartLimit = 2; // Maximum number of charts
-var monitorLimit = 4; // Maximum number of displays (charts + monitors)
+var chartLimit = 5; // Maximum number of charts
+var monitorLimit = 5; // Maximum number of displays (charts + monitors)
 var chartQuantity = 0; // Tracks the number of charts
 var monitorQuantity = 0; // Tracks the number of monitors
 var SDBottom = -1;
@@ -176,8 +176,8 @@ function changeIceberg(yearSelected,bergSelected) {
     var setSize = json['Data'].length;
     console.log('SETSIZE: '+setSize);
     sim = new Simulation(setSize); // Create a new simulation with data set size = setSize
-    createCharts();
-    createMonitors();
+    //createCharts();
+    //createMonitors();
   }
   currentIcebergYear = yearSelected;
   currentIcebergName = bergSelected;
@@ -282,12 +282,12 @@ function checkCookie() {
 }
 
 /**
- * Creates charts for data sources
+ * Creates charts for data sources. toggleCharts() is an updated version of createCharts()
  */
-function createCharts(){
-  while(dataSourcesProcessed < jsonKeyPaths.length && chartQuantity < chartLimit){
+function createCharts(keyPathArray){
+  while(dataSourcesProcessed < keyPathArray.length && chartQuantity < chartLimit){
     var index = dataSourcesProcessed;
-    var keyPath = jsonKeyPaths[index];
+    var keyPath = keyPathArray[index];
     var dataArray = jsonDataMap.get(keyPath);
     if(!dataArray.some(isNaN) && dataArray.length > 0){ // Check if the data array only contains at least one number
       //Create a new chart
@@ -300,39 +300,73 @@ function createCharts(){
       interfaceObjects.push(newChart);
       chartQuantity++;
       chartMap.set(keyPath,newChart);
-      // <button label="CTD&Pressure" onclick="toggleChart(this.label)">
     }
     dataSourcesProcessed++;
   }
 }
 
-function toggleDisplaySettings()
-{
-    if (document.getElementById('toggle-container').style.visibility==='visible' || document.getElementById('toggle-container').style.visibility==='')
-    {
-        document.getElementById('toggle-container').style.visibility='hidden'
-        document.getElementById('graphs').style.visibility='hidden'
-        document.getElementById('monitorTable').style.visibility='hidden'
-    }
-    else
-    {
-        document.getElementById('toggle-container').style.visibility='visible'
-        document.getElementById('graphs').style.visibility='visible'
-        document.getElementById('monitorTable').style.visibility='visible'
-    }
-}
+/**
+ * Toggles charts on and off using the user-end toggle menu.
+*/
 function toggleChart(dataLabel){
-  var chart = chartMap.get(dataLabel);
-//  if on 
-//  delete chart
-//  else
-//  create chart
+  var check = document.getElementById(dataLabel + "Chart")
+  var dataArray = jsonDataMap.get(dataLabel);
+  if (check.value==='Off' || check.value==undefined) {
+      check.style.backgroundColor= '#32cd32'; //bright green
+      check.value='On';
+      console.log('Adding chart: '+dataLabel);
+      var newChart = new DataChart(dataLabel,'graphs');
+      newChart.setChartData(dataArray);
+      newChart.autoResizeAxes();
+      newChart.refresh();
+      sim.manage(newChart);
+      interfaceObjects.push(newChart);
+      chartMap.set(dataLabel,newChart);
+  }
+  else
+  {
+    check.style.backgroundColor= '#202020'; //light blaCK
+    check.value='Off';
+    for (var i = 0; i < interfaceObjects.length; i++){
+      if ( interfaceObjects[i].chartID=='graph_' + dataLabel){      
+        console.log('Deleting chart: ' + dataLabel);
+        interfaceObjects[i].delete();
+      }
+    }
+  } 
+    
 }
-
-//function toggleMonitor...
 
 /**
- * Create monitors for data sources
+ * Toggles monitors on and off using the user-end toggle menu.
+*/
+function toggleMonitor(dataLabel) {
+  var check = document.getElementById(dataLabel + 'Monitor');
+  var dataArray = jsonDataMap.get(dataLabel);
+  if (check.value==='Off' || check.value==undefined) {
+      check.value='On';
+      check.style.backgroundColor='#32cd32';
+      console.log('Adding monitor: '+dataLabel);
+      var newMonitor = new DataMonitor(dataLabel,'monitorTable');
+      newMonitor.setData(dataArray);
+      sim.manage(newMonitor);
+      interfaceObjects.push(newMonitor);
+  }
+  else
+  {
+    check.value='Off'
+    check.style.backgroundColor='#202020';
+      for (var i = 0; i < interfaceObjects.length; i++){
+        if ( interfaceObjects[i].rowID=='monitor_' + dataLabel){      
+          console.log('Deleting monitor: ' + dataLabel);
+          interfaceObjects[i].delete();
+        }
+    }
+  }
+}
+
+/**
+ * Create monitors for data sources. toggleMonitor() is an updated version of createMonitors()
  */
 function createMonitors(){
   while(dataSourcesProcessed < jsonKeyPaths.length && monitorQuantity < monitorLimit){
