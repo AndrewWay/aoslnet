@@ -370,6 +370,88 @@ function toggleMonitor(dataLabel) {
 }
 
 /**
+ * Toggle all charts and monitors. It's done in a bit of a lazy way. Will try to fix.
+ */
+function allToggle(type, label1, label2, label3, label4, label5) {
+  var btn = document.getElementById('all' + type);
+  if (btn.value==='Off') {
+      btn.style.backgroundColor='#32cd32';
+      btn.value='On';
+      if (type==='Chart') {
+        if (document.getElementById(label1 + 'Chart').value==='Off') {
+          toggleChart(label1);
+        }
+        if (document.getElementById(label2 + 'Chart').value==='Off') {
+          toggleChart(label2);
+        }
+        if (document.getElementById(label3 + 'Chart').value==='Off') {
+          toggleChart(label3);
+        }
+        if (document.getElementById(label4 + 'Chart').value==='Off') {
+          toggleChart(label4);
+        }
+        if (document.getElementById(label5 + 'Chart').value==='Off') {
+          toggleChart(label5);
+        }
+    }
+    else if (type==='Monitor') {
+        if (document.getElementById(label1 + 'Monitor').value==='Off') {
+          toggleMonitor(label1);
+        }
+        if (document.getElementById(label2 + 'Monitor').value==='Off') {
+          toggleMonitor(label2);
+        }
+        if (document.getElementById(label3 + 'Monitor').value==='Off') {
+          toggleMonitor(label3);
+        }
+        if (document.getElementById(label4 + 'Monitor').value==='Off') {
+          toggleMonitor(label4);
+        }
+        if (document.getElementById(label5 + 'Monitor').value==='Off') {
+          toggleMonitor(label5);
+        }
+    }
+  }
+  else {
+    btn.style.backgroundColor='#202020';
+    btn.value='Off'; 
+      if(type==='Chart') {
+        if (document.getElementById(label1 +'Chart').value==='On') {
+          toggleChart(label1);
+        }
+        if (document.getElementById(label2 +'Chart').value==='On') {
+          toggleChart(label2);
+        }
+        if (document.getElementById(label3 +'Chart').value==='On') {
+          toggleChart(label3);
+        }
+        if (document.getElementById(label4 +'Chart').value==='On') {
+          toggleChart(label4);
+        }
+        if (document.getElementById(label5 +'Chart').value==='On') {
+          toggleChart(label5);
+        }
+    }
+    else if (type==='Monitor') {
+        if (document.getElementById(label1 +'Monitor').value==='On') {
+          toggleMonitor(label1);
+        }
+        if (document.getElementById(label2 +'Monitor').value==='On') {
+          toggleMonitor(label2);
+        }
+        if (document.getElementById(label3 +'Monitor').value==='On') {
+          toggleMonitor(label3);
+        }
+        if (document.getElementById(label4 +'Monitor').value==='On') {
+          toggleMonitor(label4);
+        }
+        if (document.getElementById(label5 +'Monitor').value==='On') {
+          toggleMonitor(label5);
+        }
+    }
+  }
+}
+/**
  * Create monitors for data sources. toggleMonitor() is an updated version of createMonitors()
  */
 function createMonitors(){
