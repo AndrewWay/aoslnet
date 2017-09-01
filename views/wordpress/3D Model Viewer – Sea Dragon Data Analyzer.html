@@ -71,7 +71,6 @@
 <title>3D Model Viewer – Sea Dragon Data Analyzer</title>
 <!--<link rel="dns-prefetch" href="https://s2.wp.com/">
 <!-- <link rel="dns-prefetch" href="https://s2.wp.com/">
->>>>>>> 1e39be9ef8b91ca0d8561b4ba31c8cd16554289f
 <link rel="dns-prefetch" href="https://aoslseadragon.wordpress.com/">
 <link rel="dns-prefetch" href="https://s0.wp.com/">
 <link rel="dns-prefetch" href="https://s1.wp.com/"> -->
@@ -251,22 +250,27 @@ img.emoji {
             <tr>
               <td><font color='black'>CTD&Temperature</td>
               <td><input type='button' name='charts' value='Off' id='CTD&temperatureChart' onclick="toggleChart('CTD&temperature')"></td>
-              <td><input type='button' name='charts' value='Off' id='CTD&temperatureMonitor' onclick="toggleMonitor('CTD&temperature')"></td>
+              <td><input type='button' name='monitors' value='Off' id='CTD&temperatureMonitor' onclick="toggleMonitor('CTD&temperature')"></td>
             </tr>
             <tr>
               <td><font color='black'>CTD&Salinity</td>
               <td><input type='button' name='charts' value='Off' id='CTD&salinityChart' onclick="toggleChart('CTD&salinity')"></td>
-              <td><input type='button' name='charts' value='Off' id='CTD&salinityMonitor' onclick="toggleMonitor('CTD&salinity')"></td>
+              <td><input type='button' name='monitors' value='Off' id='CTD&salinityMonitor' onclick="toggleMonitor('CTD&salinity')"></td>
             </tr>
             <tr>
               <td><font color='black'>CTD&Conductivity</td>
               <td><input type='button' name='charts' value='Off' id='CTD&conductivityChart' onclick="toggleChart('CTD&conductivity')"></td>
-              <td><input type='button' name='charts' value='Off' id='CTD&conductivityMonitor' onclick="toggleMonitor('CTD&conductivity')"></td>
+              <td><input type='button' name='monitors' value='Off' id='CTD&conductivityMonitor' onclick="toggleMonitor('CTD&conductivity')"></td>
             </tr>
             <tr>
                <td><font color='black'>CTD&SoundVelocity</td>
               <td><input type='button' name='charts' value='Off' id='CTD&soundVelocityChart' onclick="toggleChart('CTD&soundVelocity')"></td>
-              <td><input type='button' name='charts' value='Off' id='CTD&soundVelocityMonitor' onclick="toggleMonitor('CTD&soundVelocity')"></td>
+              <td><input type='button' name='monitors' value='Off' id='CTD&soundVelocityMonitor' onclick="toggleMonitor('CTD&soundVelocity')"></td>
+            </tr>
+            <tr>
+               <td><font color='black'>All</td>
+              <td><input type='button' name='charts' value='Off' id='allChart' onclick="allToggle('Chart', 'CTD&pressure', 'CTD&temperature', 'CTD&salinity', 'CTD&conductivity', 'CTD&soundVelocity')"></td>
+              <td><input type='button' name='monitors' value='Off' id='allMonitor' onclick="allToggle('Monitor', 'CTD&pressure', 'CTD&temperature', 'CTD&salinity', 'CTD&conductivity', 'CTD&soundVelocity')"></td>
             </tr>
           </div>
           </table>
@@ -504,8 +508,6 @@ _stq.push(['view', {'blog':'132944102','v':'wpcom','tz':'-2','user':'1','priv':'
 _stq.push(['extra', {'crypt':'UE40eW5QN0p8M2Y/RE1zNDZ8S252Wis9XUQyb3YrcUVIU2R0VH5TdUlSYmNEVlB+OF8laSU/R0otdVcud2FoTyxmM0hdenMxTTFxMWVmblRXVnosRVc1fk9lNnN4LG9GaWFDd3JOZ05HSmpnb2MxWFlLeGpoSFhDQ3pDKyV8aVhKSDZic2x5OFBFYX5kTHcuZj9aSTdLcVJaZG9vNk5VOTlUPXMucTZzMUFReWJqT1UwPS1fdl1GYTYrflJ8OEZvM0lYdSZVcFpFWHxIV3NvUXBOXUZtVzlxRTlHOC5XTHFFWk9XZ2lfMytXNXdQPT9lMmxqS2VVTV1tPS9dQy9FeTNoODc1cl8uMW1DWyU/UGV1dl0xZENjOEpHTHhaWTZtRWNDc2hSWlFoLjQ='}]);
 	</script>
 <!--<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /></noscript> -->
-=======
->>>>>>> 1e39be9ef8b91ca0d8561b4ba31c8cd16554289f
 
 		<iframe src="3D%20Model%20Viewer%20%E2%80%93%20Sea%20Dragon%20Data%20Analyzer_files/master.html" scrolling="no" id="likes-master" name="likes-master" style="display:none;"></iframe>
 		<div id="likes-other-gravatars"><div class="likes-text"><span>%d</span> bloggers like this:</div><ul class="wpl-avatars sd-like-gravatars"></ul></div>
