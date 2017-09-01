@@ -11,6 +11,11 @@ google.charts.load('current', {
  */
 var DataChart = function(dataLabel,parentID){
   var hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16); // Assign a random color to the chart line
+var isOk  = /^#[0-9A-F]{6}$/i.test(hexcolor);
+while (!isOk) {
+  hexcolor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+  isOk  = /^#[0-9A-F]{6}$/i.test(hexcolor);
+}
   this.vMargin =0.1;
   this.chartID = '';
   this.parentDivID = parentID;
