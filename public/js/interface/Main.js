@@ -58,6 +58,11 @@ var OilRigFilePath = 'data/models/oilrig/oilrig.obj';
 var dataSourcesProcessed = 0; // Kind of cryptic variable. Tracks how many data sources of the JSON have been displayed. Will likely change this name in the future
 var currentIcebergName = '';
 var currentIcebergYear = '';
+
+/* JS MAPS */
+var chartMap = new Map();
+var monitorMap = new Map();
+
 /* TEST VARIABLES */
 var MarkerTest;
 var test_i = 0;
@@ -294,10 +299,37 @@ function createCharts(){
       sim.manage(newChart);
       interfaceObjects.push(newChart);
       chartQuantity++;
+      chartMap.set(keyPath,newChart);
+      // <button label="CTD&Pressure" onclick="toggleChart(this.label)">
     }
     dataSourcesProcessed++;
   }
 }
+
+function toggleDisplaySettings()
+{
+    if (document.getElementById('toggle-container').style.visibility==='visible' || document.getElementById('toggle-container').style.visibility==='')
+    {
+        document.getElementById('toggle-container').style.visibility='hidden'
+        document.getElementById('graphs').style.visibility='hidden'
+        document.getElementById('monitorTable').style.visibility='hidden'
+    }
+    else
+    {
+        document.getElementById('toggle-container').style.visibility='visible'
+        document.getElementById('graphs').style.visibility='visible'
+        document.getElementById('monitorTable').style.visibility='visible'
+    }
+}
+function toggleChart(dataLabel){
+  var chart = chartMap.get(dataLabel);
+//  if on 
+//  delete chart
+//  else
+//  create chart
+}
+
+//function toggleMonitor...
 
 /**
  * Create monitors for data sources
