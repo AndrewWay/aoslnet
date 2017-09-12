@@ -1,0 +1,23 @@
+<SCRIPT TYPE="text/javascript">
+function popup(mylink, windowname) {
+  if (! window.focus)
+    return true;
+  var href;
+  if (typeof(mylink) == 'string')
+    href=mylink;
+else href=mylink.href;
+var myWindow = window.open(href, windowname, 'width=400,height=200,scrollbars=no');     
+myWindow.document.write('<h3> Please enter the password to view content</h3><div data-role="popup" id="myPopup" class="ui-content" style="min-width:250px;"><div><label for="pswd" class="ui-hidden-accessible">Password:</label><input type="password" name="passw" id="pswd" placeholder="Password"><input type="submit" data-inline="true" value="Log in"></div></div>');
+return false;
+}
+</SCRIPT>
+
+
+
+
+
+
+
+	<div class="menu-primary-container"><ul id="top-menu" class="menu"><li id="menu-item-8" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-8"><a href="/">Home</a></li>
+<li id="menu-item-43" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-43"><a href="https://www.aosl.ca">About</a></li>
+<li id="menu-item-21" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21" <a href="#Login" data-rel="popup">Data Mapper</a><div data-role="popup" id="myPopup" class="ui-content" style="min-width:250px;"><div><label for="pswd" class="ui-hidden-accessible">Password:</label><input type="password" name="passw" id="pswd" placeholder="Password"><input type="submit" data-inline="true" value="Log in"></div></div></li>
