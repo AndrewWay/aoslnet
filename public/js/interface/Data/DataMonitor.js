@@ -47,8 +47,8 @@ var DataMonitor = function(dataName, parentID){
   /**
    * Delete the data monitor's representative HTML row
    */
+   var row = document.getElementById(this.rowID);
    this.delete = function(){
-     var row = document.getElementById(this.rowID);
      var table = row.parentNode;
      while ( table && table.tagName != 'TABLE' )
        table = table.parentNode;

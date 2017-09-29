@@ -10890,7 +10890,7 @@
 
 		this.type = 'OrthographicCamera';
 
-		this.zoom = 1;
+		this.zoom = 100;
 		this.view = null;
 
 		this.left = left;
